@@ -1,8 +1,13 @@
 import React from 'react'
+import Navbar from './components/NavBar/NavBar'
+import { BrowserRouter } from 'react-router-dom'
 
 const App = () => {
   return (
-    <div className='bg-amber-200'>App</div>
+    <BrowserRouter>
+      <Navbar />
+      {/* Other components and routes can be added here */}
+    </BrowserRouter>
   )
 }
 
