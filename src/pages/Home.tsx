@@ -14,7 +14,7 @@ const Home = () => {
         </div>
         <div className="flex justify-center  gap-16 h h-[300px]">
           <Tower srcImage={SkyIsland} nameTower={"Discussion"} path={"/talk"} ></Tower>
-          <Tower srcImage={SkyIsland} nameTower={"Dashboard"} path={"/dashboard"} ></Tower>
+          <Tower srcImage={SkyIsland} nameTower={"Dashboard"} path={"/admin"} ></Tower>
         </div>
       </div>
     </div>
