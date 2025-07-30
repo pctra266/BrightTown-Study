@@ -1,14 +1,15 @@
-import React from 'react'
-import Navbar from './components/NavBar/NavBar'
-import { BrowserRouter } from 'react-router-dom'
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ManageBooks from "./features/library-book/pages/ManageBooks";
 
-const App = () => {
+function App() {
   return (
     <BrowserRouter>
-      <Navbar />
-      {/* Other components and routes can be added here */}
+      <Routes>
+        <Route path="/" element={<ManageBooks />} />
+      </Routes>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;
