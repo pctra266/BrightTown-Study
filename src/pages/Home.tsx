@@ -12,11 +12,10 @@ const Home = () => {
           <Tower srcImage={SkyIsland} nameTower="Library" path="/library" />
           <Tower srcImage={SkyIsland} nameTower="Inspiration" path="/inspo" />
         </div>
-        <div className="flex justify-center items-center h-[300px]">
-          <Tower srcImage={SkyIsland} nameTower="Discussion" path="/talk" />
+
         </div>
       </div>
-    </div>
+
   );
 };
 

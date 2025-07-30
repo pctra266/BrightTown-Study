@@ -18,7 +18,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CastForEducationIcon from "@mui/icons-material/CastForEducation";
 import { useTheme } from "@mui/material/styles";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
-// import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface LinkTabProps {
     label: string;
@@ -91,9 +91,10 @@ const useNavbarStyles = (theme: any) =>
 
 const Navbar = React.memo(() => {
     const location = useLocation();
+    // const navigate = useNavigate();
     const theme = useTheme();
     const styles = useNavbarStyles(theme);
-    // const { user, logout, isAuthenticated } = useAuth();
+    const { user, logout, isAuthenticated } = useAuth();
 
     const filteredPages = React.useMemo(() => {
         // Admin can access all pages including Discussion Hub
@@ -132,10 +133,10 @@ const Navbar = React.memo(() => {
 
     const handleTabChange = React.useCallback(() => { }, []);
 
-    // const handleLogout = React.useCallback(() => {
-    //     logout();
-    //     window.location.href = "/";
-    // }, [logout]);
+    const handleLogout = React.useCallback(() => {
+        logout();
+        window.location.href = "/";
+    }, [logout]);
 
     const tabValue = React.useMemo(() => {
         const tabIndex = filteredNavigationTabs.findIndex((page) => {
@@ -281,7 +282,7 @@ const Navbar = React.memo(() => {
                     </Box>
 
                     {/* Auth Buttons */}
-                    {/* <Stack direction="row" spacing={2} sx={{ mr: 1 }}>
+                    <Stack direction="row" spacing={2} sx={{ mr: 1 }}>
                         {isAuthenticated ? (
                             <>
                                 <Button
@@ -310,7 +311,7 @@ const Navbar = React.memo(() => {
                                 </Button>
                             </>
                         )}
-                    </Stack> */}
+                    </Stack>
 
                     <ThemeToggle />
                 </Toolbar>

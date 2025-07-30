@@ -1,15 +1,18 @@
-import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import ManageBooks from "./features/library-book/pages/ManageBooks";
+
+import { AuthProvider} from './contexts/AuthContext';
+import { RouterProvider } from 'react-router-dom';
+import router from "./route/routers"
+
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<ManageBooks />} />
-      </Routes>
-    </BrowserRouter>
-  );
+
+
+    <AuthProvider>
+      <RouterProvider router={router}></RouterProvider>
+    </AuthProvider>
+  )
 }
 
-export default App;
+export default App
+
