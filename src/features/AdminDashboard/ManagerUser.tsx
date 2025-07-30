@@ -74,7 +74,6 @@ export default function ManagerUser() {
   return (
     <div className="flex bg-gray-100 min-h-screen">
       <LeftMenu />
-
       <div className="ml-[240px] p-6 w-full ">
         <div className="flex justify-between mb-4">
           <h2 className="text-3xl font-bold text-purple-700">User List</h2>

@@ -3,6 +3,7 @@ import MainLayout from "../layout/MainLayout";
 import Home from "../pages/Home";
 import Login from "../features/Auth/components/Login";
 import NotFound from "../pages/NotFound";
+import ManagerUser from "../features/AdminDashboard/ManagerUser";
 
 const routers = createBrowserRouter([
   {
@@ -12,6 +13,7 @@ const routers = createBrowserRouter([
       { path: "/", element: <Home /> },
       { path: "home", element: <Home /> },
       { path: "login", element: <Login /> },
+      { path: "dashboard", element: <ManagerUser /> },
       { path: "*", element: <NotFound /> },
     ],
   },
