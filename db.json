@@ -1,0 +1,44 @@
+{
+    "account": [
+    {
+      "id": "1",
+      "username": "admin",
+      "password": "123456",
+      "role": "1"
+    },
+    {
+      "id": "2",
+      "username": "truong",
+      "password": "123456",
+      "role": "2"
+    },
+    {
+      "id": "3",
+      "username": "tqt",
+      "password": "123456",
+      "role": "2"
+    },
+    {
+      "id": "4",
+      "username": "pctra266",
+      "password": "pctra266",
+      "role": "2"
+    },
+    {
+      "id": "5",
+      "username": "trapham266",
+      "password": "trapham266",
+      "role": "1"
+    }
+  ],
+  "role": [
+    {
+      "id": "1",
+      "role": "admin"
+    },
+    {
+      "id": "2",
+      "role": "user"
+    }
+  ]
+}
