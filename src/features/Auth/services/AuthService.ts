@@ -1,8 +1,7 @@
 import api from "../../../api/api";
-import { setCookie, getCookie, eraseCookie } from "../../../utils/cookieUtil";
+import { setCookie, getCookie, eraseCookie } from "../../../utils/CookieUtil";
 import type {
   Account,
-  Role,
   LoginResponse,
   RegisterResponse,
   TokenRefreshResponse,
@@ -186,6 +185,35 @@ export const authService = {
     }
   },
 
+  async checkCurrentPassword(
+    username: string,
+    newPassword: string
+  ): Promise<{ isSamePassword: boolean }> {
+    try {
+      const accountResponse = await api.get("/account");
+      const accounts: Account[] = accountResponse.data;
+
+      const account = accounts.find(
+        (acc: Account) => acc.username === username
+      );
+
+      if (!account) {
+        return {
+          isSamePassword: false,
+        };
+      }
+
+      return {
+        isSamePassword: account.password === newPassword,
+      };
+    } catch (error) {
+      console.error("Check current password error:", error);
+      return {
+        isSamePassword: false,
+      };
+    }
+  },
+
   async resetPassword(
     username: string,
     newPassword: string
@@ -202,6 +230,13 @@ export const authService = {
         return {
           success: false,
           message: "Account does not exist",
+        };
+      }
+
+      if (account.password === newPassword) {
+        return {
+          success: false,
+          message: "New password cannot be the same as current password",
         };
       }
 
