@@ -1,6 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
-import Home from "../pages/Home";
 import Login from "../features/Auth/components/Login";
 import NotFound from "../pages/NotFound";
 import Admin from "../features/AdminDashboard/Admin";
@@ -8,6 +7,7 @@ import ManagerUser from "../features/AdminDashboard/ManagerUser";
 import ManageBooks from "../pages/ManageBooks";
 import ForgotPassword from "../features/Auth/components/ForgotPassword";
 import Library from "../pages/Library";
+import Home from "../pages/Home";
 
 const routers = createBrowserRouter([
   {
