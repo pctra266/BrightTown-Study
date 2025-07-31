@@ -25,7 +25,7 @@ const routers = createBrowserRouter([
       { path: "book", element: <ManageBooks /> },
       { path: "*", element: <NotFound /> },
       { path: 'userdetail/:id', element: <UserViewer /> },
-      { path: 'adduser', element: <UserCreate /> }
+      { path: 'adduser', element: <UserCreate /> },
       { path: "forgot-password", element: <ForgotPassword /> },
     ],
   },
