@@ -12,7 +12,7 @@ const Home = () => {
                     <Tower srcImage={SkyIsland} nameTower={"Library"} path={"/library"} ></Tower>
                     <Tower srcImage={SkyIsland} nameTower={"Exhibition"} path={"/book"} ></Tower>
                 </div>
-                <div className="flex justify-center items-center h-[300px]">
+                <div className="flex justify-center gap-16 h-[300px]">
                     <Tower srcImage={SkyIsland} nameTower={"Discussion"} path={"/talk"} ></Tower>
                     <Tower srcImage={SkyIsland} nameTower={"Dashboard"} path={"/admin"} ></Tower>
                 </div>

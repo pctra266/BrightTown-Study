@@ -1,9 +1,6 @@
 import { Box, Button, Drawer, Grid, IconButton, InputAdornment, TextField, Tooltip, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
-import CancelIcon from "@mui/icons-material/Cancel";
 import colorConfigs from "../features/library-book/configs/colorConfigs";
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
-import Footer from "../features/library-book/components/Footer";
 import { useEffect, useState } from "react";
 import CreateEditViewBook, { type Book, BookMode } from "../features/library-book/components/CreateEditViewBook";
 import SearchIcon from "@mui/icons-material/Search";
@@ -252,13 +249,6 @@ const ManageBooks = () => {
 
   return (
     <>
-      <Box position="fixed" top={12} right={5}>
-        <Link to="/">
-          <IconButton>
-            <CancelIcon sx={{ color: "white" }} />
-          </IconButton>
-        </Link>
-      </Box>
 
       <Box
         bgcolor={colorConfigs.mainBg}
@@ -381,9 +371,7 @@ const ManageBooks = () => {
         </Box>
       </Box>
 
-      <Footer />
 
-      {/* Book Form Drawers */}
       <Drawer anchor="right" open={openNewBook} onClose={() => setOpenNewBook(false)}>
         <Box width={{ xs: "100vw", sm: 400 }} height="100vh" bgcolor={colorConfigs.mainBg}>
           <CreateEditViewBook
