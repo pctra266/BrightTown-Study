@@ -5,7 +5,8 @@ import Login from "../features/Auth/components/Login";
 import NotFound from "../pages/NotFound";
 import Admin from "../features/AdminDashboard/Admin";
 import ManagerUser from "../features/AdminDashboard/ManagerUser";
-
+import UserViewer from "../features/AdminDashboard/UserViewer";
+import UserCreate from "../features/AdminDashboard/UserCreate";
 const routers = createBrowserRouter([
   {
     path: "/",
@@ -17,6 +18,8 @@ const routers = createBrowserRouter([
       { path: "admin", element: <Admin /> },
       { path: "manageuser", element: <ManagerUser /> },
       { path: "*", element: <NotFound /> },
+      { path: 'userdetail/:id', element: <UserViewer /> },
+      { path: 'adduser', element: <UserCreate /> }
     ],
   },
 ]);
