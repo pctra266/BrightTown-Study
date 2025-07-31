@@ -12,7 +12,7 @@ const Home = () => {
       <div className="relative z-10">
         <div className="flex justify-center gap-16 h-[300px]">
           <Tower srcImage={SkyIsland} nameTower={"Library"} path={"/library"} ></Tower>
-          <Tower srcImage={SkyIsland} nameTower={"Inspiration"} path={"/inspo"} ></Tower>
+          <Tower srcImage={SkyIsland} nameTower={"Exhibition"} path={"/book"} ></Tower>
         </div>
         <div className="flex justify-center  gap-16 h h-[300px]">
           <Tower srcImage={SkyIsland} nameTower={"Discussion"} path={"/talk"} ></Tower>
