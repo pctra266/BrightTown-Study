@@ -39,136 +39,38 @@
     {
       "id": "2",
       "role": "user"
-    },
-    {
-      "books": [
-        {
-          "isbn": "978-3-16-148410-0",
-          "title": "Enterprise Application Architecture",
-          "author": "Martin Fowler",
-          "copies": 3
-        },
-        {
-          "isbn": "978-3-16-148410-1",
-          "title": "Application Architecture",
-          "author": "Microsoft",
-          "copies": 2
-        },
-        {
-          "isbn": "978-3-16-148410-2",
-          "title": "Clean Code",
-          "author": "Robert Martin",
-          "copies": 3
-        },
-        {
-          "isbn": "978-3-16-148410-3",
-          "title": "MongoDB Specification",
-          "author": "MongoDB Inc",
-          "copies": 2
-        },
-        {
-          "isbn": "978-3-16-148410-4",
-          "title": "Introduction to Cloud Computing",
-          "author": "Mario Robert",
-          "copies": 4
-        }
-      ],
-      "account": [
-        {
-          "id": "1",
-          "username": "admin1",
-          "password": "pass123",
-          "role": "1"
-        },
-        {
-          "id": "2",
-          "username": "user2",
-          "password": "pass456",
-          "role": "2"
-        },
-        {
-          "id": "3",
-          "username": "user3",
-          "password": "pass789",
-          "role": "2"
-        }
-      ],
-      "role": [
-        {
-          "id": "1",
-          "role": "admin"
-        },
-        {
-          "id": "2",
-          "role": "user"
-        }
-      ],
-      "discussions": []
-    },
-    {
-      "books": [
-        {
-          "isbn": "978-3-16-148410-0",
-          "title": "Enterprise Application Architecture",
-          "author": "Martin Fowler",
-          "copies": 3
-        },
-        {
-          "isbn": "978-3-16-148410-1",
-          "title": "Application Architecture",
-          "author": "Microsoft",
-          "copies": 2
-        },
-        {
-          "isbn": "978-3-16-148410-2",
-          "title": "Clean Code",
-          "author": "Robert Martin",
-          "copies": 3
-        },
-        {
-          "isbn": "978-3-16-148410-3",
-          "title": "MongoDB Specification",
-          "author": "MongoDB Inc",
-          "copies": 2
-        },
-        {
-          "isbn": "978-3-16-148410-4",
-          "title": "Introduction to Cloud Computing",
-          "author": "Mario Robert",
-          "copies": 4
-        }
-      ],
-      "account": [
-        {
-          "id": "1",
-          "username": "admin1",
-          "password": "pass123",
-          "role": "1"
-        },
-        {
-          "id": "2",
-          "username": "user2",
-          "password": "pass456",
-          "role": "2"
-        },
-        {
-          "id": "3",
-          "username": "user3",
-          "password": "pass789",
-          "role": "2"
-        }
-      ],
-      "role": [
-        {
-          "id": "1",
-          "role": "admin"
-        },
-        {
-          "id": "2",
-          "role": "user"
-        }
-      ],
-      "discussions": []
     }
-  ]
+  ],
+  "books": [
+        {
+          "isbn": "978-3-16-148410-0",
+          "title": "Enterprise Application Architecture",
+          "author": "Martin Fowler",
+          "copies": 3
+        },
+        {
+          "isbn": "978-3-16-148410-1",
+          "title": "Application Architecture",
+          "author": "Microsoft",
+          "copies": 2
+        },
+        {
+          "isbn": "978-3-16-148410-2",
+          "title": "Clean Code",
+          "author": "Robert Martin",
+          "copies": 3
+        },
+        {
+          "isbn": "978-3-16-148410-3",
+          "title": "MongoDB Specification",
+          "author": "MongoDB Inc",
+          "copies": 2
+        },
+        {
+          "isbn": "978-3-16-148410-4",
+          "title": "Introduction to Cloud Computing",
+          "author": "Mario Robert",
+          "copies": 4
+        }
+      ]
 }

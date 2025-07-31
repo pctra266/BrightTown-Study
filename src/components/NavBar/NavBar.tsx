@@ -41,7 +41,7 @@ const PAGES: readonly NavPage[] = [
     { name: "Library", path: "/library" },
     { name: "Exhibition", path: "/book" },
     { name: "Discussion Hub", path: "/talk" },
-    { name: "Dashboard", path: "/manageuser" },
+    { name: "Dashboard", path: "/admin" },
 ] as const;
 
 
