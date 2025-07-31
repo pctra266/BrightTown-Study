@@ -39,8 +39,9 @@ LinkTab.displayName = "LinkTab";
 const PAGES: readonly NavPage[] = [
     { name: "Home", path: "/" },
     { name: "Library", path: "/library" },
-    { name: "Inspiration Hall", path: "/inspo" },
+    { name: "Exhibition", path: "/book" },
     { name: "Discussion Hub", path: "/talk" },
+    { name: "Dashboard", path: "/manageuser" },
 ] as const;
 
 

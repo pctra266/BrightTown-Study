@@ -5,6 +5,7 @@ import Login from "../features/Auth/components/Login";
 import NotFound from "../pages/NotFound";
 import Admin from "../features/AdminDashboard/Admin";
 import ManagerUser from "../features/AdminDashboard/ManagerUser";
+import ManageBooks from "../pages/ManageBooks";
 
 const routers = createBrowserRouter([
   {
@@ -16,6 +17,7 @@ const routers = createBrowserRouter([
       { path: "login", element: <Login /> },
       { path: "admin", element: <Admin /> },
       { path: "manageuser", element: <ManagerUser /> },
+      { path: "book", element: <ManageBooks /> },
       { path: "*", element: <NotFound /> },
     ],
   },

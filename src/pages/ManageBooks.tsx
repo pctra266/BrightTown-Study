@@ -1,20 +1,20 @@
 import { Box, Button, Drawer, Grid, IconButton, InputAdornment, TextField, Tooltip, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import CancelIcon from "@mui/icons-material/Cancel";
-import colorConfigs from "../configs/colorConfigs";
+import colorConfigs from "../features/library-book/configs/colorConfigs";
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
-import Footer from "../components/Footer";
+import Footer from "../features/library-book/components/Footer";
 import { useEffect, useState } from "react";
-import CreateEditViewBook, { type Book, BookMode } from "../components/CreateEditViewBook";
+import CreateEditViewBook, { type Book, BookMode } from "../features/library-book/components/CreateEditViewBook";
 import SearchIcon from "@mui/icons-material/Search";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
-import { type Member } from "../components/CreateEditViewMember";
-import Toast, { type ToastData } from "../components/Toast";
-import { getBooksByQuery } from "../api/book/getBooksByQuery";
-import { createNewBook } from "../api/book/createNewBook";
-import { editExistingBook } from "../api/book/editExistingBook";
+import { type Member } from "../features/library-book/components/CreateEditViewMember";
+import Toast, { type ToastData } from "../features/library-book/components/Toast";
+import { getBooksByQuery } from "../features/library-book/api/book/getBooksByQuery";
+import { createNewBook } from "../features/library-book/api/book/createNewBook";
+import { editExistingBook } from "../features/library-book/api/book/editExistingBook";
 
 const ManageBooks = () => {
   const [rows, setRows] = useState<Member[]>([]);
