@@ -4,6 +4,8 @@ import Login from "../features/Auth/components/Login";
 import NotFound from "../pages/NotFound";
 import Admin from "../features/AdminDashboard/Admin";
 import ManagerUser from "../features/AdminDashboard/ManagerUser";
+import UserViewer from "../features/AdminDashboard/UserViewer";
+import UserCreate from "../features/AdminDashboard/UserCreate";
 import ManageBooks from "../pages/ManageBooks";
 import ForgotPassword from "../features/Auth/components/ForgotPassword";
 import Library from "../pages/Library";
@@ -22,6 +24,8 @@ const routers = createBrowserRouter([
       { path: "manageuser", element: <ManagerUser /> },
       { path: "book", element: <ManageBooks /> },
       { path: "*", element: <NotFound /> },
+      { path: 'userdetail/:id', element: <UserViewer /> },
+      { path: 'adduser', element: <UserCreate /> }
       { path: "forgot-password", element: <ForgotPassword /> },
     ],
   },
