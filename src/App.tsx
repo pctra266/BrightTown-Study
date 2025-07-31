@@ -6,6 +6,7 @@ const App = () => {
   return (
     <AuthProvider>
       <RouterProvider router={router}></RouterProvider>
+      
     </AuthProvider>
   )
 }
