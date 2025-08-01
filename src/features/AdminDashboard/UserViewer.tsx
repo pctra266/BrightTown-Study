@@ -45,7 +45,6 @@ export default function UserViewer() {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
         <div className="bg-purple-600 text-white rounded-t-lg p-5 shadow-md">
           <div className="flex items-center gap-2">
             <svg
@@ -64,8 +63,6 @@ export default function UserViewer() {
             <h2 className="text-xl font-semibold">User Profile</h2>
           </div>
         </div>
-
-        {/* User Info Card */}
         <div className="bg-white rounded-b-lg shadow-md p-6 mb-6">
           <div className="grid gap-4">
             <div className="flex">
@@ -120,8 +117,6 @@ export default function UserViewer() {
             </Link>
           </div>
         </div>
-
-        {/* Flashcard Sets */}
         <div className="bg-white rounded-lg shadow-md p-6">
           <div className="flex items-center gap-2 mb-4">
             <svg

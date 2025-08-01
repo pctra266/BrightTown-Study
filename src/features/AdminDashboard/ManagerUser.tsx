@@ -1,21 +1,35 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import React from "react";
 import LeftMenu from "./LeftMenu";
 import { Link } from "react-router-dom";
 import {
-  fetchUsersAndFlashcards
+  fetchUsersAndFlashcards, deleteUser
 } from "./userService";
 import type {
   User,
   FlashcardMap
 } from "./userService";
+import Alert from "./Alert";
 export default function ManagerUser() {
   const [users, setUsers] = useState<User[]>([]);
   const [flashcards, setFlashcards] = useState<FlashcardMap>({});
   const [filterRole, setFilterRole] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const [alert, setAlert] = useState<{ type: string; message: string } | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const loadCount = useRef(0);
 
+  useEffect(() => {
+    const storedAlert = localStorage.getItem("user_create_alert");
+    if (storedAlert) {
+      setAlert(JSON.parse(storedAlert));
+      localStorage.removeItem("user_create_alert");
+      setTimeout(() => {
+        setAlert(null);
+      }, 3000);
+    }
+  }, []);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -54,6 +68,7 @@ export default function ManagerUser() {
 
   return (
     <div className="flex bg-gray-100 min-h-screen">
+     
       <LeftMenu />
       <div className="ml-[240px] p-6 w-full">
         <div className="flex justify-between mb-4">
@@ -129,17 +144,9 @@ export default function ManagerUser() {
                       Edit
                     </button>
                     <button
+                      type="button"
                       className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm"
-                      onClick={() => {
-                        if (confirm("Delete this user?")) {
-                          setUsers(users.filter((u) => u.id !== user.id));
-                          setExpanded((prev) => {
-                            const s = new Set(prev);
-                            s.delete(user.id);
-                            return s;
-                          });
-                        }
-                      }}
+                      onClick={() => setConfirmDeleteId(user.id)}
                     >
                       Delete
                     </button>
@@ -185,6 +192,48 @@ export default function ManagerUser() {
           </tbody>
         </table>
       </div>
+      {confirmDeleteId && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/30">
+          <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm text-center">
+            <p className="text-lg font-semibold mb-4">
+              Are you sure you want to delete this user?
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                type="button"
+                className="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded"
+                onClick={() => setConfirmDeleteId(null)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  const id = confirmDeleteId;
+                  setConfirmDeleteId(null); 
+                  const result = await deleteUser(id);
+                  if (result.success) {
+                        setUsers((prev) => prev.filter((u) => u.id !== id));
+                    setExpanded((prev) => {
+                      const s = new Set(prev);
+                      s.delete(id);
+                      return s;
+                    });
+                      setAlert({ type: "success", message: "User deleted successfully!" });
+                  } else {
+                      setAlert({ type: "warning", message: result.message || "Failed to delete user." });
+                  }
+                  setTimeout(() => setAlert(null), 3000);
+                }}
+              >
+                Delete
+              </button>
+
+
+            </div>
+          </div>
+        </div>
+      )}
     </div>
 
   );
