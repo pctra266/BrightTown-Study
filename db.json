@@ -280,34 +280,18 @@
   ],
   "books": [
     {
-      "isbn": "978-3-16-148410-0",
-      "title": "Enterprise Application Architecture",
-      "author": "Martin Fowler",
-      "copies": 3
-    },
-    {
-      "isbn": "978-3-16-148410-1",
-      "title": "Application Architecture",
-      "author": "Microsoft",
-      "copies": 2
-    },
-    {
-      "isbn": "978-3-16-148410-2",
-      "title": "Clean Code",
+      "id": "1795",
+      "isbn": "978-3-16-148410-9",
+      "title": "Clean Codeee",
       "author": "Robert Martin",
-      "copies": 3
+      "copies": 7
     },
     {
-      "isbn": "978-3-16-148410-3",
-      "title": "MongoDB Specification",
-      "author": "MongoDB Inc",
-      "copies": 2
-    },
-    {
-      "isbn": "978-3-16-148410-4",
-      "title": "Introduction to Cloud Computing",
-      "author": "Mario Robert",
-      "copies": 4
+      "id": "7893",
+      "isbn": "978-3-16-148410-1",
+      "title": "Clean Codeee",
+      "author": "Robert Martin",
+      "copies": 7
     }
   ]
 }
