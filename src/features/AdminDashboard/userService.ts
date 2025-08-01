@@ -63,3 +63,69 @@ export const fetchUserWithFlashcardSets = async (id: string): Promise<{
 
   return { user, flashcardSets };
 };
+
+export const getAllUsers = async (): Promise<User[]> => {
+  try {
+    const response = await fetch("http://localhost:9000/account");
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return [];
+  }
+};
+
+export const addUser = async (
+  newUser: Omit<User, "id">
+): Promise<{ success: boolean; message?: string }> => {
+  try {
+    const users = await getAllUsers();
+    const isUsernameTaken = users.some(
+      user => user.username.toLowerCase() === newUser.username.toLowerCase()
+    );
+    if (isUsernameTaken) {
+      return { success: false, message: "Username đã tồn tại!" };
+    }
+    let lastId = 0;
+    if (users.length > 0) {
+      const idList = users.map(user => parseInt(user.id));
+      lastId = Math.max(...idList);
+    }
+    const newId = (lastId + 1).toString();
+    const response = await fetch("http://localhost:9000/account", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: newId, ...newUser }),
+    });
+    if (response.ok) {
+      return { success: true };
+    } else {
+      return { success: false, message: "Lỗi server khi thêm user." };
+    }
+  } catch (error) {
+    console.error("Error adding user:", error);
+    return { success: false, message: "Lỗi kết nối hoặc server." };
+  }
+};
+
+export const deleteUser = async (id: string) => {
+  try {
+    const response = await fetch(`http://localhost:9000/account/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete user");
+    }
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting user");
+    let errorMessage = "Unknown error";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    return { success: false, message: errorMessage };
+  }
+};
+
+
