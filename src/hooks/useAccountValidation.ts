@@ -8,12 +8,6 @@ interface User {
   role: string;
 }
 
-interface AccountCheck {
-  id: string;
-  username: string;
-  status?: boolean;
-}
-
 export const useAccountValidation = (user: User | null, logout: () => void) => {
   useEffect(() => {
     let validationInterval: number;
@@ -32,7 +26,6 @@ export const useAccountValidation = (user: User | null, logout: () => void) => {
               return;
             }
           }
-
         } catch (error) {
           console.error("Error validating account:", error);
         }
