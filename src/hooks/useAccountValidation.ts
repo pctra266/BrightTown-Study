@@ -69,15 +69,17 @@ export const useAccountValidation = (user: User | null, logout: () => void) => {
     };
 
     window.addEventListener("focus", handleFocus);
-    window.addEventListener("visibilitychange", () => {
+    const handleVisibilityChange = () => {
       if (!document.hidden) {
         handleFocus();
       }
-    });
+    };
+
+    window.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
       window.removeEventListener("focus", handleFocus);
-      window.removeEventListener("visibilitychange", handleFocus);
+      window.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [user, logout]);
 };
