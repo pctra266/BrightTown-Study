@@ -12,53 +12,17 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import CancelIcon from "@mui/icons-material/Cancel";
-import colorConfigs from "../features/library-book/configs/colorConfigs"; // Giả sử file này tồn tại
+import colorConfigs from "../features/library-book/configs/colorConfigs";
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
-import Footer from "../features/library-book/components/Footer"; // Giả sử file này tồn tại
+
 import SearchIcon from "@mui/icons-material/Search";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Toast, { type ToastData } from "../features/library-book/components/Toast"; // Giả sử file này tồn tại
+import Toast, { type ToastData } from "../features/library-book/components/Toast";
 import CreateEditViewBook, { BookMode, type Book } from "../features/library-book/components/CreateEditViewBook";
-
-// Dữ liệu JSON ban đầu
-const initialBooks = {
-  books: [
-    {
-      isbn: "978-3-16-148410-0",
-      title: "Enterprise Application Architecture",
-      author: "Martin Fowler",
-      copies: 3,
-    },
-    {
-      isbn: "978-3-16-148410-1",
-      title: "Application Architecture",
-      author: "Microsoft",
-      copies: 2,
-    },
-    {
-      isbn: "978-3-16-148410-2",
-      title: "Clean Code",
-      author: "Robert Martin",
-      copies: 3,
-    },
-    {
-      isbn: "978-3-16-148410-3",
-      title: "MongoDB Specification",
-      author: "MongoDB Inc",
-      copies: 2,
-    },
-    {
-      isbn: "978-3-16-148410-4",
-      title: "Introduction to Cloud Computing",
-      author: "Mario Robert",
-      copies: 4,
-    },
-  ],
-  discussions: [],
-};
+import api from "../api/api";
 
 const ManageBooks = () => {
   const [rows, setRows] = useState<Book[]>([]);
@@ -176,7 +140,7 @@ const ManageBooks = () => {
           </Tooltip>
           <Tooltip title="Delete book">
             <IconButton
-              onClick={() => handleDelete(params.row.isbn)}
+              onClick={() => handleDelete(params.row.id)}
               sx={{
                 color: "#d32f2f",
                 "&:hover": {
@@ -193,19 +157,31 @@ const ManageBooks = () => {
     },
   ];
 
-  const loadBooks = () => {
+  const loadBooks = async () => {
     try {
-      setRows(initialBooks.books);
-      setToastConfig({
-        open: true,
-        message: "Books loaded successfully",
-        type: "success",
-      });
+      const response = await api.get("/books");
+      console.log("Loaded books from server:", response.data);
+      if (response.data && Array.isArray(response.data)) {
+        const normalizedBooks = response.data.map((book: Book) => ({
+          ...book,
+          id: String(book.id), // Chuyển id thành chuỗi để nhất quán
+        }));
+        setRows(normalizedBooks);
+        setToastConfig({
+          open: true,
+          message: "Books loaded successfully",
+          type: "success",
+        });
+      } else {
+        setRows([]);
+        throw new Error("Invalid data format from server");
+      }
     } catch (err) {
       console.error("Error loading books:", err);
+      setRows([]);
       setToastConfig({
         open: true,
-        message: "Failed to load books",
+        message: "Failed to load books. Please ensure json-server is running at http://localhost:9000.",
         type: "error",
       });
     }
@@ -213,15 +189,17 @@ const ManageBooks = () => {
 
   const handleSearch = (query: string) => {
     try {
-      const filteredBooks = query
-        ? initialBooks.books.filter(
-            (book) =>
-              book.title.toLowerCase().includes(query.toLowerCase()) ||
-              book.author.toLowerCase().includes(query.toLowerCase()) ||
-              book.isbn.toLowerCase().includes(query.toLowerCase())
-          )
-        : initialBooks.books;
-      setRows(filteredBooks);
+      if (query) {
+        const filteredBooks = rows.filter(
+          (book) =>
+            book.title.toLowerCase().includes(query.toLowerCase()) ||
+            book.author.toLowerCase().includes(query.toLowerCase()) ||
+            book.isbn.toLowerCase().includes(query.toLowerCase())
+        );
+        setRows(filteredBooks);
+      } else {
+        loadBooks();
+      }
     } catch (err) {
       console.error("Error searching books:", err);
       setToastConfig({
@@ -232,12 +210,14 @@ const ManageBooks = () => {
     }
   };
 
-  const handleCreate = (book: Book) => {
+  const handleCreate = async (book: Book) => {
     try {
-      if (rows.some((row) => row.isbn === book.isbn)) {
+      const response = await api.get(`/books?isbn=${book.isbn}`);
+      if (response.data.length > 0) {
         throw new Error("ISBN already exists");
       }
-      setRows((prevRows) => [...prevRows, book]);
+      const newBookResponse = await api.post("/books", { ...book, id: undefined });
+      setRows((prevRows) => [...prevRows, { ...newBookResponse.data, id: String(newBookResponse.data.id) }]);
       setToastConfig({
         open: true,
         message: "New book added successfully",
@@ -254,10 +234,16 @@ const ManageBooks = () => {
     }
   };
 
-  const handleUpdate = (book: Book) => {
+  const handleUpdate = async (book: Book) => {
     try {
+      if (!book.id) {
+        throw new Error("Book ID is missing");
+      }
+      await api.put(`/books/${String(book.id)}`, book);
       setRows((prevRows) =>
-        prevRows.map((row) => (row.isbn === book.isbn ? book : row))
+        prevRows.map((row) =>
+          String(row.id) === String(book.id) ? { ...book, id: String(book.id) } : row
+        ) as Book[]
       );
       setToastConfig({
         open: true,
@@ -275,19 +261,28 @@ const ManageBooks = () => {
     }
   };
 
-  const handleDelete = (isbn: string) => {
+  const handleDelete = async (id: string | number) => {
     try {
-      setRows((prevRows) => prevRows.filter((row) => row.isbn !== isbn));
+      const idString = String(id);
+      console.log(`Attempting to delete book with ID: ${idString}`);
+      const response = await api.delete(`/books/${idString}`);
+      console.log("Delete response:", response);
+      setRows((prevRows) => {
+        const newRows = prevRows.filter((row) => String(row.id) !== idString);
+        console.log("Updated rows after delete:", newRows);
+        return newRows;
+      });
       setToastConfig({
         open: true,
         message: "Book deleted successfully",
         type: "success",
       });
     } catch (err: any) {
-      console.error("Error deleting book:", err);
+      console.error("Error deleting book:", err.response ? err.response.data : err.message);
+      await loadBooks(); // Tải lại dữ liệu để đồng bộ
       setToastConfig({
         open: true,
-        message: err.message || "Failed to delete book",
+        message: err.response?.data?.message || "Failed to delete book. Data reloaded to sync.",
         type: "error",
       });
     }
@@ -422,7 +417,7 @@ const ManageBooks = () => {
             <DataGrid
               rows={rows}
               columns={columns}
-              getRowId={(row) => row.isbn}
+              getRowId={(row) => row.id}
               initialState={{
                 pagination: { paginationModel: { pageSize: 10 } },
               }}
@@ -454,7 +449,7 @@ const ManageBooks = () => {
         </Box>
       </Box>
 
-      <Footer />
+  
 
       {/* Book Form Drawers */}
       <Drawer anchor="right" open={openNewBook} onClose={() => setOpenNewBook(false)}>
