@@ -1,19 +1,17 @@
 import { useEffect, useState } from "react";
-import LeftMenu from "./LeftMenu";
 import React from "react";
-
-type User = {
-  id: string;
-  username: string;
-  password: string;
-  role: string;
-  status: boolean;
-};
-
-
+import LeftMenu from "./LeftMenu";
+import { Link } from "react-router-dom";
+import {
+  fetchUsersAndFlashcards
+} from "./userService";
+import type {
+  User,
+  FlashcardMap
+} from "./userService";
 export default function ManagerUser() {
   const [users, setUsers] = useState<User[]>([]);
-  const [flashcards, setFlashcards] = useState<{ [key: string]: string[] }>({});
+  const [flashcards, setFlashcards] = useState<FlashcardMap>({});
   const [filterRole, setFilterRole] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
@@ -21,23 +19,9 @@ export default function ManagerUser() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userRes = await fetch("http://localhost:9000/account");
-        const userData: User[] = await userRes.json();
-        setUsers(userData);
-        const flashRes = await fetch("http://localhost:9000/flashcardSets");
-        const flashcardSets = await flashRes.json();
-        const userFlashcards: { [key: string]: string[] } = {};
-        flashcardSets.forEach((set: any) => {
-          const uid = set.userId;
-          const title = set.name || "Untitled";
-          if (!userFlashcards[uid]) {
-            userFlashcards[uid] = [title];
-          } else {
-            userFlashcards[uid].push(title);
-          }
-        });
-
-        setFlashcards(userFlashcards);
+        const { users, flashcards } = await fetchUsersAndFlashcards();
+        setUsers(users);
+        setFlashcards(flashcards);
       } catch (err) {
         console.error("Failed to fetch data", err);
       }
@@ -46,11 +30,9 @@ export default function ManagerUser() {
     fetchData();
   }, []);
 
-
   const toggleExpand = (id: string) => {
     const s = new Set(expanded);
-    if (s.has(id)) s.delete(id);
-    else s.add(id);
+    s.has(id) ? s.delete(id) : s.add(id);
     setExpanded(s);
   };
 
@@ -59,7 +41,6 @@ export default function ManagerUser() {
       (filterRole === "all" || u.role === filterRole) &&
       (filterStatus === "all" || String(u.status) === filterStatus)
   );
-
 
   useEffect(() => {
     const menu = document.querySelector(".left-menu") as HTMLElement | null;
@@ -74,12 +55,14 @@ export default function ManagerUser() {
   return (
     <div className="flex bg-gray-100 min-h-screen">
       <LeftMenu />
-      <div className="ml-[240px] p-6 w-full ">
+      <div className="ml-[240px] p-6 w-full">
         <div className="flex justify-between mb-4">
           <h2 className="text-3xl font-bold text-purple-700">User List</h2>
-          <button className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
-            + Add User
-          </button>
+          <Link to={`/adduser`}>
+            <button className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
+              + Add User
+            </button>
+          </Link>
         </div>
 
         <div className="bg-white p-4 rounded mb-6 shadow">
@@ -87,7 +70,7 @@ export default function ManagerUser() {
           <select
             className="border px-2 py-1 rounded mr-6"
             value={filterRole}
-            onChange={e => setFilterRole(e.target.value)}
+            onChange={(e) => setFilterRole(e.target.value)}
           >
             <option value="all">All</option>
             <option value="1">Admin</option>
@@ -108,36 +91,40 @@ export default function ManagerUser() {
         <table className="w-full bg-white rounded-lg overflow-hidden shadow">
           <thead className="bg-purple-50 text-purple-800">
             <tr>
-              <th className="px-4 py-2 text-left">ID</th>
-              <th className="px-4 py-2 text-left">Username</th>
-              <th className="px-4 py-2 text-left">Password</th>
-              <th className="px-4 py-2 text-left">Role</th>
-              <th className="px-4 py-2 text-left">Status</th>
-              <th className="px-4 py-2 text-left" style={{ paddingLeft: '70px', width: '250px' }}>Actions</th>
-              <th className="px-4 py-2 text-left">Flashcards</th>
+              <th className="px-4 py-2 text-left w-1/10">ID</th>
+              <th className="px-4 py-2 text-left w-1/6">Username</th>
+              <th className="px-4 py-2 text-left w-1/6">Role</th>
+              <th className="px-4 py-2 text-left w-1/6">Status</th>
+              <th className="px-4 py-2 text-left w-1/4" style={{ paddingLeft: "70px", width: "250px" }}>
+                Actions
+              </th>
+              <th className="px-4 py-2 text-center ">Flashcards</th>
             </tr>
           </thead>
-
           <tbody>
-            {filtered.map(user => (
+            {filtered.map((user) => (
               <React.Fragment key={user.id}>
                 <tr className="border-b hover:bg-gray-50">
                   <td className="px-4 py-2">{user.id}</td>
                   <td className="px-4 py-2">{user.username}</td>
-                  <td className="px-4 py-2">{user.password}</td>
                   <td className="px-4 py-2">{user.role === "1" ? "Admin" : "User"}</td>
                   <td className="px-4 py-2">
-                    <span className={user.status ? "bg-green-100 text-green-700 px-2 py-1 rounded text-sm"
-                      : "bg-red-100 text-red-700 px-2 py-1 rounded text-sm"}>
+                    <span
+                      className={
+                        user.status
+                          ? "bg-green-100 text-green-700 px-2 py-1 rounded text-sm"
+                          : "bg-red-100 text-red-700 px-2 py-1 rounded text-sm"
+                      }
+                    >
                       {user.status ? "Active" : "Inactive"}
                     </span>
                   </td>
-
-
                   <td className="px-4 py-2 space-x-2">
-                    <button className="bg-cyan-600 hover:bg-cyan-700 text-white px-3 py-1 rounded text-sm">
-                      View
-                    </button>
+                    <Link to={`/userdetail/${user.id}`}>
+                      <button className="bg-cyan-600 hover:bg-cyan-700 text-white px-3 py-1 rounded text-sm">
+                        View
+                      </button>
+                    </Link>
                     <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm">
                       Edit
                     </button>
@@ -145,8 +132,8 @@ export default function ManagerUser() {
                       className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm"
                       onClick={() => {
                         if (confirm("Delete this user?")) {
-                          setUsers(users.filter(u => u.id !== user.id));
-                          setExpanded(prev => {
+                          setUsers(users.filter((u) => u.id !== user.id));
+                          setExpanded((prev) => {
                             const s = new Set(prev);
                             s.delete(user.id);
                             return s;
@@ -157,7 +144,7 @@ export default function ManagerUser() {
                       Delete
                     </button>
                   </td>
-                  <td className="px-4 py-2" style={{ paddingLeft: '40px' }}>
+                  <td className="px-4 py-2 text-center" style={{ paddingLeft: "20px" }}>
                     <button
                       onClick={() => toggleExpand(user.id)}
                       className="text-blue-600 hover:underline text-sm"
@@ -166,10 +153,9 @@ export default function ManagerUser() {
                     </button>
                   </td>
                 </tr>
-
                 {expanded.has(user.id) && (
                   <tr className="bg-gray-50">
-                    <td colSpan={7} className="px-6 py-2">
+                    <td colSpan={6} className="px-4 py-2">
                       {flashcards[user.id]?.length > 0 ? (
                         <div className="flex flex-wrap gap-2">
                           {flashcards[user.id].map((title, i) => (
@@ -187,13 +173,11 @@ export default function ManagerUser() {
                     </td>
                   </tr>
                 )}
-
               </React.Fragment>
             ))}
-
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={7} className="text-center py-4 text-gray-500">
+                <td colSpan={6} className="text-center py-4 text-gray-500">
                   No users found.
                 </td>
               </tr>
@@ -202,5 +186,6 @@ export default function ManagerUser() {
         </table>
       </div>
     </div>
+
   );
 }

@@ -10,14 +10,11 @@ const Admin = () => {
 
     const handleScroll = () => {
       const scrollY = window.scrollY;
-      // Tính toán top: từ 30 → 0 (khi scroll từ 0 → 30)
       const offset = Math.max(0, 63 - scrollY);
       if (menu) {
         menu.style.top = `${offset}px`;
       }
     };
-
-    // Gọi lần đầu khi load
     handleScroll();
 
     window.addEventListener('scroll', handleScroll);
@@ -55,6 +52,7 @@ const Admin = () => {
         <h4>Site Traffic Overview</h4>
         <div className="chart-placeholder"></div>
       </div>
+      
     </div>
   );
 };

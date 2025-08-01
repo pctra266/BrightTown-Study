@@ -41,7 +41,7 @@ const PAGES: readonly NavPage[] = [
     { name: "Library", path: "/library" },
     { name: "Exhibition", path: "/book" },
     { name: "Discussion Hub", path: "/talk" },
-    { name: "Dashboard", path: "/manageuser" },
+    { name: "Dashboard", path: "/admin" },
 ] as const;
 
 
@@ -98,9 +98,13 @@ const Navbar = React.memo(() => {
     const { user, logout, isAuthenticated } = useAuth();
 
     const filteredPages = React.useMemo(() => {
-        // Admin can access all pages including Discussion Hub
-        return PAGES;
-    }, []);
+        return PAGES.filter(page => {
+            if (page.path === "/admin") {
+                return user?.role === "1"; 
+            }
+            return true;
+        });
+    }, [user?.role]);
 
     const filteredNavigationTabs = React.useMemo(() => {
         return filteredPages.slice(1);
