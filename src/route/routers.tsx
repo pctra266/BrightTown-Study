@@ -10,6 +10,7 @@ import ManageBooks from "../pages/ManageBooks";
 import ForgotPassword from "../features/Auth/components/ForgotPassword";
 import Library from "../pages/Library";
 import Home from "../pages/Home";
+import SignUp from "../features/Auth/components/SignUp";
 
 const routers = createBrowserRouter([
   {
@@ -19,6 +20,7 @@ const routers = createBrowserRouter([
       { path: "/", element: <Home /> },
       { path: "home", element: <Home /> },
       { path: "login", element: <Login /> },
+      { path: "register", element: <SignUp /> },
       { path: "admin", element: <Admin /> },
       { path: "library", element: <Library /> },
       { path: "manageuser", element: <ManagerUser /> },
