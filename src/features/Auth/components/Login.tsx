@@ -30,6 +30,24 @@ const Login = () => {
     const { login } = useAuth();
     const navigate = useNavigate();
 
+
+    React.useEffect(() => {
+        const accountDeleted = sessionStorage.getItem("accountDeleted");
+        const sessionExpired = sessionStorage.getItem("sessionExpired");
+        const accountLocked = sessionStorage.getItem("accountLocked");
+
+        if (accountDeleted) {
+            setError("Your account has been deleted. Please contact administrator.");
+            sessionStorage.removeItem("accountDeleted");
+        } else if (accountLocked) {
+            setError("Your account has been locked. Please contact administrator.");
+            sessionStorage.removeItem("accountLocked");
+        } else if (sessionExpired) {
+            setError("Your session has expired. Please login again.");
+            sessionStorage.removeItem("sessionExpired");
+        }
+    }, []);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
             ...formData,
@@ -47,17 +65,17 @@ const Login = () => {
         setLoading(true);
 
         try {
-            const success = await login(
+            const result = await login(
                 formData.username,
                 formData.password,
                 rememberMe
             );
 
-            if (success) {
-                // Always redirect to home page regardless of role (user or admin)
+            if (result.success) {
+
                 navigate("/", { replace: true });
             } else {
-                setError("Invalid username or password");
+                setError(result.error || "An error occurred during login");
             }
         } catch (error) {
             setError("An error occurred during login");

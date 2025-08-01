@@ -6,6 +6,7 @@ import React, {
     useRef,
 } from "react";
 import { authService } from "../features/Auth/services/AuthService";
+import { useAccountValidation } from "../hooks/useAccountValidation";
 
 interface User {
     id: string;
@@ -19,7 +20,7 @@ interface AuthContextType {
         username: string,
         password: string,
         rememberMe?: boolean
-    ) => Promise<boolean>;
+    ) => Promise<{ success: boolean; error?: string }>;
     register: (
         username: string,
         password: string
@@ -43,7 +44,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
-    const tokenCheckIntervalRef = useRef<NodeJS.Timeout | null>(null);
+    const tokenCheckIntervalRef = useRef<number | null>(null);
+
+    // Use the account validation hook
+    useAccountValidation(user, () => {
+        authService.logout();
+        setUser(null);
+    });
 
     useEffect(() => {
         const initializeAuth = () => {
@@ -64,7 +71,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
         initializeAuth();
 
-        tokenCheckIntervalRef.current = setInterval(() => {
+        tokenCheckIntervalRef.current = window.setInterval(async () => {
             const token = authService.getToken();
             const currentUser = authService.getUser();
 
@@ -81,6 +88,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                     if (protectedRoutes.some((route) => currentPath.startsWith(route))) {
                         window.location.href = "/login";
                     }
+                    return;
+                }
+
+                // Check if user still exists in database
+                const userExists = await authService.validateUserExists(currentUser.id);
+                if (!userExists) {
+                    // Check if account was deleted or locked
+                    try {
+                        const accountResponse = await fetch('http://localhost:9000/account');
+                        const accounts = await accountResponse.json();
+                        const account = accounts.find((acc: any) => acc.id === currentUser.id);
+
+                        if (!account) {
+                            sessionStorage.setItem("accountDeleted", "true");
+                        } else if (account.status === false) {
+                            sessionStorage.setItem("accountLocked", "true");
+                        } else {
+                            sessionStorage.setItem("accountDeleted", "true");
+                        }
+                    } catch {
+                        sessionStorage.setItem("accountDeleted", "true");
+                    }
+
+                    authService.logout();
+                    setUser(null);
+
+                    // Force redirect to login page
+                    window.location.href = "/login";
                 }
             }
         }, 30000);
@@ -96,7 +131,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         username: string,
         password: string,
         rememberMe: boolean = false
-    ): Promise<boolean> => {
+    ): Promise<{ success: boolean; error?: string }> => {
         const result = await authService.login(username, password, rememberMe);
 
         if (result.success && result.user) {
@@ -107,10 +142,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             };
 
             setUser(userData);
-            return true;
+            return { success: true };
         }
 
-        return false;
+        return { success: false, error: result.error };
     };
 
     const register = async (

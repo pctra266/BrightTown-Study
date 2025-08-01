@@ -28,6 +28,13 @@ export const authService = {
         };
       }
 
+      if (account.status === false) {
+        return {
+          success: false,
+          error: "Your account has been locked. Please contact administrator.",
+        };
+      }
+
       const userData = {
         id: account.id,
         username: account.username,
@@ -96,6 +103,7 @@ export const authService = {
         username: username,
         password: password,
         role: "2",
+        status: true,
       };
 
       await api.post("/account", newAccount);
@@ -103,7 +111,7 @@ export const authService = {
       const userData = {
         id: newId,
         username: username,
-        role: "2", // Use role ID directly
+        role: "2",
       };
 
       const token = this.generateToken(userData);
@@ -325,5 +333,19 @@ export const authService = {
   getUser(): any {
     const userCookie = getCookie("user");
     return userCookie ? JSON.parse(userCookie) : null;
+  },
+
+  async validateUserExists(userId: string): Promise<boolean> {
+    try {
+      const accountResponse = await api.get("/account");
+      const accounts: Account[] = accountResponse.data;
+
+      const account = accounts.find((acc: Account) => acc.id === userId);
+
+      return !!account && account.status !== false;
+    } catch (error) {
+      console.error("Error validating user existence:", error);
+      return false;
+    }
   },
 };

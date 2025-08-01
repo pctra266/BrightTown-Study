@@ -1,9 +1,10 @@
 import LibraryBackGround from "../components/LibraryBackGround/LibraryBackGround";
+import Flashcards from "../features/Flashcard/Flashcards";
+
 const Library = () => {
   return (
     <LibraryBackGround>
-      <div className="bg-white opacity-80 h-full w-full rounded-xl">
-        </div>
+      <Flashcards></Flashcards>
     </LibraryBackGround>
   );
 };

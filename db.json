@@ -279,19 +279,19 @@
     }
   ],
   "books": [
-        {
-      "id": "3ff2",
-      "isbn": "978-3-16-148410-7",
+    {
+      "id": "1795",
+      "isbn": "978-3-16-148410-9",
       "title": "Clean Codeee",
-      "author": "Robert Martin j",
-      "copies": 9
+      "author": "Robert Martin",
+      "copies": 7
     },
     {
-      "id": "377e",
-      "isbn": "978-3-16-148410-7",
+      "id": "7893",
+      "isbn": "978-3-16-148410-1",
       "title": "Clean Codeee",
       "author": "Robert Martin",
       "copies": 7
     }
-      ]
+  ]
 }
