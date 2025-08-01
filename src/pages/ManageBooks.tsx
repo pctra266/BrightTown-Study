@@ -14,7 +14,6 @@ import { Link } from "react-router-dom";
 import CancelIcon from "@mui/icons-material/Cancel";
 import colorConfigs from "../features/library-book/configs/colorConfigs"; // Giả sử file này tồn tại
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
-import Footer from "../features/library-book/components/Footer"; // Giả sử file này tồn tại
 import SearchIcon from "@mui/icons-material/Search";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -308,13 +307,6 @@ const ManageBooks = () => {
 
   return (
     <>
-      <Box position="fixed" top={12} right={5}>
-        <Link to="/">
-          <IconButton>
-            <CancelIcon sx={{ color: "white" }} />
-          </IconButton>
-        </Link>
-      </Box>
 
       <Box
         bgcolor={colorConfigs.mainBg}
@@ -454,7 +446,6 @@ const ManageBooks = () => {
         </Box>
       </Box>
 
-      <Footer />
 
       {/* Book Form Drawers */}
       <Drawer anchor="right" open={openNewBook} onClose={() => setOpenNewBook(false)}>

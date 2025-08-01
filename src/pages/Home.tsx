@@ -5,7 +5,6 @@ import { useAuth } from '../contexts/AuthContext';
 
 const Home = () => {
   const { user } = useAuth();
-  console.log(user);
   return (
     <div className="relative h-screen bg-gradient-to-b from-sky-200 via-sky-100 to-blue-400 overflow-hidden p-4 flex flex-col gap-4 justify-center">
       <BackGround></BackGround>
