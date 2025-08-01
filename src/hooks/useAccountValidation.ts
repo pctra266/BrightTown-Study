@@ -8,12 +8,6 @@ interface User {
   role: string;
 }
 
-interface AccountCheck {
-  id: string;
-  username: string;
-  status?: boolean;
-}
-
 export const useAccountValidation = (user: User | null, logout: () => void) => {
   useEffect(() => {
     let validationInterval: number;
@@ -31,32 +25,6 @@ export const useAccountValidation = (user: User | null, logout: () => void) => {
               window.location.href = "/login";
               return;
             }
-          }
-
-          const exists = await authService.validateUserExists(user.id);
-          if (!exists) {
-            try {
-              const accountResponse = await fetch(
-                "http://localhost:9000/account"
-              );
-              const accounts: AccountCheck[] = await accountResponse.json();
-              const account = accounts.find(
-                (acc: AccountCheck) => acc.id === user.id
-              );
-
-              if (!account) {
-                logout();
-                sessionStorage.setItem("accountDeleted", "true");
-              } else if (account.status === false) {
-                logout();
-                sessionStorage.setItem("accountLocked", "true");
-              }
-            } catch (err) {
-              logout();
-              sessionStorage.setItem("accountDeleted", "true");
-            }
-
-            window.location.href = "/login";
           }
         } catch (error) {
           console.error("Error validating account:", error);
