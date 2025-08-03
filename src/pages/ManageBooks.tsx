@@ -14,7 +14,6 @@ import { Link } from "react-router-dom";
 import CancelIcon from "@mui/icons-material/Cancel";
 import colorConfigs from "../features/library-book/configs/colorConfigs";
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
-
 import SearchIcon from "@mui/icons-material/Search";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -32,6 +31,8 @@ const ManageBooks = () => {
     title: "",
     author: "",
     copies: 0,
+    chapters: [],
+    content: "",
   });
   const [openNewBook, setOpenNewBook] = useState<boolean>(false);
   const [openEditBook, setOpenEditBook] = useState<boolean>(false);
@@ -66,6 +67,18 @@ const ManageBooks = () => {
       sortable: true,
       disableColumnMenu: true,
       flex: 2.5,
+      renderCell: (params) => (
+        <Link
+          to={`/books/${params.row.id}`}
+          style={{
+            color: "#1976d2",
+            textDecoration: "none",
+            "&:hover": { textDecoration: "underline" },
+          }}
+        >
+          {params.value}
+        </Link>
+      ),
     },
     {
       field: "author",
@@ -164,7 +177,9 @@ const ManageBooks = () => {
       if (response.data && Array.isArray(response.data)) {
         const normalizedBooks = response.data.map((book: Book) => ({
           ...book,
-          id: String(book.id), // Chuyển id thành chuỗi để nhất quán
+          id: String(book.id),
+          chapters: book.chapters || [],
+          content: book.content || "",
         }));
         setRows(normalizedBooks);
         setToastConfig({
@@ -279,7 +294,7 @@ const ManageBooks = () => {
       });
     } catch (err: any) {
       console.error("Error deleting book:", err.response ? err.response.data : err.message);
-      await loadBooks(); // Tải lại dữ liệu để đồng bộ
+      await loadBooks();
       setToastConfig({
         open: true,
         message: err.response?.data?.message || "Failed to delete book. Data reloaded to sync.",
@@ -380,7 +395,7 @@ const ManageBooks = () => {
                   width: { xs: "100%", sm: "auto" },
                 }}
                 onClick={() => {
-                  setSelectedBook({ isbn: "", title: "", author: "", copies: 0 });
+                  setSelectedBook({ isbn: "", title: "", author: "", copies: 0, chapters: [], content: "" });
                   setOpenNewBook(true);
                 }}
               >
@@ -448,8 +463,6 @@ const ManageBooks = () => {
           </Box>
         </Box>
       </Box>
-
-  
 
       {/* Book Form Drawers */}
       <Drawer anchor="right" open={openNewBook} onClose={() => setOpenNewBook(false)}>

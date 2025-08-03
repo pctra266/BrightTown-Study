@@ -9,13 +9,15 @@ export enum BookMode {
   VIEW = "View",
 }
 
-export type Book = {
-  id?: number;
+export interface Book {
+  id?: string | number;
   isbn: string;
   title: string;
   author: string;
   copies: number;
-};
+  chapters?: string[];
+  content?: string;
+}
 
 export type BookAction = {
   setIsDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
