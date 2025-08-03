@@ -128,4 +128,34 @@ export const deleteUser = async (id: string) => {
   }
 };
 
+export const updateUser = async (
+  updatedUser: User
+): Promise<{ success: boolean; message?: string }> => {
+  try {
+    const users = await getAllUsers();
+    const isUsernameTaken = users.some(
+      user => user.username.toLowerCase() === updatedUser.username.toLowerCase() && user.id !== updatedUser.id
+    );
+    if (isUsernameTaken) {
+      return { success: false, message: "Username đã tồn tại!" };
+    }
+
+    const response = await fetch(`http://localhost:9000/account/${updatedUser.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedUser),
+    });
+
+    return response.ok
+      ? { success: true }
+      : { success: false, message: "Lỗi server khi cập nhật user." };
+
+  } catch (error) {
+    console.error("Error updating user:", error);
+    return { success: false, message: "Lỗi kết nối hoặc server." };
+  }
+};
+
+
+
 
