@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { addUser } from "./userService";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Alert from "./Alert";
@@ -9,7 +9,7 @@ const UserCreate = () => {
         id: string;
         role: string;
     };
-
+    const navigate = useNavigate();
     const usernameRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
     const [selectedRole, setSelectedRole] = useState("");
@@ -22,7 +22,11 @@ const UserCreate = () => {
             try {
                 const response = await fetch("http://localhost:9000/role");
                 const data = await response.json();
-                setRoles(data);
+                const nonAdminRoles = data.filter((r: Role) => r.id !== "1"); // Bỏ admin
+                setRoles(nonAdminRoles);
+                if (nonAdminRoles.length > 0) {
+                    setSelectedRole(nonAdminRoles[0].id);
+                }
             } catch (error) {
                 console.error("Error fetching roles:", error);
             }
@@ -30,16 +34,13 @@ const UserCreate = () => {
         fetchRoles();
     }, []);
 
-    useEffect(() => {
-        if (roles.length > 0) {
-            setSelectedRole(roles[0].id);
-        }
-    }, [roles]);
-
     const handleAddUser = async () => {
         const username = usernameRef.current?.value || "";
         const password = passwordRef.current?.value || "";
-
+        if (!username || !password) {
+            setAlert({ type: "warning", message: "Username và Password không được để trống." });
+            return;
+        }
         const newUser = {
             username,
             password,
@@ -84,6 +85,7 @@ const UserCreate = () => {
                             className="w-full mt-1 p-2 border rounded-lg"
                             placeholder="username"
                             ref={usernameRef}
+                            required
                         />
                     </div>
                     <div>
@@ -95,6 +97,7 @@ const UserCreate = () => {
                                 className="w-full mt-1 p-2 border rounded-lg pr-10"
                                 placeholder="password"
                                 ref={passwordRef}
+                                required
                             />
                             <button
                                 type="button"

@@ -18,18 +18,24 @@ export default function ManagerUser() {
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [alert, setAlert] = useState<{ type: string; message: string } | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [searchUsername, setSearchUsername] = useState<string>("");
   const loadCount = useRef(0);
 
   useEffect(() => {
-    const storedAlert = localStorage.getItem("user_create_alert");
-    if (storedAlert) {
-      setAlert(JSON.parse(storedAlert));
+    const storedCreateAlert = localStorage.getItem("user_create_alert");
+    const storedUpdateAlert = localStorage.getItem("user_update_alert");
+
+    if (storedCreateAlert) {
+      setAlert(JSON.parse(storedCreateAlert));
       localStorage.removeItem("user_create_alert");
-      setTimeout(() => {
-        setAlert(null);
-      }, 3000);
+      setTimeout(() => setAlert(null), 3000);
+    } else if (storedUpdateAlert) {
+      setAlert(JSON.parse(storedUpdateAlert));
+      localStorage.removeItem("user_update_alert");
+      setTimeout(() => setAlert(null), 3000);
     }
   }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -53,7 +59,9 @@ export default function ManagerUser() {
   const filtered = users.filter(
     (u) =>
       (filterRole === "all" || u.role === filterRole) &&
-      (filterStatus === "all" || String(u.status) === filterStatus)
+      (filterStatus === "all" || String(u.status) === filterStatus) &&
+      (searchUsername.trim() === "" ||
+        u.username.toLowerCase().includes(searchUsername.toLowerCase()))
   );
 
   useEffect(() => {
@@ -66,9 +74,17 @@ export default function ManagerUser() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+
+
   return (
     <div className="flex bg-gray-100 min-h-screen">
-     
+      {alert && (
+        <Alert
+          type={alert.type as "success" | "info" | "warning"}
+          message={alert.message}
+          onClose={() => setAlert(null)}
+        />
+      )}
       <LeftMenu />
       <div className="ml-[240px] p-6 w-full">
         <div className="flex justify-between mb-4">
@@ -101,6 +117,14 @@ export default function ManagerUser() {
             <option value="true">Active</option>
             <option value="false">Inactive</option>
           </select>
+          <label style={{ marginLeft: '30px' }} className="mr-4 font-semibold">Search:</label>
+          <input
+            type="text"
+            placeholder="Search username"
+            className="border px-2 py-1 rounded"
+            value={searchUsername}
+            onChange={(e) => setSearchUsername(e.target.value)}
+          />
         </div>
 
         <table className="w-full bg-white rounded-lg overflow-hidden shadow">
@@ -140,17 +164,39 @@ export default function ManagerUser() {
                         View
                       </button>
                     </Link>
-                    <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm">
-                      Edit
-                    </button>
-                    <button
-                      type="button"
-                      className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm"
-                      onClick={() => setConfirmDeleteId(user.id)}
-                    >
-                      Delete
-                    </button>
+                    {user.role === "2" ? (
+                      <>
+                        <Link to={`/useredit/${user.id}`}>
+                          <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm">
+                            Edit
+                          </button>
+                        </Link>
+                        <button
+                          type="button"
+                          className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm"
+                          onClick={() => setConfirmDeleteId(user.id)}
+                        >
+                          Delete
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          className="bg-gray-400 text-white px-3 py-1 rounded text-sm cursor-not-allowed"
+                          disabled
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="bg-gray-400 text-white px-3 py-1 rounded text-sm cursor-not-allowed"
+                          disabled
+                        >
+                          Delete
+                        </button>
+                      </>
+                    )}
                   </td>
+
                   <td className="px-4 py-2 text-center" style={{ paddingLeft: "20px" }}>
                     <button
                       onClick={() => toggleExpand(user.id)}
@@ -208,22 +254,23 @@ export default function ManagerUser() {
               </button>
               <button
                 type="button"
+                style={{ backgroundColor: 'red', color: 'white', padding: '0 15px', borderRadius: '5px' }}
                 onClick={async () => {
                   const id = confirmDeleteId;
-                  setConfirmDeleteId(null); 
+                  setConfirmDeleteId(null);
                   const result = await deleteUser(id);
                   if (result.success) {
-                        setUsers((prev) => prev.filter((u) => u.id !== id));
+                    setUsers((prev) => prev.filter((u) => u.id !== id));
                     setExpanded((prev) => {
                       const s = new Set(prev);
                       s.delete(id);
                       return s;
                     });
-                      setAlert({ type: "success", message: "User deleted successfully!" });
+                    // setAlert({ type: "success", message: "User deleted successfully!" });
                   } else {
-                      setAlert({ type: "warning", message: result.message || "Failed to delete user." });
+                    // setAlert({ type: "warning", message: result.message || "Failed to delete user." });
                   }
-                  setTimeout(() => setAlert(null), 3000);
+                  // setTimeout(() => setAlert(null), 3000);
                 }}
               >
                 Delete

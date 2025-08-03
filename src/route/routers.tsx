@@ -11,7 +11,7 @@ import ForgotPassword from "../features/Auth/components/ForgotPassword";
 import Library from "../pages/Library";
 import Home from "../pages/Home";
 import SignUp from "../features/Auth/components/SignUp";
-
+import UserEdit from "../features/AdminDashboard/UserEdit";
 const routers = createBrowserRouter([
   {
     path: "/",
@@ -29,6 +29,7 @@ const routers = createBrowserRouter([
       { path: 'userdetail/:id', element: <UserViewer /> },
       { path: 'adduser', element: <UserCreate /> },
       { path: "forgot-password", element: <ForgotPassword /> },
+      { path: 'useredit/:id', element: <UserEdit /> },
     ],
   },
 ]);
