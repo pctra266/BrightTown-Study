@@ -285,7 +285,7 @@
       "role": "user"
     }
   ],
-  "books": [
+"books": [
     {
       "id": "1795",
       "isbn": "978-3-16-148410-9",
@@ -294,11 +294,30 @@
       "copies": 7
     },
     {
-      "id": "7893",
+      "id": "e390",
       "isbn": "978-3-16-148410-1",
-      "title": "Clean Codeee",
+      "title": "The great",
       "author": "Robert Martin",
-      "copies": 7
+      "copies": 7,
+      "chapters": [],
+      "content": ""
+    },
+    {
+      "id": "e391",
+      "isbn": "978-3-16-148410-2",
+      "title": "Advanced Programming",
+      "author": "Jane Doe",
+      "copies": 5,
+      "chapters": [
+        "Data Structures",
+        "Advanced Concepts",
+        "hh"
+      ],
+      "content": {
+        "Data Structures": "This chapter explores arrays, linked lists, and trees, with examples of implementation.",
+        "Advanced Concepts": "This chapter delves into recursion, dynamic programming, and their practical applications.",
+        "hh": "èwefwefw"
+      }
     }
   ]
 }
