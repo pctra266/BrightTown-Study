@@ -12,6 +12,7 @@ import Library from "../pages/Library";
 import Home from "../pages/Home";
 import SignUp from "../features/Auth/components/SignUp";
 import UserEdit from "../features/AdminDashboard/UserEdit";
+import BookDetails from "../features/library-book/components/BookDetail";
 const routers = createBrowserRouter([
   {
     path: "/",
@@ -25,6 +26,8 @@ const routers = createBrowserRouter([
       { path: "library", element: <Library /> },
       { path: "manageuser", element: <ManagerUser /> },
       { path: "book", element: <ManageBooks /> },
+      { path: "manage-book", element: <ManageBooks /> },
+      { path: "/books/:id", element: < BookDetails /> },
       { path: "*", element: <NotFound /> },
       { path: 'userdetail/:id', element: <UserViewer /> },
       { path: 'adduser', element: <UserCreate /> },
