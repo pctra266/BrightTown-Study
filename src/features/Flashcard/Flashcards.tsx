@@ -1,14 +1,23 @@
 import FlashcardSets from "./components/FlashcardSets";
+
+import { deleteFlashcardSet } from "./services/flashcardService";
+
+import { useNavigate } from "react-router-dom";
 import { useFlashcardSets } from "./hooks/useFlashcardSets";
+import { useAuth } from "../../contexts/AuthContext";
 
 const Flashcards = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const userId = user?.id || "";
+  const userRoleId = user?.role || "";
 
-  const {flashcardSets} = useFlashcardSets();
+  const {flashcardSets, fetchData:fetchFlashcardSetData} = useFlashcardSets();
 
-  const handleCreate = () => {console.log("go to create Page")};
-  const handleDelete = async (id: string) => {console.log("delete",id)};
-  const handleEdit = (id: string) => {console.log("edit",id)};
-  const handlePlay = (id: string) =>{ console.log("play",id)};
+  const handleCreate = () => {navigate(`/library/flashcard/new`);};
+  const handleDelete = async (id: string) => {await deleteFlashcardSet(id,userId,userRoleId);fetchFlashcardSetData();};
+  const handleEdit = (id: string) => {navigate(`/library/flashcard/edit/${id}`);};
+  const handlePlay = (id: string) =>{ navigate(`/library/flashcard/${id}/play`);};
   return (
       <FlashcardSets
         flashcardSets={flashcardSets}

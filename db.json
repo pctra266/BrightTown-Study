@@ -97,24 +97,6 @@
       "id": "0554"
     },
     {
-      "id": "0985",
-      "name": "last set",
-      "description": "t",
-      "flashcards": [
-        {
-          "id": "be595790-8cce-4a04-a470-8eaf3f1df9d3",
-          "question": "so gi bang 1",
-          "answer": "1"
-        },
-        {
-          "id": "6ebeb926-3502-4549-84e1-e5b231c38011",
-          "question": "so gi bang 2",
-          "answer": "2"
-        }
-      ],
-      "userId": "5"
-    },
-    {
       "id": "c2e3",
       "name": "lam on lam phuoc",
       "description": "",
@@ -285,6 +267,7 @@
       "role": "user"
     }
   ],
+
 "books": [
     {
       "id": "1795",
