@@ -97,24 +97,6 @@
       "id": "0554"
     },
     {
-      "id": "0985",
-      "name": "last set",
-      "description": "t",
-      "flashcards": [
-        {
-          "id": "be595790-8cce-4a04-a470-8eaf3f1df9d3",
-          "question": "so gi bang 1",
-          "answer": "1"
-        },
-        {
-          "id": "6ebeb926-3502-4549-84e1-e5b231c38011",
-          "question": "so gi bang 2",
-          "answer": "2"
-        }
-      ],
-      "userId": "5"
-    },
-    {
       "id": "c2e3",
       "name": "lam on lam phuoc",
       "description": "",
@@ -279,35 +261,40 @@
     }
   ],
   "books": [
-        {
-          "isbn": "978-3-16-148410-0",
-          "title": "Enterprise Application Architecture",
-          "author": "Martin Fowler",
-          "copies": 3
-        },
-        {
-          "isbn": "978-3-16-148410-1",
-          "title": "Application Architecture",
-          "author": "Microsoft",
-          "copies": 2
-        },
-        {
-          "isbn": "978-3-16-148410-2",
-          "title": "Clean Code",
-          "author": "Robert Martin",
-          "copies": 3
-        },
-        {
-          "isbn": "978-3-16-148410-3",
-          "title": "MongoDB Specification",
-          "author": "MongoDB Inc",
-          "copies": 2
-        },
-        {
-          "isbn": "978-3-16-148410-4",
-          "title": "Introduction to Cloud Computing",
-          "author": "Mario Robert",
-          "copies": 4
-        }
-      ]
+    {
+      "isbn": "978-3-16-148410-0",
+      "title": "Enterprise Application Architecture",
+      "author": "Martin Fowler",
+      "copies": 3,
+      "id": "b150"
+    },
+    {
+      "isbn": "978-3-16-148410-1",
+      "title": "Application Architecture",
+      "author": "Microsoft",
+      "copies": 2,
+      "id": "e967"
+    },
+    {
+      "isbn": "978-3-16-148410-2",
+      "title": "Clean Code",
+      "author": "Robert Martin",
+      "copies": 3,
+      "id": "3de0"
+    },
+    {
+      "isbn": "978-3-16-148410-3",
+      "title": "MongoDB Specification",
+      "author": "MongoDB Inc",
+      "copies": 2,
+      "id": "da67"
+    },
+    {
+      "isbn": "978-3-16-148410-4",
+      "title": "Introduction to Cloud Computing",
+      "author": "Mario Robert",
+      "copies": 4,
+      "id": "7553"
+    }
+  ]
 }

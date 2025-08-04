@@ -10,6 +10,9 @@ import ManageBooks from "../pages/ManageBooks";
 import ForgotPassword from "../features/Auth/components/ForgotPassword";
 import Library from "../pages/Library";
 import Home from "../pages/Home";
+import FlashCardsCreate from "../features/Flashcard/FlashcardsCreate";
+import FlashcardsUpdate from "../features/Flashcard/FlashcardsUpdate";
+import FlashcardsPlay from "../features/Flashcard/FlashcardsPlay";
 
 const routers = createBrowserRouter([
   {
@@ -21,6 +24,9 @@ const routers = createBrowserRouter([
       { path: "login", element: <Login /> },
       { path: "admin", element: <Admin /> },
       { path: "library", element: <Library /> },
+      { path: "/library/flashcard/new", element: <FlashCardsCreate /> },
+      { path: "/library/flashcard/edit/:id", element: <FlashcardsUpdate /> },
+      { path: "/library/flashcard/:id/play", element: <FlashcardsPlay /> },
       { path: "manageuser", element: <ManagerUser /> },
       { path: "book", element: <ManageBooks /> },
       { path: "*", element: <NotFound /> },

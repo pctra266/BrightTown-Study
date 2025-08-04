@@ -1,5 +1,6 @@
 import React from "react";
 import type { FlashcardSetMeta } from "../types";
+import { useAuth } from "../../../contexts/AuthContext";
 
 interface FlashcardSetProps {
   FlashcardSetMeta: FlashcardSetMeta;
@@ -14,6 +15,8 @@ const FlashcardSet: React.FC<FlashcardSetProps> = ({
   onDelete,
   onPlay,
 }) => {
+  const { user } = useAuth();
+  const userId = user?.id || "";
 
   const handleEdit = () => {
     onEdit(FlashcardSet.id);
@@ -28,7 +31,7 @@ const FlashcardSet: React.FC<FlashcardSetProps> = ({
   };
 
   const isUserOwner = () => {
-    return true;
+    return FlashcardSet.userId == userId;
   };
 
   return (
