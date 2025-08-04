@@ -289,18 +289,52 @@
     {
       "id": "1795",
       "isbn": "978-3-16-148410-9",
-      "title": "Clean Codeee",
-      "author": "Robert Martin",
-      "copies": 7
+      "title": "Clean Code",
+      "author": "Robert C. Martin",
+      "copies": 7,
+      "chapters": [
+        "Introduction",
+        "Meaningful Names",
+        "Functions",
+        "Comments",
+        "Formatting",
+        "Objects and Data Structures",
+        "Error Handling",
+        "Unit Tests",
+        "Classes",
+        "System Design"
+      ],
+      "content": {
+        "Introduction": "Clean Code introduces the principles, patterns, and best practices for writing clean, readable, and maintainable code.",
+        "Meaningful Names": "This chapter explains how to choose descriptive and unambiguous names for variables, functions, and classes.",
+        "Functions": "Guidelines for writing small, well-structured, and reusable functions are provided here.",
+        "Comments": "Discusses when comments are helpful and when they are just noise, promoting self-explanatory code.",
+        "Formatting": "Describes code formatting rules that improve readability and consistency across the project.",
+        "Objects and Data Structures": "Explores how to properly design objects, encapsulate data, and reduce complexity.",
+        "Error Handling": "Teaches how to handle errors gracefully, avoiding exceptions that obscure the intent of the code.",
+        "Unit Tests": "Highlights the importance of automated testing and how to write effective unit tests.",
+        "Classes": "Covers principles for designing robust, cohesive, and loosely coupled classes.",
+        "System Design": "Focuses on building scalable, maintainable, and well-structured software architectures.Hello"
+      }
     },
     {
       "id": "e390",
       "isbn": "978-3-16-148410-1",
-      "title": "The great",
+      "title": "The Great Journey",
       "author": "Robert Martin",
       "copies": 7,
-      "chapters": [],
-      "content": ""
+      "chapters": [
+        "Prologue",
+        "The Call to Adventure",
+        "Trials and Tribulations",
+        "Return Home"
+      ],
+      "content": {
+        "Prologue": "An introduction to a young hero destined to embark on a life-changing journey.",
+        "The Call to Adventure": "The hero leaves home to explore new lands and face unforeseen challenges.",
+        "Trials and Tribulations": "Battles, friendships, and betrayals shape the hero’s destiny.",
+        "Return Home": "The journey ends with wisdom gained and a new perspective on life."
+      }
     },
     {
       "id": "e391",
@@ -310,13 +344,17 @@
       "copies": 5,
       "chapters": [
         "Data Structures",
-        "Advanced Concepts",
-        "hh"
+        "Algorithms",
+        "Design Patterns",
+        "Parallel Computing",
+        "Advanced Concepts"
       ],
       "content": {
-        "Data Structures": "This chapter explores arrays, linked lists, and trees, with examples of implementation.",
-        "Advanced Concepts": "This chapter delves into recursion, dynamic programming, and their practical applications.",
-        "hh": "èwefwefw"
+        "Data Structures": "This chapter explores arrays, linked lists, trees, graphs, and hash tables with real-world examples of implementation.",
+        "Algorithms": "Focuses on sorting, searching, and optimization techniques with time complexity analysis.",
+        "Design Patterns": "Introduces reusable solutions to common software design problems like Singleton, Observer, and Factory patterns.",
+        "Parallel Computing": "Covers multi-threading, concurrency, and distributed systems programming.",
+        "Advanced Concepts": "Delves into recursion, dynamic programming, memory management, and low-level optimizations."
       }
     }
   ]
