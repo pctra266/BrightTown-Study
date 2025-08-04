@@ -10,9 +10,14 @@ import ManageBooks from "../pages/ManageBooks";
 import ForgotPassword from "../features/Auth/components/ForgotPassword";
 import Library from "../pages/Library";
 import Home from "../pages/Home";
+
 import FlashCardsCreate from "../features/Flashcard/FlashcardsCreate";
 import FlashcardsUpdate from "../features/Flashcard/FlashcardsUpdate";
 import FlashcardsPlay from "../features/Flashcard/FlashcardsPlay";
+
+import SignUp from "../features/Auth/components/SignUp";
+import UserEdit from "../features/AdminDashboard/UserEdit";
+import BookDetails from "../features/library-book/components/BookDetail";
 
 const routers = createBrowserRouter([
   {
@@ -22,6 +27,7 @@ const routers = createBrowserRouter([
       { path: "/", element: <Home /> },
       { path: "home", element: <Home /> },
       { path: "login", element: <Login /> },
+      { path: "register", element: <SignUp /> },
       { path: "admin", element: <Admin /> },
       { path: "library", element: <Library /> },
       { path: "/library/flashcard/new", element: <FlashCardsCreate /> },
@@ -29,10 +35,13 @@ const routers = createBrowserRouter([
       { path: "/library/flashcard/:id/play", element: <FlashcardsPlay /> },
       { path: "manageuser", element: <ManagerUser /> },
       { path: "book", element: <ManageBooks /> },
+      { path: "manage-book", element: <ManageBooks /> },
+      { path: "/books/:id", element: < BookDetails /> },
       { path: "*", element: <NotFound /> },
       { path: 'userdetail/:id', element: <UserViewer /> },
       { path: 'adduser', element: <UserCreate /> },
       { path: "forgot-password", element: <ForgotPassword /> },
+      { path: 'useredit/:id', element: <UserEdit /> },
     ],
   },
 ]);

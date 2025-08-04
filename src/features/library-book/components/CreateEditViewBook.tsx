@@ -1,5 +1,5 @@
 import React, { type ChangeEvent, useEffect, useState } from "react";
-import { Box, Button, Grid, IconButton, TextField, Typography } from "@mui/material";
+import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
 import colorConfigs from "../configs/colorConfigs";
 
@@ -9,12 +9,15 @@ export enum BookMode {
   VIEW = "View",
 }
 
-export type Book = {
+export interface Book {
+  id?: string | number;
   isbn: string;
   title: string;
   author: string;
   copies: number;
-};
+  chapters?: string[];
+  content?: string;
+}
 
 export type BookAction = {
   setIsDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -29,6 +32,7 @@ type Props = {
 
 const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
   const [newBook, setNewBook] = useState<Book>({
+    id: book.id,
     isbn: "",
     title: "",
     author: "",
@@ -65,6 +69,7 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
   const handleClear = () => {
     setNewBook((prevState) => ({
       ...prevState,
+      id: mode === BookMode.EDIT ? prevState.id : undefined,
       isbn: mode === BookMode.EDIT ? prevState.isbn : "",
       title: "",
       author: "",
@@ -158,7 +163,6 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
           {mode} Book
         </Typography>
 
-        {/* ISBN Field */}
         <Box sx={{ mb: 3 }}>
           <Typography
             sx={{
@@ -220,11 +224,6 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
                 height: "20px"
               },
             }}
-            sx={{
-              "& .MuiFormHelperText-root": {
-                marginLeft: 0
-              }
-            }}
           />
           {mode === BookMode.VIEW && (
             <Typography
@@ -241,7 +240,6 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
           )}
         </Box>
 
-        {/* Title Field */}
         <Box sx={{ mb: 3 }}>
           <Typography
             sx={{
@@ -319,7 +317,6 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
           )}
         </Box>
 
-        {/* Author Field */}
         <Box sx={{ mb: 3 }}>
           <Typography
             sx={{
@@ -397,7 +394,6 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
           )}
         </Box>
 
-        {/* Copies Field */}
         <Box sx={{ mb: 3 }}>
           <Typography
             sx={{

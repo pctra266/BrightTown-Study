@@ -3,6 +3,7 @@ export interface Account {
   username: string;
   password: string;
   role: string;
+  status?: boolean;
 }
 
 export interface Role {
