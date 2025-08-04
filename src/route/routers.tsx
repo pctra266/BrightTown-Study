@@ -17,6 +17,7 @@ import FlashcardsPlay from "../features/Flashcard/FlashcardsPlay";
 
 import SignUp from "../features/Auth/components/SignUp";
 import UserEdit from "../features/AdminDashboard/UserEdit";
+import DiscussionHub from "../features/Discussion/components/DiscussionHub";
 import BookDetails from "../features/library-book/components/BookDetail";
 
 const routers = createBrowserRouter([
@@ -42,6 +43,7 @@ const routers = createBrowserRouter([
       { path: 'adduser', element: <UserCreate /> },
       { path: "forgot-password", element: <ForgotPassword /> },
       { path: 'useredit/:id', element: <UserEdit /> },
+      { path: "/talk", element: <DiscussionHub /> },
     ],
   },
 ]);
