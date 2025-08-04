@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
     AppBar,
     Box,
@@ -60,20 +60,42 @@ const useNavbarStyles = (theme: any) =>
             brandColor: theme.palette.mode === "light" ? "inherit" : "#2196f3",
             tabStyles: {
                 "& .MuiTab-root": {
-                    color: `${theme.palette.mode === "light" ? "white" : "#2196f3"} `,
+                    color: `${theme.palette.mode === "light" ? "rgba(255, 255, 255, 0.7)" : "rgba(33, 150, 243, 0.7)"} `,
+                    fontWeight: 400,
+                    fontSize: "0.9rem",
+                    textTransform: "none",
+                    minHeight: "48px",
+                    borderRadius: "8px 8px 0 0",
+                    margin: "0 4px",
+                    transition: "all 0.3s ease-in-out",
+                    position: "relative",
                     "&.Mui-selected": {
-                        color: `${theme.palette.mode === "light" ? "white" : "#2196f3"} `,
+                        color: `${theme.palette.mode === "light" ? "#fff" : "#2196f3"} `,
+                        fontWeight: 800,
+                        backgroundColor: `${theme.palette.mode === "light" ? "rgba(255, 255, 255, 0.15)" : "rgba(33, 150, 243, 0.15)"} `,
+                        boxShadow: `0 2px 8px ${theme.palette.mode === "light" ? "rgba(0, 0, 0, 0.2)" : "rgba(33, 150, 243, 0.3)"}`,
+                        transform: "scale(1.05)",
                     },
                     "&:hover": {
-                        color: `${theme.palette.mode === "light" ? "white" : "#2196f3"} `,
+                        color: `${theme.palette.mode === "light" ? "#fff" : "#2196f3"} `,
+                        backgroundColor: `${theme.palette.mode === "light" ? "rgba(255, 255, 255, 0.08)" : "rgba(33, 150, 243, 0.08)"} `,
+                        transform: "scale(1.02)",
+                        fontWeight: 600,
                     },
                     "&:focus": {
-                        color: `${theme.palette.mode === "light" ? "white" : "#2196f3"} `,
+                        color: `${theme.palette.mode === "light" ? "#fff" : "#2196f3"} `,
+                        outline: `2px solid ${theme.palette.mode === "light" ? "rgba(255, 255, 255, 0.5)" : "rgba(33, 150, 243, 0.5)"}`,
+                        outlineOffset: "2px",
                     },
                 },
                 "& .MuiTabs-indicator": {
-                    backgroundColor: `${theme.palette.mode === "light" ? "white" : "#2196f3"
-                        } `,
+                    backgroundColor: `${theme.palette.mode === "light" ? "#fff" : "#2196f3"} `,
+                    height: "4px",
+                    borderRadius: "2px 2px 0 0",
+                    boxShadow: `0 -2px 4px ${theme.palette.mode === "light" ? "rgba(255, 255, 255, 0.3)" : "rgba(33, 150, 243, 0.4)"}`,
+                },
+                "& .MuiTabs-flexContainer": {
+                    gap: "4px",
                 },
             },
             signUpButtonStyles: {
@@ -100,7 +122,7 @@ const Navbar = React.memo(() => {
     const filteredPages = React.useMemo(() => {
         return PAGES.filter(page => {
             if (page.path === "/admin") {
-                return user?.role === "1"; 
+                return user?.role === "1";
             }
             return true;
         });

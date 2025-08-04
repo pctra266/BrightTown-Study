@@ -46,7 +46,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const [loading, setLoading] = useState(true);
     const tokenCheckIntervalRef = useRef<number | null>(null);
 
-    // Use the account validation hook
     useAccountValidation(user, () => {
         authService.logout();
         setUser(null);
@@ -61,6 +60,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 const userData = authService.verifyToken(token);
                 if (userData) {
                     setUser(storedUser);
+
+                    authService.initializeSessionFromCookie();
+                    authService.setForceLogoutCallback(() => {
+                        console.log("Force logout due to session conflict");
+                        authService.logout();
+                        setUser(null);
+                        sessionStorage.setItem("sessionConflict", "true");
+                        const protectedRoutes = ["/user", "/admin", "/talk"];
+                        const currentPath = window.location.pathname;
+                        if (protectedRoutes.some((route) => currentPath.startsWith(route))) {
+                            window.location.href = "/login";
+                        }
+                    });
+
+                    setTimeout(async () => {
+                        const isValidSession = await authService.validateSession(storedUser.id);
+                        if (!isValidSession) {
+                            console.log("Session invalid on initialization - logging out");
+                            authService.logout();
+                            setUser(null);
+                            sessionStorage.setItem("sessionConflict", "true");
+                            const protectedRoutes = ["/user", "/admin", "/talk"];
+                            const currentPath = window.location.pathname;
+                            if (protectedRoutes.some((route) => currentPath.startsWith(route))) {
+                                window.location.href = "/login";
+                            }
+                        }
+                    }, 100);
                 } else {
                     authService.logout();
                     setUser(null);
@@ -91,10 +118,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                     return;
                 }
 
-                // Check if user still exists in database
+                const isSessionValid = await authService.validateSession(currentUser.id);
+                if (!isSessionValid) {
+                    console.log("Session invalidated - logging out");
+                    authService.logout();
+                    setUser(null);
+                    sessionStorage.setItem("sessionConflict", "true");
+
+                    const protectedRoutes = ["/user", "/admin", "/talk"];
+                    const currentPath = window.location.pathname;
+                    if (protectedRoutes.some((route) => currentPath.startsWith(route))) {
+                        window.location.href = "/login";
+                    }
+                    return;
+                }
+
+
                 const userExists = await authService.validateUserExists(currentUser.id);
                 if (!userExists) {
-                    // Check if account was deleted or locked
                     try {
                         const accountResponse = await fetch('http://localhost:9000/account');
                         const accounts = await accountResponse.json();
@@ -114,7 +155,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                     authService.logout();
                     setUser(null);
 
-                    // Force redirect to login page
                     window.location.href = "/login";
                 }
             }

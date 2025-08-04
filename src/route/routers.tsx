@@ -12,6 +12,8 @@ import Library from "../pages/Library";
 import Home from "../pages/Home";
 import SignUp from "../features/Auth/components/SignUp";
 import UserEdit from "../features/AdminDashboard/UserEdit";
+import DiscussionHub from "../features/Discussion/components/DiscussionHub";
+
 const routers = createBrowserRouter([
   {
     path: "/",
@@ -30,6 +32,7 @@ const routers = createBrowserRouter([
       { path: 'adduser', element: <UserCreate /> },
       { path: "forgot-password", element: <ForgotPassword /> },
       { path: 'useredit/:id', element: <UserEdit /> },
+      { path: "/talk", element: <DiscussionHub /> },
     ],
   },
 ]);
