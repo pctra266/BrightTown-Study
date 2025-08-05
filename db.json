@@ -443,9 +443,10 @@
       "downvotes": 0,
       "score": 0,
       "userVotes": {},
-      "views": 1,
+      "views": 2,
       "viewedBy": [
-        "1"
+        "1",
+        "2"
       ],
       "answers": [
         {
@@ -495,9 +496,10 @@
       "downvotes": 0,
       "score": 0,
       "userVotes": {},
-      "views": 1,
+      "views": 2,
       "viewedBy": [
-        "1"
+        "1",
+        "2"
       ],
       "answers": [
         {

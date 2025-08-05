@@ -58,7 +58,7 @@ const DiscussionHub = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [sortBy, setSortBy] = useState("newest");
     const [currentPage, setCurrentPage] = useState(1);
-    const discussionsPerPage = 5;
+    // const discussionsPerPage = 5;
 
     useEffect(() => {
         loadDiscussions();
@@ -129,7 +129,7 @@ const DiscussionHub = () => {
     };
 
     const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString("vi-VN", {
+        return new Date(dateString).toLocaleDateString("en-US", {
             year: "numeric",
             month: "short",
             day: "numeric",
@@ -147,12 +147,13 @@ const DiscussionHub = () => {
     };
 
 
-    const totalPages = Math.ceil(filteredDiscussions.length / discussionsPerPage);
-    const startIndex = (currentPage - 1) * discussionsPerPage;
-    const currentDiscussions = filteredDiscussions.slice(
-        startIndex,
-        startIndex + discussionsPerPage
-    );
+    // const totalPages = Math.ceil(filteredDiscussions.length / discussionsPerPage);
+    // const startIndex = (currentPage - 1) * discussionsPerPage;
+    // const currentDiscussions = filteredDiscussions.slice(
+    //     startIndex,
+    //     startIndex + discussionsPerPage
+    // );
+    const currentDiscussions = filteredDiscussions; // For now, show all discussions without pagination
 
     if (loading) {
         return (
