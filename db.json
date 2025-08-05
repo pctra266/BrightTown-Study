@@ -135,34 +135,6 @@
       "userId": "5"
     },
     {
-      "id": "9a0d",
-      "name": "Toi kho qua",
-      "description": "met moi",
-      "flashcards": [
-        {
-          "id": "0a5dec81-51c7-4118-b88c-171e10444294",
-          "question": "new term",
-          "answer": "new def",
-          "image": {
-            "id": "RmoWqDCqN2E",
-            "url": "https://images.unsplash.com/photo-1537420327992-d6e192287183?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NjI5NDh8MHwxfHNlYXJjaHwxfHxzcGFjZXxlbnwwfHx8fDE3NDk3MTY0NjF8MA&ixlib=rb-4.1.0&q=80&w=400",
-            "alt": "timelapse photography of warped lines"
-          }
-        },
-        {
-          "id": "ac9e1340-f1fd-499f-a59e-978a594c0192",
-          "question": "space 2",
-          "answer": "alanawalker",
-          "image": {
-            "id": "WPapb9IqRKw",
-            "url": "https://images.unsplash.com/photo-1591389703635-e15a07b842d7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NjI5NDh8MHwxfHNlYXJjaHw1fHxsYW5kfGVufDB8fHx8MTc0OTcxNjQ4M3ww&ixlib=rb-4.1.0&q=80&w=400",
-            "alt": "aerial view of green grass field"
-          }
-        }
-      ],
-      "userId": "5"
-    },
-    {
       "name": "new set public toi da sua cai nay",
       "description": "description",
       "flashcards": [
@@ -236,7 +208,7 @@
       "id": "1",
       "username": "admin",
       "password": "123456",
-      "role": "1",
+      "role": "0",
       "status": true
     },
     {
@@ -264,18 +236,29 @@
       "id": "6",
       "username": "bill",
       "password": "123456",
-      "role": "2",
-      "status": false
+      "role": "1",
+      "status": true
     },
     {
       "id": "7",
       "username": "bill123",
       "password": "888888",
       "role": "2",
+      "status": false
+    },
+    {
+      "id": "8",
+      "username": "bill8888",
+      "password": "123456",
+      "role": "1",
       "status": true
     }
   ],
   "role": [
+    {
+      "id": "0",
+      "role": "superadmin"
+    },
     {
       "id": "1",
       "role": "admin"
@@ -285,7 +268,7 @@
       "role": "user"
     }
   ],
-"books": [
+  "books": [
     {
       "id": "1795",
       "isbn": "978-3-16-148410-9",
@@ -301,23 +284,6 @@
       "copies": 7,
       "chapters": [],
       "content": ""
-    },
-    {
-      "id": "e391",
-      "isbn": "978-3-16-148410-2",
-      "title": "Advanced Programming",
-      "author": "Jane Doe",
-      "copies": 5,
-      "chapters": [
-        "Data Structures",
-        "Advanced Concepts",
-        "hh"
-      ],
-      "content": {
-        "Data Structures": "This chapter explores arrays, linked lists, and trees, with examples of implementation.",
-        "Advanced Concepts": "This chapter delves into recursion, dynamic programming, and their practical applications.",
-        "hh": "èwefwefw"
-      }
     }
   ]
 }

@@ -97,7 +97,7 @@ export default function UserViewer() {
 
           <div className="mt-6">
             <Link
-              to="/manageuser"
+              to="/admin/users"
               className="inline-flex items-center px-4 py-2 bg-gray-100 text-purple-600 hover:bg-gray-200 rounded-lg transition"
             >
               <svg

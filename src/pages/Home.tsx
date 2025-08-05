@@ -15,7 +15,7 @@ const Home = () => {
         </div>
         <div className="flex justify-center  gap-16 h h-[300px]">
           <Tower srcImage={SkyIsland} nameTower={"Discussion"} path={"/talk"} ></Tower>
-          {user?.role === "1" && (
+          { (user?.role === "0" || user?.role === "1") && (
             <Tower srcImage={SkyIsland} nameTower={"Dashboard"} path={"/admin"} />
           )}
         </div>

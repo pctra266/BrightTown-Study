@@ -100,7 +100,7 @@ const Navbar = React.memo(() => {
     const filteredPages = React.useMemo(() => {
         return PAGES.filter(page => {
             if (page.path === "/admin") {
-                return user?.role === "1"; 
+                return user?.role === "1";
             }
             return true;
         });
@@ -112,6 +112,8 @@ const Navbar = React.memo(() => {
 
     const getDisplayRole = React.useCallback((role: string) => {
         switch (role) {
+            case "0":
+                return "SUPERADMIN";
             case "1":
                 return "ADMIN";
             case "2":

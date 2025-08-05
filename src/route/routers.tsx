@@ -12,6 +12,9 @@ import Library from "../pages/Library";
 import Home from "../pages/Home";
 import SignUp from "../features/Auth/components/SignUp";
 import UserEdit from "../features/AdminDashboard/UserEdit";
+import FlashcardList from "../features/AdminDashboard/Flashcardmanager/FlashcardList";
+import ProtectedRouteAdmin from "../features/AdminDashboard/ProtectedRouteAdmin";
+
 const routers = createBrowserRouter([
   {
     path: "/",
@@ -21,15 +24,58 @@ const routers = createBrowserRouter([
       { path: "home", element: <Home /> },
       { path: "login", element: <Login /> },
       { path: "register", element: <SignUp /> },
-      { path: "admin", element: <Admin /> },
       { path: "library", element: <Library /> },
-      { path: "manageuser", element: <ManagerUser /> },
       { path: "book", element: <ManageBooks /> },
-      { path: "*", element: <NotFound /> },
-      { path: 'userdetail/:id', element: <UserViewer /> },
-      { path: 'adduser', element: <UserCreate /> },
       { path: "forgot-password", element: <ForgotPassword /> },
-      { path: 'useredit/:id', element: <UserEdit /> },
+      {
+        path: "admin",
+        element: (
+          <ProtectedRouteAdmin>
+            <Admin />
+          </ProtectedRouteAdmin>
+        ),
+      },
+      {
+        path: "admin/users",
+        element: (
+          <ProtectedRouteAdmin>
+            <ManagerUser />
+          </ProtectedRouteAdmin>
+        ),
+      },
+      {
+        path: "admin/users/:id",
+        element: (
+          <ProtectedRouteAdmin>
+            <UserViewer />
+          </ProtectedRouteAdmin>
+        ),
+      },
+      {
+        path: "admin/users/create",
+        element: (
+          <ProtectedRouteAdmin>
+            <UserCreate />
+          </ProtectedRouteAdmin>
+        ),
+      },
+      {
+        path: "admin/users/:id/edit",
+        element: (
+          <ProtectedRouteAdmin>
+            <UserEdit />
+          </ProtectedRouteAdmin>
+        ),
+      },
+      {
+        path: "admin/flashcards",
+        element: (
+          <ProtectedRouteAdmin>
+            <FlashcardList />
+          </ProtectedRouteAdmin>
+        ),
+      },
+      { path: "*", element: <NotFound /> },
     ],
   },
 ]);
