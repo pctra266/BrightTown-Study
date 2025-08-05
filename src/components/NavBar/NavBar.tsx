@@ -134,6 +134,8 @@ const Navbar = React.memo(() => {
 
     const getDisplayRole = React.useCallback((role: string) => {
         switch (role) {
+             case "0":
+                return "SUPER ADMIN";
             case "1":
                 return "ADMIN";
             case "2":

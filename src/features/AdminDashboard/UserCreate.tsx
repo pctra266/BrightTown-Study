@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { addUser } from "./userService";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Alert from "./Alert";
+import { useAuth } from "../../contexts/AuthContext";
 
 const UserCreate = () => {
     type Role = {
@@ -16,23 +17,30 @@ const UserCreate = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [roles, setRoles] = useState<Role[]>([]);
     const [alert, setAlert] = useState<{ type: "success" | "info" | "warning"; message: string } | null>(null);
+    const { user } = useAuth();
 
     useEffect(() => {
         const fetchRoles = async () => {
             try {
                 const response = await fetch("http://localhost:9000/role");
                 const data = await response.json();
-                const nonAdminRoles = data.filter((r: Role) => r.id !== "1"); // Bỏ admin
-                setRoles(nonAdminRoles);
-                if (nonAdminRoles.length > 0) {
-                    setSelectedRole(nonAdminRoles[0].id);
+
+                let filteredRoles = [];
+                if (user?.role === "0") {
+                    filteredRoles = data.filter((r: Role) => r.id !== "0"); // bỏ Super Admin khỏi dropdown
+                } else if (user?.role === "1") {
+                    filteredRoles = data.filter((r: Role) => r.id === "2"); // chỉ để lại User
+                }
+                setRoles(filteredRoles);
+                if (filteredRoles.length > 0) {
+                    setSelectedRole(filteredRoles[0].id);
                 }
             } catch (error) {
                 console.error("Error fetching roles:", error);
             }
         };
         fetchRoles();
-    }, []);
+    }, [user?.role]);
 
     const handleAddUser = async () => {
         const username = usernameRef.current?.value || "";
@@ -54,7 +62,7 @@ const UserCreate = () => {
                 type: "success",
                 message: "User added successfully!",
             }));
-            window.location.href = "/manageuser";
+            window.location.href = "/admin/users";
         } else {
             setAlert({ type: "warning", message: result.message || "Failed to add user." });
             setTimeout(() => {
@@ -123,7 +131,7 @@ const UserCreate = () => {
                         </select>
                     </div>
                     <div className="flex justify-end space-x-4">
-                        <Link to={'/manageuser'}>
+                        <Link to={'/admin/users'}>
                             <button className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500">
                                 Cancel
                             </button>
