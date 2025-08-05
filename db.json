@@ -255,6 +255,13 @@
       "password": "888888",
       "role": "2",
       "status": true
+    },
+    {
+      "id": "8",
+      "username": "hieu12",
+      "password": "2@Stunning",
+      "role": "2",
+      "status": true
     }
   ],
   "role": [
@@ -271,9 +278,10 @@
     {
       "id": "1795",
       "isbn": "978-3-16-148410-9",
-      "title": "Clean Code",
+      "title": "Clean Codedd",
       "author": "Robert C. Martin",
       "copies": 7,
+      "userId": "6",
       "chapters": [
         "Introduction",
         "Meaningful Names",
@@ -296,7 +304,7 @@
         "Error Handling": "Teaches how to handle errors gracefully, avoiding exceptions that obscure the intent of the code.",
         "Unit Tests": "Highlights the importance of automated testing and how to write effective unit tests.",
         "Classes": "Covers principles for designing robust, cohesive, and loosely coupled classes.",
-        "System Design": "Focuses on building scalable, maintainable, and well-structured software architectures.Hello"
+        "System Design": "Focuses on building scalable, maintainable, and well-structured software architectures."
       }
     },
     {
@@ -305,6 +313,7 @@
       "title": "The Great Journey",
       "author": "Robert Martin",
       "copies": 7,
+      "userId": "6",
       "chapters": [
         "Prologue",
         "The Call to Adventure",
@@ -324,6 +333,7 @@
       "title": "Advanced Programming",
       "author": "Jane Doe",
       "copies": 5,
+      "userId": "6",
       "chapters": [
         "Data Structures",
         "Algorithms",
@@ -338,6 +348,20 @@
         "Parallel Computing": "Covers multi-threading, concurrency, and distributed systems programming.",
         "Advanced Concepts": "Delves into recursion, dynamic programming, memory management, and low-level optimizations."
       }
+    },
+    {
+      "id": "4758",
+      "isbn": "978-3-16-148410-7",
+      "title": "Clean Codeee",
+      "author": "Robert Martin",
+      "copies": 5,
+      "chapters": [
+        "hyh"
+      ],
+      "content": {
+        "hyh": "gtgtgt"
+      },
+      "userId": "8"
     }
   ],
   "discussions": [
