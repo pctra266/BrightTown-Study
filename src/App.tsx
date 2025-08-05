@@ -5,7 +5,9 @@ import router from "./route/routers"
 const App = () => {
   return (
     <AuthProvider>
-      <RouterProvider router={router}></RouterProvider>
+      <RouterProvider router={router}>
+        
+      </RouterProvider>
       
     </AuthProvider>
   )

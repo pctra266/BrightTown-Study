@@ -22,8 +22,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Toast, { type ToastData } from "../features/library-book/components/Toast";
 import CreateEditViewBook, { BookMode, type Book } from "../features/library-book/components/CreateEditViewBook";
 import api from "../api/api";
+import { useAuth } from "../contexts/AuthContext";
 
 const ManageBooks = () => {
+  const { user } = useAuth();
   const [rows, setRows] = useState<Book[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedBook, setSelectedBook] = useState<Book>({
@@ -134,37 +136,41 @@ const ManageBooks = () => {
               <VisibilityIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Edit book">
-            <IconButton
-              onClick={() => {
-                setSelectedBook(params.row);
-                setOpenEditBook(true);
-              }}
-              sx={{
-                color: "#1976d2",
-                "&:hover": {
-                  color: "#1557a0",
-                  backgroundColor: "rgba(25, 118, 210, 0.1)",
-                },
-              }}
-            >
-              <EditIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Delete book">
-            <IconButton
-              onClick={() => handleDelete(params.row.id)}
-              sx={{
-                color: "#d32f2f",
-                "&:hover": {
-                  color: "#b71c1c",
-                  backgroundColor: "rgba(211, 47, 47, 0.1)",
-                },
-              }}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
+          {user && (user.id === params.row.userId || user.role === "1") && (
+            <>
+              <Tooltip title="Edit book">
+                <IconButton
+                  onClick={() => {
+                    setSelectedBook(params.row);
+                    setOpenEditBook(true);
+                  }}
+                  sx={{
+                    color: "#1976d2",
+                    "&:hover": {
+                      color: "#1557a0",
+                      backgroundColor: "rgba(25, 118, 210, 0.1)",
+                    },
+                  }}
+                >
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Delete book">
+                <IconButton
+                  onClick={() => handleDelete(params.row.id)}
+                  sx={{
+                    color: "#d32f2f",
+                    "&:hover": {
+                      color: "#b71c1c",
+                      backgroundColor: "rgba(211, 47, 47, 0.1)",
+                    },
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Tooltip>
+            </>
+          )}
         </>
       ),
     },
@@ -180,6 +186,7 @@ const ManageBooks = () => {
           id: String(book.id),
           chapters: book.chapters || [],
           content: book.content || "",
+          userId: book.userId || "",
         }));
         setRows(normalizedBooks);
         setToastConfig({
@@ -226,13 +233,30 @@ const ManageBooks = () => {
   };
 
   const handleCreate = async (book: Book) => {
+    if (!user) {
+      setToastConfig({
+        open: true,
+        message: "You must be logged in to add a book",
+        type: "error",
+      });
+      return;
+    }
     try {
       const response = await api.get(`/books?isbn=${book.isbn}`);
       if (response.data.length > 0) {
         throw new Error("ISBN already exists");
       }
-      const newBookResponse = await api.post("/books", { ...book, id: undefined });
-      setRows((prevRows) => [...prevRows, { ...newBookResponse.data, id: String(newBookResponse.data.id) }]);
+      const newBookResponse = await api.post("/books", {
+        ...book,
+        id: undefined,
+        userId: user.id,
+        chapters: book.chapters || [],
+        content: book.content || {},
+      });
+      setRows((prevRows) => [
+        ...prevRows,
+        { ...newBookResponse.data, id: String(newBookResponse.data.id) },
+      ]);
       setToastConfig({
         open: true,
         message: "New book added successfully",
@@ -253,6 +277,12 @@ const ManageBooks = () => {
     try {
       if (!book.id) {
         throw new Error("Book ID is missing");
+      }
+      if (!user) {
+        throw new Error("You must be logged in to edit a book");
+      }
+      if (user.id !== book.userId && user.role !== "1") {
+        throw new Error("You do not have permission to edit this book");
       }
       await api.put(`/books/${String(book.id)}`, book);
       setRows((prevRows) =>
@@ -279,6 +309,16 @@ const ManageBooks = () => {
   const handleDelete = async (id: string | number) => {
     try {
       const idString = String(id);
+      const book = rows.find((row) => String(row.id) === idString);
+      if (!book) {
+        throw new Error("Book not found");
+      }
+      if (!user) {
+        throw new Error("You must be logged in to delete a book");
+      }
+      if (user.id !== book.userId && user.role !== "1") {
+        throw new Error("You do not have permission to delete this book");
+      }
       console.log(`Attempting to delete book with ID: ${idString}`);
       const response = await api.delete(`/books/${idString}`);
       console.log("Delete response:", response);
@@ -297,7 +337,7 @@ const ManageBooks = () => {
       await loadBooks();
       setToastConfig({
         open: true,
-        message: err.response?.data?.message || "Failed to delete book. Data reloaded to sync.",
+        message: err.message || "Failed to delete book. Data reloaded to sync.",
         type: "error",
       });
     }
@@ -337,7 +377,6 @@ const ManageBooks = () => {
           overflow: "hidden",
         }}
       >
-        {/* Header */}
         <Box py={4} display="flex" justifyContent="center" alignItems="center">
           <Grid container justifyContent="center" alignItems="center">
             <Grid item display="flex" alignItems="center">
@@ -351,7 +390,6 @@ const ManageBooks = () => {
           </Grid>
         </Box>
 
-        {/* Search and Add Book */}
         <Box px={2} pb={2}>
           <Grid
             container
@@ -387,25 +425,26 @@ const ManageBooks = () => {
               md={3}
               sx={{ textAlign: { xs: "left", sm: "right" } }}
             >
-              <Button
-                variant="contained"
-                sx={{
-                  height: "35px",
-                  fontWeight: "bold",
-                  width: { xs: "100%", sm: "auto" },
-                }}
-                onClick={() => {
-                  setSelectedBook({ isbn: "", title: "", author: "", copies: 0, chapters: [], content: "" });
-                  setOpenNewBook(true);
-                }}
-              >
-                Add Book
-              </Button>
+              {user && (
+                <Button
+                  variant="contained"
+                  sx={{
+                    height: "35px",
+                    fontWeight: "bold",
+                    width: { xs: "100%", sm: "auto" },
+                  }}
+                  onClick={() => {
+                    setSelectedBook({ isbn: "", title: "", author: "", copies: 0, chapters: [], content: "" });
+                    setOpenNewBook(true);
+                  }}
+                >
+                  Add Book
+                </Button>
+              )}
             </Grid>
           </Grid>
         </Box>
 
-        {/* Book Table */}
         <Box
           flex={1}
           px={2}
@@ -464,7 +503,6 @@ const ManageBooks = () => {
         </Box>
       </Box>
 
-      {/* Book Form Drawers */}
       <Drawer anchor="right" open={openNewBook} onClose={() => setOpenNewBook(false)}>
         <Box
           width={{ xs: "100vw", sm: 400 }}
