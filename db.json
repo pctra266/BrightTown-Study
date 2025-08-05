@@ -218,14 +218,14 @@
       "id": "1",
       "username": "admin",
       "password": "123456",
-      "role": "1",
+      "role": "0",
       "status": true
     },
     {
       "id": "2",
       "username": "truong",
       "password": "123456",
-      "role": "2",
+      "role": "1",
       "status": true
     },
     {
@@ -265,6 +265,10 @@
     }
   ],
   "role": [
+    {
+      "id": "0",
+      "role": "superadmin"
+    },
     {
       "id": "1",
       "role": "admin"
@@ -585,5 +589,14 @@
       "answers": []
     }
   ],
-  "sessions": []
+  "sessions": [
+    {
+      "id": "f9a6",
+      "sessionId": "1754391749472-cidaoues5",
+      "userId": "1",
+      "createdAt": "2025-08-05T11:02:29.479Z",
+      "lastActive": "2025-08-05T11:02:29.479Z",
+      "browserInfo": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Sa-2025-08-05T11:02:29.472Z"
+    }
+  ]
 }
