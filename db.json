@@ -606,5 +606,14 @@
       "answers": []
     }
   ],
-  "sessions": []
+  "sessions": [
+    {
+      "id": "7957",
+      "sessionId": "1754467216222-zcs3ug7nw",
+      "userId": "1",
+      "createdAt": "2025-08-06T08:00:16.227Z",
+      "lastActive": "2025-08-06T08:00:16.227Z",
+      "browserInfo": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Sa-2025-08-06T08:00:16.222Z"
+    }
+  ]
 }
