@@ -372,13 +372,6 @@ const ManageBooks = () => {
 
   return (
     <>
-      <Box position="fixed" top={12} right={5}>
-        <Link to="/">
-          <IconButton>
-            <CancelIcon sx={{ color: "white" }} />
-          </IconButton>
-        </Link>
-      </Box>
 
       <Box
         bgcolor="linear-gradient(135deg, #1976D2, #42A5F5)"

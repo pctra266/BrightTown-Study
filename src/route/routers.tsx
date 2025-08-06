@@ -20,6 +20,7 @@ import UserEdit from "../features/AdminDashboard/UserEdit";
 import DiscussionHub from "../features/Discussion/components/DiscussionHub";
 import BookDetails from "../features/library-book/components/BookDetail";
 import DiscussionDetail from "../features/Discussion/components/DiscussionDetail";
+import ProtectedRouteUser from "./ProtectedRouteUser";
 
 const routers = createBrowserRouter([
   {
@@ -31,8 +32,13 @@ const routers = createBrowserRouter([
       { path: "login", element: <Login /> },
       { path: "register", element: <SignUp /> },
       { path: "library", element: <Library /> },
-      { path: "/library/flashcard/new", element: <FlashCardsCreate /> },
-      { path: "/library/flashcard/edit/:id", element: <FlashcardsUpdate /> },
+      {path:"/library/flashcard",
+        element: <ProtectedRouteUser/>,
+        children:[
+          {path:"new", element:  <FlashCardsCreate />},
+          {path:"edit/:id", element:  <FlashcardsUpdate />},
+        ]
+      },
       { path: "/library/flashcard/:id/play", element: <FlashcardsPlay /> },
       { path: "book", element: <ManageBooks /> },
       { path: "manage-book", element: <ManageBooks /> },
@@ -43,52 +49,16 @@ const routers = createBrowserRouter([
       { path: "/talk/:id", element: <DiscussionDetail /> },
       {
         path: "admin",
-        element: (
-          <ProtectedRouteAdmin>
-            <Admin />
-          </ProtectedRouteAdmin>
-        ),
+        element: <ProtectedRouteAdmin />,
+        children: [
+          { path: "", element: <Admin /> },
+          { path: "users", element: <ManagerUser /> },
+          { path: "users/:id", element: <UserViewer /> },
+          { path: "users/create", element: <UserCreate /> },
+          { path: "users/:id/edit", element: <UserEdit /> },
+          { path: "flashcards", element: <FlashcardList /> },
+        ],
       },
-      {
-        path: "admin/users",
-        element: (
-          <ProtectedRouteAdmin>
-            <ManagerUser />
-          </ProtectedRouteAdmin>
-        ),
-      },
-      {
-        path: "admin/users/:id",
-        element: (
-          <ProtectedRouteAdmin>
-            <UserViewer />
-          </ProtectedRouteAdmin>
-        ),
-      },
-      {
-        path: "admin/users/create",
-        element: (
-          <ProtectedRouteAdmin>
-            <UserCreate />
-          </ProtectedRouteAdmin>
-        ),
-      },
-      {
-        path: "admin/users/:id/edit",
-        element: (
-          <ProtectedRouteAdmin>
-            <UserEdit />
-          </ProtectedRouteAdmin>
-        ),
-      },
-      {
-        path: "admin/flashcards",
-        element: (
-          <ProtectedRouteAdmin>
-            <FlashcardList />
-          </ProtectedRouteAdmin>
-        ),
-      }
     ],
   },
 ]);
