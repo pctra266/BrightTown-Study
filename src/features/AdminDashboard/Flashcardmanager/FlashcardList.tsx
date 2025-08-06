@@ -2,14 +2,17 @@ import React, { useEffect, useState } from 'react';
 import LeftMenu from '../LeftMenu';
 import type { FlashcardSet } from './flashcardService';
 import { getAllFlashcardSets, deleteFlashcardSet } from './flashcardService';
-import { Padding } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
+import Pagination from '../Pagination';  
+
 const FlashcardList = () => {
     const [flashcardSets, setFlashcardSets] = useState<FlashcardSet[]>([]);
     const [searchName, setSearchName] = useState('');
     const [filterStatus, setFilterStatus] = useState('all');
     const [filterUserId, setFilterUserId] = useState('');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -18,6 +21,11 @@ const FlashcardList = () => {
         };
         fetchData();
     }, []);
+
+    // Reset trang về 1 mỗi khi filter/search/sort thay đổi
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchName, filterStatus, filterUserId, sortOrder]);
 
     const toggleStatus = (id: string) => {
         setFlashcardSets(prev =>
@@ -52,6 +60,12 @@ const FlashcardList = () => {
                 return b.name.localeCompare(a.name);
             }
         });
+
+    // Lấy bộ flashcard hiện tại theo trang
+    const paginatedSets = filteredSets.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
 
     useEffect(() => {
         const menu = document.querySelector(".left-menu") as HTMLElement | null;
@@ -118,6 +132,7 @@ const FlashcardList = () => {
                     </div>
                 </div>
 
+                {/* Table */}
                 <div className="bg-white shadow-lg rounded-lg overflow-auto">
                     <table className="min-w-full text-left text-sm">
                         <thead className="bg-purple-100 text-purple-700 text-base">
@@ -131,42 +146,43 @@ const FlashcardList = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredSets.map((set) => (
-                                <tr key={set.id} className="border-b hover:bg-gray-50">
-                                    <td className="px-4 py-2">{set.id}</td>
-                                    <td className="px-4 py-2">{set.userId}</td>
-                                    <td className="px-4 py-2 font-semibold">{set.name}</td>
-                                    <td className="px-4 py-2">{set.description}</td>
-                                    <td className="px-4 py-2">
-                                        <button
-                                            onClick={() => toggleStatus(set.id)}
-                                            className={`px-3 py-1 rounded-md text-sm font-medium shadow-sm ${set.status
-                                                ? 'bg-green-200 text-green-800'
-                                                : 'bg-gray-300 text-gray-700'
-                                                }`}
-                                        >
-                                            {set.status ? 'Show' : 'Hide'}
-                                        </button>
-                                    </td>
-                                    <td className="px-4 py-2 space-x-2">
-                                        <Link to={`/library/flashcard/${set.id}/play`}
-                                            state={{ from: 'manageflashcard' }}>
-                                            <button className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 shadow-sm">View</button>
-                                        </Link>
-                                        <Link to={`/library/flashcard/edit/${set.id}`}
-                                            state={{ from: 'manageflashcard' }}>
-                                            <button className="px-3 py-1 bg-yellow-400 text-white rounded-md hover:bg-yellow-500 shadow-sm">Edit</button>
-                                        </Link>
-                                        <button
-                                            onClick={() => handleDelete(set.id)}
-                                            className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 shadow-sm"
-                                        >
-                                            Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                            {filteredSets.length === 0 && (
+                            {paginatedSets.length > 0 ? (
+                                paginatedSets.map((set) => (
+                                    <tr key={set.id} className="border-b hover:bg-gray-50">
+                                        <td className="px-4 py-2">{set.id}</td>
+                                        <td className="px-4 py-2">{set.userId}</td>
+                                        <td className="px-4 py-2 font-semibold">{set.name}</td>
+                                        <td className="px-4 py-2">{set.description}</td>
+                                        <td className="px-4 py-2">
+                                            <button
+                                                onClick={() => toggleStatus(set.id)}
+                                                className={`px-3 py-1 rounded-md text-sm font-medium shadow-sm ${set.status
+                                                    ? 'bg-green-200 text-green-800'
+                                                    : 'bg-gray-300 text-gray-700'
+                                                    }`}
+                                            >
+                                                {set.status ? 'Show' : 'Hide'}
+                                            </button>
+                                        </td>
+                                        <td className="px-4 py-2 space-x-2">
+                                            <Link to={`/library/flashcard/${set.id}/play`}
+                                                state={{ from: 'manageflashcard' }}>
+                                                <button className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 shadow-sm">View</button>
+                                            </Link>
+                                            <Link to={`/library/flashcard/edit/${set.id}`}
+                                                state={{ from: 'manageflashcard' }}>
+                                                <button className="px-3 py-1 bg-yellow-400 text-white rounded-md hover:bg-yellow-500 shadow-sm">Edit</button>
+                                            </Link>
+                                            <button
+                                                onClick={() => handleDelete(set.id)}
+                                                className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 shadow-sm"
+                                            >
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
                                 <tr>
                                     <td colSpan={6} className="text-center py-4 text-gray-500">
                                         No flashcard sets found.
@@ -176,6 +192,14 @@ const FlashcardList = () => {
                         </tbody>
                     </table>
                 </div>
+
+                {/* Pagination */}
+                <Pagination
+                    currentPage={currentPage}
+                    totalItems={filteredSets.length}
+                    itemsPerPage={itemsPerPage}
+                    onPageChange={setCurrentPage}
+                />
             </div>
         </div>
     );

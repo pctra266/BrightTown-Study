@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchUserWithFlashcardSets, updateUser } from "./userService";
-import Alert from "./Alert";
-import { useAuth } from "../../contexts/AuthContext";
+import Alert from "../Alert";
+import { useAuth } from "../../../contexts/AuthContext";
 
 export default function UserEdit() {
   const { id } = useParams<{ id: string }>();
