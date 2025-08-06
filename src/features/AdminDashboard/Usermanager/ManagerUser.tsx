@@ -1,11 +1,12 @@
-import { useEffect, useState, useRef } from "react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import LeftMenu from "./LeftMenu";
-import Alert from "./Alert";
+import LeftMenu from "../LeftMenu";
+import Alert from "../Alert";
 import { fetchUsersAndFlashcards, deleteUser } from "./userService";
 import type { User, FlashcardMap } from "./userService";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../../contexts/AuthContext";
+import Pagination from "../Pagination"; // Import Pagination component
+
 export default function ManagerUser() {
   const [users, setUsers] = useState<User[]>([]);
   const [flashcards, setFlashcards] = useState<FlashcardMap>({});
@@ -18,6 +19,9 @@ export default function ManagerUser() {
 
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     const storedCreateAlert = localStorage.getItem("user_create_alert");
@@ -43,6 +47,11 @@ export default function ManagerUser() {
     fetchData();
   }, []);
 
+  // Reset page về 1 mỗi khi filter/search thay đổi
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterRole, filterStatus, searchUsername]);
+
   const toggleExpand = (id: string) => {
     const newExpanded = new Set(expanded);
     if (newExpanded.has(id)) {
@@ -56,7 +65,8 @@ export default function ManagerUser() {
   const filteredUsers = users.filter((u) => {
     const matchRole = filterRole === "all" || u.role === filterRole;
     const matchStatus = filterStatus === "all" || String(u.status) === filterStatus;
-    const matchSearch = searchUsername.trim() === "" || u.username.toLowerCase().includes(searchUsername.toLowerCase());
+    const matchSearch =
+      searchUsername.trim() === "" || u.username.toLowerCase().includes(searchUsername.toLowerCase());
 
     if (user?.role === "1" && u.role === "0") {
       return false;
@@ -64,6 +74,12 @@ export default function ManagerUser() {
 
     return matchRole && matchStatus && matchSearch;
   });
+
+  // Lấy phần dữ liệu trang hiện tại
+  const paginatedUsers = filteredUsers.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const canEditOrDelete = (targetUser: User) => {
     if (user?.role === "0") return true;
@@ -147,8 +163,8 @@ export default function ManagerUser() {
             </tr>
           </thead>
           <tbody>
-            {filteredUsers.length > 0 ? (
-              filteredUsers.map((userItem) => (
+            {paginatedUsers.length > 0 ? (
+              paginatedUsers.map((userItem) => (
                 <React.Fragment key={userItem.id}>
                   <tr className="border-b hover:bg-gray-50">
                     <td className="px-4 py-2">{userItem.id}</td>
@@ -157,7 +173,11 @@ export default function ManagerUser() {
                       {userItem.role === "0" ? "Super Admin" : userItem.role === "1" ? "Admin" : "User"}
                     </td>
                     <td className="px-4 py-2">
-                      <span className={`px-2 py-1 rounded text-sm ${userItem.status ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                      <span
+                        className={`px-2 py-1 rounded text-sm ${
+                          userItem.status ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                        }`}
+                      >
                         {userItem.status ? "Active" : "Inactive"}
                       </span>
                     </td>
@@ -170,9 +190,7 @@ export default function ManagerUser() {
                       {canEditOrDelete(userItem) ? (
                         <>
                           <Link to={`/admin/users/${userItem.id}/edit`}>
-                            <button
-                              className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm"
-                            >
+                            <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm">
                               Edit
                             </button>
                           </Link>
@@ -194,10 +212,16 @@ export default function ManagerUser() {
                         </>
                       ) : (
                         <>
-                          <button className="bg-gray-400 text-white px-3 py-1 rounded text-sm cursor-not-allowed" disabled>
+                          <button
+                            className="bg-gray-400 text-white px-3 py-1 rounded text-sm cursor-not-allowed"
+                            disabled
+                          >
                             Edit
                           </button>
-                          <button className="bg-gray-400 text-white px-3 py-1 rounded text-sm cursor-not-allowed" disabled>
+                          <button
+                            className="bg-gray-400 text-white px-3 py-1 rounded text-sm cursor-not-allowed"
+                            disabled
+                          >
                             Delete
                           </button>
                         </>
@@ -218,7 +242,10 @@ export default function ManagerUser() {
                         {flashcards[userItem.id]?.length > 0 ? (
                           <div className="flex flex-wrap gap-2">
                             {flashcards[userItem.id].map((title, index) => (
-                              <span key={index} className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm">
+                              <span
+                                key={index}
+                                className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm"
+                              >
                                 {title}
                               </span>
                             ))}
@@ -240,6 +267,14 @@ export default function ManagerUser() {
             )}
           </tbody>
         </table>
+
+        {/* Pagination */}
+        <Pagination
+          currentPage={currentPage}
+          totalItems={filteredUsers.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
       </div>
 
       {confirmDeleteId && (
@@ -247,7 +282,10 @@ export default function ManagerUser() {
           <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm text-center">
             <p className="text-lg font-semibold mb-4">Are you sure you want to delete this user?</p>
             <div className="flex justify-center gap-4">
-              <button className="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded" onClick={() => setConfirmDeleteId(null)}>
+              <button
+                className="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded"
+                onClick={() => setConfirmDeleteId(null)}
+              >
                 Cancel
               </button>
               <button

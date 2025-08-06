@@ -2,8 +2,8 @@ import React, { useRef, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { addUser } from "./userService";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import Alert from "./Alert";
-import { useAuth } from "../../contexts/AuthContext";
+import Alert from "../Alert";
+import { useAuth } from "../../../contexts/AuthContext";
 
 const UserCreate = () => {
     type Role = {
