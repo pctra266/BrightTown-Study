@@ -3,7 +3,7 @@ import LeftMenu from '../LeftMenu';
 import type { FlashcardSet } from './flashcardService';
 import { getAllFlashcardSets, deleteFlashcardSet } from './flashcardService';
 import { Padding } from '@mui/icons-material';
-
+import { Link } from 'react-router-dom';
 const FlashcardList = () => {
     const [flashcardSets, setFlashcardSets] = useState<FlashcardSet[]>([]);
     const [searchName, setSearchName] = useState('');
@@ -69,9 +69,6 @@ const FlashcardList = () => {
             <div className="ml-[240px] p-6">
                 <div className="flex justify-between mb-4">
                     <h2 className="text-3xl font-bold text-purple-700">Flashcard Sets</h2>
-                    <button className="px-5 py-2 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700">
-                        + Add Flashcard Set
-                    </button>
                 </div>
 
                 {/* Filters */}
@@ -130,7 +127,7 @@ const FlashcardList = () => {
                                 <th className="px-4 py-3">Name</th>
                                 <th className="px-4 py-3">Description</th>
                                 <th className="px-4 py-3">Status</th>
-                                <th className="px-4 py-3 " style={{paddingLeft:'75px'}}>Actions</th>
+                                <th className="px-4 py-3 " style={{ paddingLeft: '75px' }}>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -152,8 +149,14 @@ const FlashcardList = () => {
                                         </button>
                                     </td>
                                     <td className="px-4 py-2 space-x-2">
-                                        <button className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 shadow-sm">View</button>
-                                        <button className="px-3 py-1 bg-yellow-400 text-white rounded-md hover:bg-yellow-500 shadow-sm">Edit</button>
+                                        <Link to={`/library/flashcard/${set.id}/play`}
+                                            state={{ from: 'manageflashcard' }}>
+                                            <button className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 shadow-sm">View</button>
+                                        </Link>
+                                        <Link to={`/library/flashcard/edit/${set.id}`}
+                                            state={{ from: 'manageflashcard' }}>
+                                            <button className="px-3 py-1 bg-yellow-400 text-white rounded-md hover:bg-yellow-500 shadow-sm">Edit</button>
+                                        </Link>
                                         <button
                                             onClick={() => handleDelete(set.id)}
                                             className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 shadow-sm"
