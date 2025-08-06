@@ -20,6 +20,8 @@ import UserEdit from "../features/AdminDashboard/UserEdit";
 import DiscussionHub from "../features/Discussion/components/DiscussionHub";
 import BookDetails from "../features/library-book/components/BookDetail";
 import DiscussionDetail from "../features/Discussion/components/DiscussionDetail";
+import ProtectedRoute from "../features/AdminDashboard/ProtectedRoute";
+import CreateDiscussion from "../features/Discussion/components/CreateDiscussion";
 
 const routers = createBrowserRouter([
   {
@@ -41,6 +43,14 @@ const routers = createBrowserRouter([
       { path: "forgot-password", element: <ForgotPassword /> },
       { path: "/talk", element: <DiscussionHub /> },
       { path: "/talk/:id", element: <DiscussionDetail /> },
+      {
+        path: "/talk/new",
+        element: (
+          <ProtectedRoute>
+            <CreateDiscussion />
+          </ProtectedRoute>
+        )
+      },
       {
         path: "admin",
         element: (
