@@ -2,10 +2,12 @@ import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchUserWithFlashcardSets, updateUser } from "./userService";
 import Alert from "./Alert";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function UserEdit() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user: currentUser } = useAuth();
 
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -14,22 +16,44 @@ export default function UserEdit() {
   const [status, setStatus] = useState(true);
   const [loading, setLoading] = useState(true);
   const [alert, setAlert] = useState<{ type: "success" | "info" | "warning"; message: string } | null>(null);
+  const [targetUser, setTargetUser] = useState<any>(null);
 
   useEffect(() => {
     const loadUser = async () => {
-      if (id) {
-        const { user } = await fetchUserWithFlashcardSets(id);
-        if (user) {
-          if (usernameRef.current) usernameRef.current.value = user.username;
-          if (passwordRef.current) passwordRef.current.value = user.password;
-          setRole(user.role);
-          setStatus(user.status);
-        }
-        setLoading(false);
+      if (!id || !currentUser) {
+        navigate("/admin/users");
+        return;
       }
+      const { user } = await fetchUserWithFlashcardSets(id);
+      if (!user) {
+        navigate("/not-found");
+        return;
+      }
+      const isSuperAdmin = currentUser.role === "0";
+      const isAdmin = currentUser.role === "1";
+      const isEditingSelf = currentUser.id === user.id;
+      if (isAdmin && isEditingSelf) {
+        navigate("/admin/users");
+        return;
+      }
+      if (isSuperAdmin) {
+        setTargetUser(user);
+      } else if (isAdmin && user.role === "2") {
+        setTargetUser(user);
+      } else {
+        navigate("/admin/users");
+        return;
+      }
+
+      if (usernameRef.current) usernameRef.current.value = user.username;
+      if (passwordRef.current) passwordRef.current.value = user.password;
+      setRole(user.role);
+      setStatus(user.status);
+      setLoading(false);
     };
     loadUser();
-  }, [id]);
+  }, [id, currentUser, navigate]);
+
 
   const handleUpdate = async () => {
     const username = usernameRef.current?.value.trim() || "";
@@ -46,13 +70,16 @@ export default function UserEdit() {
         type: "success",
         message: "User updated successfully!",
       }));
-      window.location.href = "/manageuser";
+      window.location.href = "/admin/users";
     } else {
       setAlert({ type: "warning", message: result.message || "Cập nhật thất bại." });
     }
   };
 
   if (loading) return <div className="p-6">Loading...</div>;
+
+  const isEditingSelf = currentUser?.id === targetUser?.id;
+  const isSuperAdminEditingSelf = isEditingSelf && currentUser?.role === "0";
 
   return (
     <div className="max-w-md mx-auto mt-10 bg-white rounded shadow">
@@ -91,8 +118,20 @@ export default function UserEdit() {
             value={role}
             onChange={(e) => setRole(e.target.value)}
             className="w-full border px-3 py-2 rounded"
+            disabled={isSuperAdminEditingSelf || currentUser?.role === "1" || targetUser?.role === "0"}
           >
-            <option value="2">User</option>
+            {targetUser?.role === "0" && (
+              <option value="0">Super Admin</option>
+            )}
+            {(currentUser?.role === "0" && targetUser?.role !== "0") && (
+              <>
+                <option value="1">Admin</option>
+                <option value="2">User</option>
+              </>
+            )}
+            {currentUser?.role === "1" && (
+              <option value="2">User</option>
+            )}
           </select>
         </div>
         <div className="flex items-center gap-4">
@@ -122,7 +161,7 @@ export default function UserEdit() {
         </div>
         <div className="flex justify-end gap-3 pt-4">
           <button
-            onClick={() => navigate("/manageuser")}
+            onClick={() => navigate("/admin/users")}
             className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
           >
             Cancel

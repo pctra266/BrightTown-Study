@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from "react";
 import type { FlashcardSetMeta } from "../types";
 import FlashcardSet from "./FlashcardSet";
+import { useAuth } from "../../../contexts/AuthContext";
 
 interface FlashcardSetsProps {
   flashcardSets: FlashcardSetMeta[];
@@ -21,6 +22,8 @@ const FlashcardSets: React.FC<FlashcardSetsProps> = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<"name" | "description" >("name");
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
+  const { user } = useAuth();
+    const userId = user?.id || "";
   const itemsPerPage = 6;
 
   const filteredSets = flashcardSets
@@ -144,8 +147,7 @@ const FlashcardSets: React.FC<FlashcardSetsProps> = ({
               {flashcardSets.length} total sets • {filteredSets.length} showing
             </p>
           </div>
-
-          <button
+          {userId &&<button
             className="z-10 flex items-center gap-3 px-6 py-3 bg-[#1976D2] hover:bg-[#1565C0] text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 font-medium"
             onClick={onCreate}
           >
@@ -163,7 +165,8 @@ const FlashcardSets: React.FC<FlashcardSetsProps> = ({
               />
             </svg>
             Create New Set
-          </button>
+          </button>}
+          
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -186,20 +189,20 @@ const FlashcardSets: React.FC<FlashcardSetsProps> = ({
               placeholder="Search flashcard sets..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 bg-white/90 backdrop-blur-sm border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1976D2] focus:border-transparent transition-all duration-200"
+              className="shadow-lg w-full pl-10 pr-4 py-3 bg-white/90 backdrop-blur-sm border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1976D2] focus:border-transparent transition-all duration-200 "
             />
           </div>
 
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as "name" | "description")}
-            className="px-4 py-3 bg-white/90 backdrop-blur-sm border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1976D2] focus:border-transparent transition-all duration-200"
+            className="px-4 py-3 bg-white/90 backdrop-blur-sm border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1976D2] focus:border-transparent transition-all duration-200 shadow-lg"
           >
             <option value="name">Sort by Name</option>
             <option value="description">Sort by Description</option>
           </select>
 
-          <div className="flex bg-white/90 backdrop-blur-sm rounded-lg border border-white/30 p-1">
+          <div className="shadow-lg flex bg-white/90 backdrop-blur-sm rounded-lg border border-white/30 p-1">
             <button
               onClick={() => setViewMode("list")}
               className={`px-4 py-2 rounded-md transition-all duration-200 ${

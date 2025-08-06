@@ -1,5 +1,6 @@
 import api from "../../../api/api";
 import { setCookie, getCookie, eraseCookie } from "../../../utils/CookieUtil";
+import { sessionService } from "./SessionService";
 import type {
   Account,
   LoginResponse,
@@ -40,6 +41,22 @@ export const authService = {
         username: account.username,
         role: account.role,
       };
+
+      try {
+        await sessionService.createSession(account.id);
+        console.log("Session created successfully");
+
+        setTimeout(() => {
+          console.log(
+            "Triggering session conflict check for existing sessions"
+          );
+        }, 200);
+      } catch (sessionError) {
+        console.warn(
+          "Session creation had issues but continuing with login:",
+          sessionError
+        );
+      }
 
       const token = this.generateToken(userData, rememberMe);
       const refreshToken = this.generateRefreshToken(userData, rememberMe);
@@ -320,6 +337,8 @@ export const authService = {
   },
 
   logout(): void {
+    sessionService.destroySession();
+
     eraseCookie("accessToken");
     eraseCookie("refreshToken");
     eraseCookie("user");
@@ -347,5 +366,22 @@ export const authService = {
       console.error("Error validating user existence:", error);
       return false;
     }
+  },
+
+  async validateSession(userId: string): Promise<boolean> {
+    try {
+      return await sessionService.isSessionValid(userId);
+    } catch (error) {
+      console.error("Error validating session:", error);
+      return false;
+    }
+  },
+
+  initializeSessionFromCookie(): void {
+    sessionService.initializeFromCookie();
+  },
+
+  setForceLogoutCallback(callback: () => void): void {
+    sessionService.setForceLogoutCallback(callback);
   },
 };

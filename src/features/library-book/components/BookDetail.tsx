@@ -21,9 +21,10 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CancelIcon from "@mui/icons-material/Cancel";
-import colorConfigs from "../configs/colorConfigs";
+
 import api from "../../../api/api";
 import Toast, { type ToastData } from "../components/Toast";
+import { useAuth } from "../../../contexts/AuthContext";
 
 interface Book {
   id?: string | number;
@@ -33,9 +34,11 @@ interface Book {
   copies: number;
   chapters?: string[];
   content?: { [key: string]: string } | string;
+  userId?: string;
 }
 
 const BookDetails = () => {
+  const { user } = useAuth();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [book, setBook] = useState<Book | null>(null);
@@ -70,7 +73,7 @@ const BookDetails = () => {
       const response = await api.get(`/books/${id}`);
       console.log("API response:", response.data);
       if (response.data) {
-        const loadedBook = { ...response.data, id: String(response.data.id) };
+        const loadedBook = { ...response.data, id: String(response.data.id), userId: response.data.userId || "" };
         setBook(loadedBook);
         if (loadedBook.chapters && loadedBook.chapters.length > 0) {
           setSelectedChapter(loadedBook.chapters[0]);
@@ -131,6 +134,14 @@ const BookDetails = () => {
       });
       return;
     }
+    if (user?.id !== book.userId) {
+      setToastConfig({
+        open: true,
+        message: "You do not have permission to modify this book",
+        type: "error",
+      });
+      return;
+    }
 
     try {
       const updatedChapters = editChapter
@@ -187,6 +198,14 @@ const BookDetails = () => {
       setToastConfig({
         open: true,
         message: "Book data is missing",
+        type: "error",
+      });
+      return;
+    }
+    if (user?.id !== book.userId) {
+      setToastConfig({
+        open: true,
+        message: "You do not have permission to delete this chapter",
         type: "error",
       });
       return;
@@ -298,7 +317,7 @@ const BookDetails = () => {
         justifyContent="center"
         alignItems="center"
         minHeight="100vh"
-        bgcolor={colorConfigs.mainBg}
+        bgcolor="linear-gradient(135deg, #1976D2, #42A5F5)"
       >
         <CircularProgress sx={{ color: "white" }} />
       </Box>
@@ -308,7 +327,7 @@ const BookDetails = () => {
   if (!book) {
     return (
       <Box
-        bgcolor={colorConfigs.mainBg}
+        bgcolor="linear-gradient(135deg, #1976D2, #42A5F5)"
         minHeight="100vh"
         p={4}
         display="flex"
@@ -321,7 +340,7 @@ const BookDetails = () => {
           variant="contained"
           startIcon={<ArrowBackIcon />}
           onClick={() => navigate("/manage-book")}
-          sx={{ mt: 2, width: "fit-content" }}
+          sx={{ mt: 2, width: "fit-content", background: "linear-gradient(135deg, #1976D2, #42A5F5)", '&:hover': { background: "linear-gradient(135deg, #1557a0, #42A5F5)" } }}
         >
           Back to Manage Books
         </Button>
@@ -331,42 +350,43 @@ const BookDetails = () => {
 
   return (
     <Box
-      bgcolor={colorConfigs.mainBg}
+      bgcolor="linear-gradient(135deg, #1976D2, #42A5F5)"
       minHeight="100vh"
       p={4}
       display="flex"
       flexDirection="column"
     >
-      <Box display="flex" alignItems="center" justifyContent="space-between" mb={4}>
+      <Box display="flex" alignItems="center" justifyContent="space-between" mb={4} sx={{ p: 2, borderRadius: "8px" }}>
         <Box display="flex" alignItems="center">
-          <IconButton onClick={() => navigate("/manage-book")} sx={{ color: "white", mr: 2 }}>
+          <IconButton onClick={() => navigate("/manage-book")} sx={{ color: "#1976D2", mr: 2 }}>
             <ArrowBackIcon />
           </IconButton>
-          <Typography variant="h3" color="white" fontWeight="bold">
+          <Typography variant="h3" color="#1976D2" fontWeight="bold">
             {book.title}
           </Typography>
         </Box>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => {
-            setChapterName("");
-            setChapterContent("");
-            setEditChapter(null);
-            setOpenDrawer(true);
-          }}
-          sx={{ fontWeight: "bold" }}
-        >
-          Add Chapter
-        </Button>
+        {user?.id === book.userId && (
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => {
+              setChapterName("");
+              setChapterContent("");
+              setEditChapter(null);
+              setOpenDrawer(true);
+            }}
+            sx={{ fontWeight: "bold", background: "linear-gradient(135deg, #1976D2, #42A5F5)", '&:hover': { background: "linear-gradient(135deg, #1557a0, #42A5F5)" } }}
+          >
+            Add Chapter
+          </Button>
+        )}
       </Box>
 
       <Box display="flex" flex={1} minHeight={0}>
-        {/* Navbar for Chapters - 15% width */}
         <Box
           sx={{
             width: "15%",
-            bgcolor: "linear-gradient(135deg, #4a90e2, #9013fe)",
+            bgcolor: "#1976D2",
             borderRadius: "12px",
             mr: 2,
             overflowY: "auto",
@@ -400,18 +420,22 @@ const BookDetails = () => {
                       primaryTypographyProps={{ fontSize: "0.9rem", color: "white" }}
                       onClick={() => setSelectedChapter(chapter)}
                     />
-                    <IconButton
-                      onClick={() => handleEditChapter(chapter)}
-                      sx={{ color: "#1976d2", mr: 1 }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => handleDeleteChapter(chapter)}
-                      sx={{ color: "#d32f2f" }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
+                    {user?.id === book.userId && (
+                      <>
+                        <IconButton
+                          onClick={() => handleEditChapter(chapter)}
+                          sx={{ color: "#fff", mr: 1 }}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          onClick={() => handleDeleteChapter(chapter)}
+                          sx={{ color: "#d32f2f" }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </>
+                    )}
                   </ListItem>
                   {index < book.chapters!.length - 1 && <Divider sx={{ borderColor: "rgba(255, 255, 255, 0.3)" }} />}
                 </React.Fragment>
@@ -424,7 +448,6 @@ const BookDetails = () => {
           </List>
         </Box>
 
-        {/* Content Area - Remaining width */}
         <Box
           sx={{
             flex: 1,
@@ -457,7 +480,7 @@ const BookDetails = () => {
                   !book.chapters ||
                   book.chapters.indexOf(selectedChapter) === 0
                 }
-                sx={{ color: "#1976d2", mr: 2 }}
+                sx={{ color: "#1976D2", mr: 2 }}
               >
                 <ArrowUpwardIcon />
               </IconButton>
@@ -468,13 +491,13 @@ const BookDetails = () => {
                   !book.chapters ||
                   book.chapters.indexOf(selectedChapter) === book.chapters.length - 1
                 }
-                sx={{ color: "#1976d2", mr: 2 }}
+                sx={{ color: "#1976D2", mr: 2 }}
               >
                 <ArrowDownwardIcon />
               </IconButton>
               <IconButton
                 onClick={handleListen}
-                sx={{ color: isPlaying ? "#d32f2f" : "#1976d2" }}
+                sx={{ color: isPlaying ? "#d32f2f" : "#1976D2" }}
               >
                 <VolumeUpIcon />
               </IconButton>
@@ -483,12 +506,11 @@ const BookDetails = () => {
         </Box>
       </Box>
 
-      {/* Drawer for Add/Edit Chapter */}
       <Drawer anchor="right" open={openDrawer} onClose={() => setOpenDrawer(false)}>
         <Box
           width={{ xs: "100vw", sm: 400 }}
           height="100vh"
-          bgcolor={colorConfigs.mainBg}
+          bgcolor="linear-gradient(135deg, #1976D2, #42A5F5)"
           p={4}
         >
           <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
@@ -525,7 +547,7 @@ const BookDetails = () => {
             variant="contained"
             onClick={handleAddOrUpdateChapter}
             fullWidth
-            sx={{ fontWeight: "bold" }}
+            sx={{ fontWeight: "bold", background: "linear-gradient(135deg, #1976D2, #42A5F5)", '&:hover': { background: "linear-gradient(135deg, #1557a0, #42A5F5)" } }}
             disabled={!chapterName.trim() || !chapterContent.trim()}
           >
             {editChapter ? "Update Chapter" : "Add Chapter"}

@@ -35,6 +35,7 @@ const Login = () => {
         const accountDeleted = sessionStorage.getItem("accountDeleted");
         const sessionExpired = sessionStorage.getItem("sessionExpired");
         const accountLocked = sessionStorage.getItem("accountLocked");
+        const sessionConflict = sessionStorage.getItem("sessionConflict");
 
         if (accountDeleted) {
             setError("Your account has been deleted. Please contact administrator.");
@@ -45,6 +46,9 @@ const Login = () => {
         } else if (sessionExpired) {
             setError("Your session has expired. Please login again.");
             sessionStorage.removeItem("sessionExpired");
+        } else if (sessionConflict) {
+            setError("Your account has been logged in from another browser. Please login again.");
+            sessionStorage.removeItem("sessionConflict");
         }
     }, []);
 

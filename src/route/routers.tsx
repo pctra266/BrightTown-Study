@@ -10,14 +10,19 @@ import ManageBooks from "../pages/ManageBooks";
 import ForgotPassword from "../features/Auth/components/ForgotPassword";
 import Library from "../pages/Library";
 import Home from "../pages/Home";
-
+import ProtectedRouteAdmin from "../features/AdminDashboard/ProtectedRouteAdmin";
 import FlashCardsCreate from "../features/Flashcard/FlashcardsCreate";
 import FlashcardsUpdate from "../features/Flashcard/FlashcardsUpdate";
 import FlashcardsPlay from "../features/Flashcard/FlashcardsPlay";
-
+import FlashcardList from "../features/AdminDashboard/Flashcardmanager/FlashcardList";
 import SignUp from "../features/Auth/components/SignUp";
 import UserEdit from "../features/AdminDashboard/UserEdit";
+import DiscussionHub from "../features/Discussion/components/DiscussionHub";
 import BookDetails from "../features/library-book/components/BookDetail";
+import DiscussionDetail from "../features/Discussion/components/DiscussionDetail";
+import ProtectedRoute from "../features/AdminDashboard/ProtectedRoute";
+import CreateDiscussion from "../features/Discussion/components/CreateDiscussion";
+import ProtectedRouteUser from "./ProtectedRouteUser";
 
 const routers = createBrowserRouter([
   {
@@ -28,20 +33,42 @@ const routers = createBrowserRouter([
       { path: "home", element: <Home /> },
       { path: "login", element: <Login /> },
       { path: "register", element: <SignUp /> },
-      { path: "admin", element: <Admin /> },
       { path: "library", element: <Library /> },
-      { path: "/library/flashcard/new", element: <FlashCardsCreate /> },
-      { path: "/library/flashcard/edit/:id", element: <FlashcardsUpdate /> },
+      {path:"/library/flashcard",
+        element: <ProtectedRouteUser/>,
+        children:[
+          {path:"new", element:  <FlashCardsCreate />},
+          {path:"edit/:id", element:  <FlashcardsUpdate />},
+        ]
+      },
       { path: "/library/flashcard/:id/play", element: <FlashcardsPlay /> },
-      { path: "manageuser", element: <ManagerUser /> },
       { path: "book", element: <ManageBooks /> },
       { path: "manage-book", element: <ManageBooks /> },
       { path: "/books/:id", element: < BookDetails /> },
       { path: "*", element: <NotFound /> },
-      { path: 'userdetail/:id', element: <UserViewer /> },
-      { path: 'adduser', element: <UserCreate /> },
       { path: "forgot-password", element: <ForgotPassword /> },
-      { path: 'useredit/:id', element: <UserEdit /> },
+      { path: "/talk", element: <DiscussionHub /> },
+      { path: "/talk/:id", element: <DiscussionDetail /> },
+      {
+        path: "/talk/new",
+        element: (
+          <ProtectedRoute>
+            <CreateDiscussion />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: "admin",
+        element: <ProtectedRouteAdmin />,
+        children: [
+          { path: "", element: <Admin /> },
+          { path: "users", element: <ManagerUser /> },
+          { path: "users/:id", element: <UserViewer /> },
+          { path: "users/create", element: <UserCreate /> },
+          { path: "users/:id/edit", element: <UserEdit /> },
+          { path: "flashcards", element: <FlashcardList /> },
+        ],
+      },
     ],
   },
 ]);

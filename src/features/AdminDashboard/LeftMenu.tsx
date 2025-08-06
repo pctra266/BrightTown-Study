@@ -1,18 +1,34 @@
 // src/components/LeftMenu.jsx
 import React from "react";
-import { NavLink } from "react-router-dom";
-
+import { NavLink, Navigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 const LeftMenu = () => {
+  const { isAuthenticated, user } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (user?.role === "2") {
+    return <Navigate to="/" replace />;
+  }
   return (
     <div className="left-menu">
-      <NavLink to="/admin" className="menu-item" >Dashboard</NavLink>
-      <NavLink to="/manageuser" className="menu-item" >Manage User</NavLink>
-      <NavLink to="/charts" className="menu-item" >Charts</NavLink>
-      <NavLink to="/ui-elements" className="menu-item" >UI Elements</NavLink>
-      <NavLink to="/alerts" className="menu-item" >Alerts & Panels</NavLink>
-      <NavLink to="/logout" className="menu-item">Logout</NavLink>
+      <NavLink to="/admin" end className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
+        Dashboard
+      </NavLink>
+      <NavLink to="/admin/users" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
+        Manage User
+      </NavLink>
+      <NavLink to="/admin/flashcards" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
+        Manage Flashcard
+      </NavLink>
+      <NavLink to="/ui-elements" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
+        Approve Request
+      </NavLink>
     </div>
   );
 };
+
 
 export default LeftMenu;

@@ -1,7 +1,6 @@
 import React, { type ChangeEvent, useEffect, useState } from "react";
 import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
-import colorConfigs from "../configs/colorConfigs";
 
 export enum BookMode {
   CREATE = "Create",
@@ -141,8 +140,8 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
       display="flex"
       flexDirection="column"
       justifyContent="space-between"
-      bgcolor={colorConfigs.mainBg}
-      sx={{ borderLeft: "2px solid white", color: "white", p: 2 }}
+      bgcolor="#1976D2"
+      sx={{ borderLeft: "2px solid #1976D2", color: "white", p: 2 }}
     >
       <Box position="absolute" top={12} right={5}>
         <IconButton onClick={() => action.setIsDrawerOpen(false)}>
@@ -184,8 +183,8 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
                   color: "white",
                   padding: "8px 0"
                 },
-                "& .MuiInput-underline:before": { borderBottomColor: "white" },
-                "& .MuiInput-underline:after": { borderBottomColor: "white" },
+                "& .MuiInput-underline:before": { borderBottomColor: "#1976D2" },
+                "& .MuiInput-underline:after": { borderBottomColor: "#1976D2" },
               },
             }}
             id="book-isbn"
@@ -228,7 +227,7 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
           {mode === BookMode.VIEW && (
             <Typography
               sx={{ 
-                color: "yellow", 
+                color: "#afe619", 
                 mt: 0.5,
                 fontStyle: "italic",
                 fontSize: "0.875rem",
@@ -261,8 +260,8 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
                   color: "white",
                   padding: "8px 0"
                 },
-                "& .MuiInput-underline:before": { borderBottomColor: "white" },
-                "& .MuiInput-underline:after": { borderBottomColor: "white" },
+                "& .MuiInput-underline:before": { borderBottomColor: "#1976D2" },
+                "& .MuiInput-underline:after": { borderBottomColor: "#1976D2" },
               },
             }}
             id="book-title"
@@ -305,7 +304,7 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
           {mode === BookMode.VIEW && (
             <Typography
               sx={{ 
-                color: "yellow", 
+                color: "#afe619", 
                 mt: 0.5,
                 fontStyle: "italic",
                 fontSize: "0.875rem",
@@ -338,8 +337,8 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
                   color: "white",
                   padding: "8px 0"
                 },
-                "& .MuiInput-underline:before": { borderBottomColor: "white" },
-                "& .MuiInput-underline:after": { borderBottomColor: "white" },
+                "& .MuiInput-underline:before": { borderBottomColor: "#1976D2" },
+                "& .MuiInput-underline:after": { borderBottomColor: "#1976D2" },
               },
             }}
             id="book-author"
@@ -382,7 +381,7 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
           {mode === BookMode.VIEW && (
             <Typography
               sx={{ 
-                color: "yellow", 
+                color: "#afe619", 
                 mt: 0.5,
                 fontStyle: "italic",
                 fontSize: "0.875rem",
@@ -415,8 +414,8 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
                   color: "white",
                   padding: "8px 0"
                 },
-                "& .MuiInput-underline:before": { borderBottomColor: "white" },
-                "& .MuiInput-underline:after": { borderBottomColor: "white" },
+                "& .MuiInput-underline:before": { borderBottomColor: "#1976D2" },
+                "& .MuiInput-underline:after": { borderBottomColor: "#1976D2" },
               },
             }}
             id="book-copies"
@@ -471,7 +470,7 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
           {mode === BookMode.VIEW && (
             <Typography
               sx={{ 
-                color: "yellow", 
+                color: "#afe619", 
                 mt: 0.5,
                 fontStyle: "italic",
                 fontSize: "0.875rem",
@@ -489,14 +488,14 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
           <Button
             variant="contained"
             color="inherit"
-            sx={{ fontWeight: "bold", minWidth: "100px" }}
+            sx={{ fontWeight: "bold", minWidth: "100px", background: "linear-gradient(45deg, #b41313, #c1df17)", '&:hover': { background: "linear-gradient(45deg, #1557a0, #0cc770)" } }}
             onClick={handleClear}
           >
             Clear
           </Button>
           <Button
             variant="contained"
-            sx={{ fontWeight: "bold", minWidth: "100px" }}
+            sx={{ fontWeight: "bold", minWidth: "100px", backgroundColor: "#1976D2", '&:hover': { backgroundColor: "#15a05a" } }}
             onClick={handleAction}
           >
             {mode} Book

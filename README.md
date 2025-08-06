@@ -1,3 +1,5 @@
+[![Labeler](https://github.com/pctra266/Group_03_Learning-Social-Media/actions/workflows/label.yml/badge.svg)](https://github.com/pctra266/Group_03_Learning-Social-Media/actions/workflows/label.yml)
+
 # Bright Town Study 
 React project about leanring social media
 
