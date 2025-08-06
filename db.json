@@ -262,6 +262,13 @@
       "password": "2@Stunning",
       "role": "2",
       "status": true
+    },
+    {
+      "id": "9",
+      "username": "hieuqw123",
+      "password": "123456789Hh@",
+      "role": "2",
+      "status": true
     }
   ],
   "role": [
@@ -366,6 +373,16 @@
         "hyh": "gtgtgt"
       },
       "userId": "8"
+    },
+    {
+      "id": "ccad",
+      "isbn": "978-3-16-148410-8",
+      "title": "Clean Codeee",
+      "author": "Robert Martin",
+      "copies": 5,
+      "chapters": [],
+      "content": {},
+      "userId": "9"
     }
   ],
   "discussions": [
