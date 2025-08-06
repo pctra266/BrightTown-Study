@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import CancelIcon from "@mui/icons-material/Cancel";
-import colorConfigs from "../features/library-book/configs/colorConfigs";
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
@@ -51,19 +50,24 @@ const ManageBooks = () => {
       headerName: "ISBN",
       type: "string",
       minWidth: 180,
-      renderHeader: (params) => <strong>{params.colDef.headerName}</strong>,
+      renderHeader: (params) => (
+        <strong style={{ color: "white" }}>{params.colDef.headerName}</strong>
+      ),
       headerAlign: "left",
       align: "left",
       sortable: true,
       disableColumnMenu: true,
       flex: 1.3,
+      headerClassName: "author-header",
     },
     {
       field: "title",
       headerName: "Title",
       type: "string",
       minWidth: 300,
-      renderHeader: (params) => <strong>{params.colDef.headerName}</strong>,
+      renderHeader: (params) => (
+        <strong style={{ color: "white" }}>{params.colDef.headerName}</strong>
+      ),
       headerAlign: "left",
       align: "left",
       sortable: true,
@@ -73,7 +77,7 @@ const ManageBooks = () => {
         <Link
           to={`/books/${params.row.id}`}
           style={{
-            color: "#1976d2",
+            color: "#1976D2",
             textDecoration: "none",
             "&:hover": { textDecoration: "underline" },
           }}
@@ -81,30 +85,37 @@ const ManageBooks = () => {
           {params.value}
         </Link>
       ),
+      headerClassName: "author-header",
     },
     {
       field: "author",
       headerName: "Author",
       type: "string",
       minWidth: 220,
-      renderHeader: (params) => <strong>{params.colDef.headerName}</strong>,
+      renderHeader: (params) => (
+        <strong style={{ color: "white" }}>{params.colDef.headerName}</strong>
+      ),
       headerAlign: "left",
       align: "left",
       sortable: true,
       disableColumnMenu: true,
       flex: 1.8,
+      headerClassName: "author-header",
     },
     {
       field: "copies",
       headerName: "Copies",
       type: "number",
       minWidth: 120,
-      renderHeader: (params) => <strong>{params.colDef.headerName}</strong>,
+      renderHeader: (params) => (
+        <strong style={{ color: "white" }}>{params.colDef.headerName}</strong>
+      ),
       headerAlign: "left",
       align: "left",
       sortable: true,
       disableColumnMenu: true,
       flex: 1,
+      headerClassName: "author-header",
     },
     {
       field: "actions",
@@ -113,7 +124,9 @@ const ManageBooks = () => {
       sortable: false,
       disableColumnMenu: true,
       minWidth: 180,
-      renderHeader: (params) => <strong>{params.colDef.headerName}</strong>,
+      renderHeader: (params) => (
+        <strong style={{ color: "white" }}>{params.colDef.headerName}</strong>
+      ),
       headerAlign: "center",
       align: "center",
       flex: 1.2,
@@ -126,7 +139,7 @@ const ManageBooks = () => {
                 setOpenViewBook(true);
               }}
               sx={{
-                color: "#1976d2",
+                color: "#1976D2",
                 "&:hover": {
                   color: "#1557a0",
                   backgroundColor: "rgba(25, 118, 210, 0.1)",
@@ -145,7 +158,7 @@ const ManageBooks = () => {
                     setOpenEditBook(true);
                   }}
                   sx={{
-                    color: "#1976d2",
+                    color: "#1976D2",
                     "&:hover": {
                       color: "#1557a0",
                       backgroundColor: "rgba(25, 118, 210, 0.1)",
@@ -173,6 +186,7 @@ const ManageBooks = () => {
           )}
         </>
       ),
+      headerClassName: "author-header",
     },
   ];
 
@@ -358,16 +372,9 @@ const ManageBooks = () => {
 
   return (
     <>
-      <Box position="fixed" top={12} right={5}>
-        <Link to="/">
-          <IconButton>
-            <CancelIcon sx={{ color: "white" }} />
-          </IconButton>
-        </Link>
-      </Box>
 
       <Box
-        bgcolor={colorConfigs.mainBg}
+        bgcolor="linear-gradient(135deg, #1976D2, #42A5F5)"
         minHeight="100vh"
         display="flex"
         flexDirection="column"
@@ -383,9 +390,6 @@ const ManageBooks = () => {
               <AutoStoriesOutlinedIcon
                 sx={{ color: "white", fontSize: "3rem", mr: 2 }}
               />
-              <Typography variant="h3" color="white" fontWeight="bold">
-                Manage Books
-              </Typography>
             </Grid>
           </Grid>
         </Box>
@@ -398,25 +402,27 @@ const ManageBooks = () => {
             justifyContent="space-between"
           >
             <Grid item xs={12} sm={8} md={9}>
-              <TextField
-                fullWidth
-                variant="standard"
-                label="Search books"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <SearchIcon sx={{ color: "white" }} />
-                    </InputAdornment>
-                  ),
-                }}
-                InputLabelProps={{ sx: { color: "white" } }}
-                sx={{
-                  maxWidth: "600px",
-                  "& .MuiInputBase-root": { color: "white" },
-                }}
-              />
+              <Box sx={{ p: 1, borderRadius: "8px" }}>
+                <TextField
+                  fullWidth
+                  variant="standard"
+                  label="Search books"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <SearchIcon sx={{ color: "#1976D2" }} />
+                      </InputAdornment>
+                    ),
+                  }}
+                  InputLabelProps={{ sx: { color: "#1976D2" } }}
+                  sx={{
+                    maxWidth: "400px",
+                    "& .MuiInputBase-root": { color: "#1976D2" },
+                  }}
+                />
+              </Box>
             </Grid>
             <Grid
               item
@@ -432,6 +438,8 @@ const ManageBooks = () => {
                     height: "35px",
                     fontWeight: "bold",
                     width: { xs: "100%", sm: "auto" },
+                    background: "linear-gradient(135deg, #1976D2, #42A5F5)",
+                    '&:hover': { background: "linear-gradient(135deg, #1557a0, #42A5F5)" }
                   }}
                   onClick={() => {
                     setSelectedBook({ isbn: "", title: "", author: "", copies: 0, chapters: [], content: "" });
@@ -486,7 +494,7 @@ const ManageBooks = () => {
                   fontSize: "1rem",
                 },
                 "& .MuiDataGrid-columnHeaders": {
-                  backgroundColor: "#f5f5f5",
+                  backgroundColor: "transparent",
                   fontSize: "1rem",
                 },
                 "& .MuiDataGrid-row": {
@@ -496,6 +504,10 @@ const ManageBooks = () => {
                 },
                 "& .MuiDataGrid-virtualScroller": {
                   minHeight: "200px",
+                },
+                "& .author-header": {
+                  backgroundColor: "#1976D2",
+                  color: "white",
                 },
               }}
             />
@@ -507,7 +519,7 @@ const ManageBooks = () => {
         <Box
           width={{ xs: "100vw", sm: 400 }}
           height="100vh"
-          bgcolor={colorConfigs.mainBg}
+          bgcolor="linear-gradient(135deg, #1976D2, #42A5F5)"
         >
           <CreateEditViewBook
             book={selectedBook}
@@ -525,7 +537,7 @@ const ManageBooks = () => {
         <Box
           width={{ xs: "100vw", sm: 400 }}
           height="100vh"
-          bgcolor={colorConfigs.mainBg}
+          bgcolor="linear-gradient(135deg, #1976D2, #42A5F5)"
         >
           <CreateEditViewBook
             book={selectedBook}
@@ -543,7 +555,7 @@ const ManageBooks = () => {
         <Box
           width={{ xs: "100vw", sm: 400 }}
           height="100vh"
-          bgcolor={colorConfigs.mainBg}
+          bgcolor="linear-gradient(135deg, #1976D2, #42A5F5)"
         >
           <CreateEditViewBook
             book={selectedBook}

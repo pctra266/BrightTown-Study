@@ -97,7 +97,7 @@ export default function UserViewer() {
 
           <div className="mt-6">
             <Link
-              to="/manageuser"
+              to="/admin/users"
               className="inline-flex items-center px-4 py-2 bg-gray-100 text-purple-600 hover:bg-gray-200 rounded-lg transition"
             >
               <svg
@@ -160,7 +160,8 @@ export default function UserViewer() {
                       </td>
                       <td className="px-4 py-2 text-center">
                         <Link
-                          to={`/flashcard/${set.id}`}
+                          to={`/library/flashcard/${set.id}/play`}
+                          state={{ from: 'userviewer', userId: user.id }}
                           className="inline-flex items-center px-4 py-1.5 bg-purple-600 text-white text-sm font-medium rounded-md hover:bg-purple-700 transition"
                         >
                           View Details

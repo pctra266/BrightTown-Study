@@ -1,29 +1,42 @@
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const ButtonToFlashcardSets = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  return (
-    <button 
-      onClick={() => navigate('/library')} 
-      className="fixed top-20 left-6 z-50 flex items-center gap-2 px-4 py-3 bg-[#1976D2] hover:bg-[#1565C0] text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 font-medium group"
+  const handleBack = () => {
+    console.log(location.state?.from);
+    if (location.state?.from === 'manageflashcard') {
+      navigate('/admin/flashcards');
+    } else if (location.state?.from === 'userviewer') { 
+      navigate(`/admin/users/${location.state.userId}`);
+    }
+    else {
+      navigate('/library');
+    }
+  }
+
+return (
+  <button
+    onClick={handleBack}
+    className="fixed top-20 left-6 z-50 flex items-center gap-2 px-4 py-3 bg-[#1976D2] hover:bg-[#1565C0] text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 font-medium group"
+  >
+    <svg
+      className="w-5 h-5 group-hover:translate-x-[-2px] transition-transform duration-200"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      viewBox="0 0 24 24"
     >
-      <svg
-        className="w-5 h-5 group-hover:translate-x-[-2px] transition-transform duration-200"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={2}
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M10 19l-7-7m0 0l7-7m-7 7h18"
-        />
-      </svg>
-      Back
-    </button>
-  )
-}
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M10 19l-7-7m0 0l7-7m-7 7h18"
+      />
+    </svg>
+    Back
+  </button>
+);
+};
 
-export default ButtonToFlashcardSets
+export default ButtonToFlashcardSets;
