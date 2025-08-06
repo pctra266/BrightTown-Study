@@ -1,6 +1,6 @@
 import api from "../../../api/api";
 import { setCookie, getCookie, eraseCookie } from "../../../utils/CookieUtil";
-import { sessionService } from "../../../services/SessionService";
+import { sessionService } from "./SessionService";
 import type {
   Account,
   LoginResponse,

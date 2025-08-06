@@ -471,7 +471,7 @@ const DiscussionDetail = () => {
                 </CardContent>
             </Card>
 
-            {/* Question Menu
+            {/* Question Menu */}
             <Menu
                 anchorEl={questionMenuAnchor}
                 open={Boolean(questionMenuAnchor)}
@@ -493,7 +493,7 @@ const DiscussionDetail = () => {
                 >
                     <Delete sx={{ mr: 1 }} /> Delete Question
                 </MenuItem>
-            </Menu> */}
+            </Menu>
 
             {/* Answers section */}
             <Stack
