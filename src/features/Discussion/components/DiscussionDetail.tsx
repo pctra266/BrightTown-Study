@@ -241,7 +241,7 @@ const DiscussionDetail = () => {
         }
     };
 
-    const handleAnswerContentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleAnswerContentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         const content = event.target.value;
         setAnswerContent(content);
         setAnswerCharCount(content.length);
