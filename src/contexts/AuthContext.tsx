@@ -183,11 +183,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                         authService.logout();
                         setUser(null);
                         sessionStorage.setItem("sessionConflict", "true");
-                        const protectedRoutes = ["/user", "/admin", "/talk"];
-                        const currentPath = window.location.pathname;
-                        if (protectedRoutes.some((route) => currentPath.startsWith(route))) {
-                            window.location.href = "/login";
-                        }
                     });
                 } else {
                     console.warn("Failed to initialize JWT session manager after login");
@@ -208,8 +203,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 username: result.user.username,
                 role: result.user.role,
             };
-    
+            
             setUser(userData);
+            // Initialize JWT session manager for new session
+            setTimeout(async () => {
+                const jwtInitialized = await jwtSessionManager.initializeFromToken(userData.id);
+                if (jwtInitialized) {
+                    await jwtSessionManager.startMonitoring(userData.id, () => {
+                        console.log("JWT session conflict detected during session - logging out");
+                        authService.logout();
+                        setUser(null);
+                        sessionStorage.setItem("sessionConflict", "true");
+                    });
+                } else {
+                    console.warn("Failed to initialize JWT session manager after login");
+                }
+            }, 100);
             return { success: true };
         }
     

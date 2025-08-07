@@ -141,18 +141,19 @@ export const authService = {
         username: account.username,
         role: account.role,
       };
+      const token = await this.generateToken(userData);
+      const refreshToken = await this.generateRefreshToken(userData);
 
-      await sessionService.createSession(account.id);
-      console.log("Session created for Google login");
+      // Decode token để lấy iat và update vào database
+      const decoded = await this.verifyToken(token);
+      if (decoded?.iat) {
+        await this.updateLastTokenIat(account.id, decoded.iat);
+      }
 
-      const token = this.generateToken(userData);
-      const refreshToken = this.generateRefreshToken(userData);
-
-      setCookie("accessToken", token, 7);
-      setCookie("refreshToken", refreshToken, 30);
-      setCookie("rememberMe", "true", 30);
-      setCookie("user", JSON.stringify(userData), 7);
-
+      // Set cookies với thời gian mặc định (24h)
+      setCookie("accessToken", token);
+      setCookie("refreshToken", refreshToken);
+     setCookie("user", JSON.stringify(userData));
       return {
         success: true,
         user: userData,
