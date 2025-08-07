@@ -4,7 +4,7 @@ interface SessionMetadata {
   userId: string;
   currentTokenIat: number;
   lastCheck: number;
-  sessionId: string; // Thêm unique session ID
+  sessionId: string; // Add unique session ID
 }
 
 export class JWTSessionManager {
