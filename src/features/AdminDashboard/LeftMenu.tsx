@@ -1,4 +1,4 @@
-// src/components/LeftMenu.jsx
+
 import React from "react";
 import { NavLink, Navigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
@@ -22,6 +22,9 @@ const LeftMenu = () => {
       </NavLink>
       <NavLink to="/admin/flashcards" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
         Manage Flashcard
+      </NavLink>
+      <NavLink to="/admin/recycle" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
+        Recyle Bin
       </NavLink>
       <NavLink to="/ui-elements" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
         Approve Request
