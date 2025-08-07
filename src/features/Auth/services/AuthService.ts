@@ -1,6 +1,6 @@
 import api from "../../../api/api";
 import { setCookie, getCookie, eraseCookie } from "../../../utils/CookieUtil";
-import { sessionService } from "./SessionService";
+import { SignJWT, jwtVerify, type JWTPayload as JoseJWTPayload } from "jose";
 import type {
   Account,
   LoginResponse,
@@ -8,15 +8,19 @@ import type {
   TokenRefreshResponse,
 } from "../Types";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { auth} from "./firebase"; 
-import { CleaningServices } from "@mui/icons-material";
+import { auth } from "./firebase";
+
+// JWT Secret key - Trong production nên lưu trong environment variables
+const JWT_SECRET = new TextEncoder().encode("your-super-secret-jwt-key-2025");
+
+interface JWTPayload extends JoseJWTPayload {
+  id: string;
+  username: string;
+  role: string;
+}
 
 export const authService = {
-  async login(
-    username: string,
-    password: string,
-    rememberMe: boolean = false
-  ): Promise<LoginResponse> {
+  async login(username: string, password: string): Promise<LoginResponse> {
     try {
       const accountResponse = await api.get("/account");
       const accounts: Account[] = accountResponse.data;
@@ -45,36 +49,19 @@ export const authService = {
         role: account.role,
       };
 
-      try {
-        await sessionService.createSession(account.id);
-        console.log("Session created successfully");
+      const token = await this.generateToken(userData);
+      const refreshToken = await this.generateRefreshToken(userData);
 
-        setTimeout(() => {
-          console.log(
-            "Triggering session conflict check for existing sessions"
-          );
-        }, 200);
-      } catch (sessionError) {
-        console.warn(
-          "Session creation had issues but continuing with login:",
-          sessionError
-        );
+      // Decode token để lấy iat và update vào database
+      const decoded = await this.verifyToken(token);
+      if (decoded?.iat) {
+        await this.updateLastTokenIat(account.id, decoded.iat);
       }
 
-      const token = this.generateToken(userData, rememberMe);
-      const refreshToken = this.generateRefreshToken(userData, rememberMe);
-
-      if (rememberMe) {
-        setCookie("accessToken", token, 7);
-        setCookie("refreshToken", refreshToken, 30);
-        setCookie("rememberMe", "true", 30);
-        setCookie("user", JSON.stringify(userData), 7);
-      } else {
-        setCookie("accessToken", token);
-        setCookie("refreshToken", refreshToken);
-        setCookie("user", JSON.stringify(userData));
-        eraseCookie("rememberMe");
-      }
+      // Set cookies với thời gian mặc định (24h)
+      setCookie("accessToken", token);
+      setCookie("refreshToken", refreshToken);
+      setCookie("user", JSON.stringify(userData));
 
       return {
         success: true,
@@ -89,96 +76,98 @@ export const authService = {
         error: "An error occurred during login",
       };
     }
-  },async loginByGoogle(): Promise<LoginResponse> {
-      try {
-        const accountResponse = await api.get("/account");
-        const accounts: Account[] = accountResponse.data;
-      
-        const provider = new GoogleAuthProvider();
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-      
-        if (!user.email) {
-          return {
-            success: false,
-            error: "Google account has no email",
-          };
-        }
-      
-        let account = accounts.find((acc: Account) => acc.email === user.email);
-        let newAccount: Account | null = null;
-      
-        if (account) {
-          if (account.status === false) {
-            return {
-              success: false,
-              error: "Your account has been locked. Please contact administrator.",
-            };
-          }
-        } else {
-          // Create new account object
-          newAccount = {
-            id: user.uid,
-            username: user.displayName || user.email || "Unknown",
-            email: user.email,
-            password: undefined,
-            role: "2",
-            status: true,
-          };
-      
-          try {
-            const res = await fetch("http://localhost:9000/account", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(newAccount),
-            });
-      
-            if (!res.ok) {
-              console.warn("Failed to save to db.json: ", await res.text());
-            } else {
-              console.log("Saved to db.json");
-            }
-          } catch (jsonErr) {
-            console.warn("Failed to save to db.json:", jsonErr);
-          }
-      
-          account = newAccount;
-        }
-      
-        const userData = {
-          id: account.id,
-          username: account.username,
-          role: account.role,
-        };
-      
-        await sessionService.createSession(account.id);
-        console.log("Session created for Google login");
-      
-        const token = this.generateToken(userData); 
-        const refreshToken = this.generateRefreshToken(userData);
-      
-        setCookie("accessToken", token, 7);
-        setCookie("refreshToken", refreshToken, 30);
-        setCookie("rememberMe", "true", 30);
-        setCookie("user", JSON.stringify(userData), 7);
-      
-        return {
-          success: true,
-          user: userData,
-          token,
-          refreshToken,
-        };
-      } catch (error) {
-        console.error("Google sign-in failed:", error);
+  },
+  async loginByGoogle(): Promise<LoginResponse> {
+    try {
+      const accountResponse = await api.get("/account");
+      const accounts: Account[] = accountResponse.data;
+
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      if (!user.email) {
         return {
           success: false,
-          error: "Google sign-in failed",
+          error: "Google account has no email",
         };
       }
+
+      let account = accounts.find((acc: Account) => acc.email === user.email);
+      let newAccount: Account | null = null;
+
+      if (account) {
+        if (account.status === false) {
+          return {
+            success: false,
+            error:
+              "Your account has been locked. Please contact administrator.",
+          };
+        }
+      } else {
+        // Create new account object
+        newAccount = {
+          id: user.uid,
+          username: user.displayName || user.email || "Unknown",
+          email: user.email,
+          password: undefined,
+          role: "2",
+          status: true,
+        };
+
+        try {
+          const res = await fetch("http://localhost:9000/account", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newAccount),
+          });
+
+          if (!res.ok) {
+            console.warn("Failed to save to db.json: ", await res.text());
+          } else {
+            console.log("Saved to db.json");
+          }
+        } catch (jsonErr) {
+          console.warn("Failed to save to db.json:", jsonErr);
+        }
+
+        account = newAccount;
+      }
+
+      const userData = {
+        id: account.id,
+        username: account.username,
+        role: account.role,
+      };
+
+      await sessionService.createSession(account.id);
+      console.log("Session created for Google login");
+
+      const token = this.generateToken(userData);
+      const refreshToken = this.generateRefreshToken(userData);
+
+      setCookie("accessToken", token, 7);
+      setCookie("refreshToken", refreshToken, 30);
+      setCookie("rememberMe", "true", 30);
+      setCookie("user", JSON.stringify(userData), 7);
+
+      return {
+        success: true,
+        user: userData,
+        token,
+        refreshToken,
+      };
+    } catch (error) {
+      console.error("Google sign-in failed:", error);
+      return {
+        success: false,
+        error: "Google sign-in failed",
+      };
+    }
   },
-  
+
   async register(
     username: string,
     password: string
@@ -222,8 +211,8 @@ export const authService = {
         role: "2",
       };
 
-      const token = this.generateToken(userData);
-      const refreshToken = this.generateRefreshToken(userData);
+      const token = await this.generateToken(userData);
+      const refreshToken = await this.generateRefreshToken(userData);
 
       return {
         success: true,
@@ -242,7 +231,6 @@ export const authService = {
 
   async refreshToken(): Promise<TokenRefreshResponse> {
     try {
-      const isRemembered = getCookie("rememberMe") === "true";
       const refreshToken = getCookie("refreshToken");
 
       if (!refreshToken) {
@@ -252,7 +240,7 @@ export const authService = {
         };
       }
 
-      const userData = this.verifyToken(refreshToken);
+      const userData = await this.verifyToken(refreshToken);
       if (!userData) {
         return {
           success: false,
@@ -260,13 +248,13 @@ export const authService = {
         };
       }
 
-      const newToken = this.generateToken(userData, isRemembered);
+      const newToken = await this.generateToken({
+        id: userData.id,
+        username: userData.username,
+        role: userData.role,
+      });
 
-      if (isRemembered) {
-        setCookie("accessToken", newToken, 7);
-      } else {
-        setCookie("accessToken", newToken);
-      }
+      setCookie("accessToken", newToken);
 
       return {
         success: true,
@@ -276,7 +264,7 @@ export const authService = {
       console.error("Token refresh error:", error);
       return {
         success: false,
-        error: "Failed to refresh token",
+        error: "Token refresh failed",
       };
     }
   },
@@ -290,14 +278,10 @@ export const authService = {
         (acc: Account) => acc.username === username
       );
 
-      return {
-        exists: !!existingAccount,
-      };
+      return { exists: !!existingAccount };
     } catch (error) {
-      console.error("Check username error:", error);
-      return {
-        exists: false,
-      };
+      console.error("Error checking username:", error);
+      return { exists: false };
     }
   },
 
@@ -314,19 +298,13 @@ export const authService = {
       );
 
       if (!account) {
-        return {
-          isSamePassword: false,
-        };
+        return { isSamePassword: false };
       }
 
-      return {
-        isSamePassword: account.password === newPassword,
-      };
+      return { isSamePassword: account.password === newPassword };
     } catch (error) {
-      console.error("Check current password error:", error);
-      return {
-        isSamePassword: false,
-      };
+      console.error("Error checking current password:", error);
+      return { isSamePassword: false };
     }
   },
 
@@ -345,109 +323,159 @@ export const authService = {
       if (!account) {
         return {
           success: false,
-          message: "Account does not exist",
+          message: "User not found",
         };
       }
 
-      if (account.password === newPassword) {
-        return {
-          success: false,
-          message: "New password cannot be the same as current password",
-        };
-      }
+      account.password = newPassword;
 
-      const updatedAccount = {
-        ...account,
-        password: newPassword,
-      };
-
-      await api.put(`/account/${account.id}`, updatedAccount);
+      await api.put(`/account/${account.id}`, account);
 
       return {
         success: true,
-        message: "Password changed successfully",
+        message: "Password updated successfully",
       };
     } catch (error) {
-      console.error("Reset password error:", error);
+      console.error("Error resetting password:", error);
       return {
         success: false,
-        message: "An error occurred while changing password",
+        message: "Failed to update password",
       };
     }
   },
 
-  generateToken(userData: any, rememberMe: boolean = false): string {
-    const header = this.btoaUnicode(JSON.stringify({ alg: "HS256", typ: "JWT" }));
-    const expiration = rememberMe
-      ? Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60
-      : Math.floor(Date.now() / 1000) + 24 * 60 * 60;
-  
-    const payload =  this.btoaUnicode(
-      JSON.stringify({
-        ...userData,
-        exp: expiration,
-        iat: Math.floor(Date.now() / 1000),
-      })
-    );
-    const signature =  this.btoaUnicode("mock-signature");
-    return `${header}.${payload}.${signature}`;
-  }
-  ,
+  async generateToken(userData: {
+    id: string;
+    username: string;
+    role: string;
+  }): Promise<string> {
+    const now = Math.floor(Date.now() / 1000);
+    const expiration = now + 24 * 60 * 60; // 24 hours
 
-  generateRefreshToken(userData: any, rememberMe: boolean = false): string {
-    const header = this.btoaUnicode(JSON.stringify({ alg: "HS256", typ: "JWT" }));
-    const expiration = rememberMe
-      ? Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60
-      : Math.floor(Date.now() / 1000) + 24 * 60 * 60;
+    const token = await new SignJWT({
+      id: userData.id,
+      username: userData.username,
+      role: userData.role,
+    })
+      .setProtectedHeader({ alg: "HS256" })
+      .setIssuedAt(now)
+      .setExpirationTime(expiration)
+      .sign(JWT_SECRET);
 
-    const payload = this.btoaUnicode(
-      JSON.stringify({
-        ...userData,
-        exp: expiration,
-        iat: Math.floor(Date.now() / 1000),
-      })
-    );
-    const signature = this.btoaUnicode("mock-refresh-signature");
-    return `${header}.${payload}.${signature}`;
-  },
-  
-  btoaUnicode(str: string): string {
-    return btoa(unescape(encodeURIComponent(str)));
+    return token;
   },
 
-  verifyToken(token: string): any {
+  async generateRefreshToken(userData: {
+    id: string;
+    username: string;
+    role: string;
+  }): Promise<string> {
+    const now = Math.floor(Date.now() / 1000);
+    const expiration = now + 7 * 24 * 60 * 60; // 7 days
+
+    const token = await new SignJWT({
+      id: userData.id,
+      username: userData.username,
+      role: userData.role,
+    })
+      .setProtectedHeader({ alg: "HS256" })
+      .setIssuedAt(now)
+      .setExpirationTime(expiration)
+      .sign(JWT_SECRET);
+
+    return token;
+  },
+
+  async verifyToken(token: string): Promise<JWTPayload | null> {
     try {
-      const parts = token.split(".");
-      if (parts.length !== 3) return null;
-
-      const payload = JSON.parse(atob(parts[1]));
-
-      if (payload.exp < Math.floor(Date.now() / 1000)) {
-        return null;
-      }
-
-      return payload;
+      const { payload } = await jwtVerify(token, JWT_SECRET);
+      return payload as JWTPayload;
     } catch (error) {
+      console.error("Token verification failed:", error);
       return null;
     }
   },
 
   logout(): void {
-    sessionService.destroySession();
-
     eraseCookie("accessToken");
     eraseCookie("refreshToken");
     eraseCookie("user");
-    eraseCookie("rememberMe");
+
+    console.log("🔓 Logout completed, auth cookies cleared");
   },
 
   getToken(): string | null {
     return getCookie("accessToken");
   },
 
-  getUser(): any {
+  getUser(): { id: string; username: string; role: string } | null {
     const userCookie = getCookie("user");
     return userCookie ? JSON.parse(userCookie) : null;
+  },
+
+  // Kiểm tra session conflict bằng JWT và database lastTokenIat
+  async checkSessionConflictByJWT(userId: string): Promise<boolean> {
+    try {
+      const token = this.getToken();
+      if (!token) return true; // Không có token = conflict
+
+      const decoded = await this.verifyToken(token);
+      if (!decoded) return true; // Token không hợp lệ = conflict
+
+      // Lấy thông tin user mới nhất từ database
+      const accountResponse = await api.get("/account");
+      const accounts: Account[] = accountResponse.data;
+      const account = accounts.find((acc: Account) => acc.id === userId);
+
+      if (!account || account.status === false) {
+        return true; // User không tồn tại hoặc bị khóa = conflict
+      }
+
+      // Kiểm tra lastTokenIat trong database để phát hiện session mới hơn
+      const currentTokenIat = decoded.iat || 0;
+      const storedLastTokenIat = account.lastTokenIat || 0;
+
+      if (storedLastTokenIat > currentTokenIat) {
+        console.log(
+          `🔍 Session conflict detected via database. Current iat: ${currentTokenIat}, Database lastTokenIat: ${storedLastTokenIat}`
+        );
+        return true; // Có conflict - có session mới hơn
+      }
+
+      return false; // Không có conflict
+    } catch (error) {
+      console.error("Error checking session conflict:", error);
+      return true; // Lỗi = coi như có conflict để an toàn
+    }
+  },
+
+  // Cập nhật lastTokenIat trong database khi user login
+  async updateLastTokenIat(userId: string, tokenIat: number): Promise<boolean> {
+    try {
+      // Get current account data
+      const accountResponse = await api.get("/account");
+      const accounts: Account[] = accountResponse.data;
+      const accountIndex = accounts.findIndex(
+        (acc: Account) => acc.id === userId
+      );
+
+      if (accountIndex === -1) {
+        console.error(`User with id ${userId} not found`);
+        return false;
+      }
+
+      // Update lastTokenIat
+      accounts[accountIndex].lastTokenIat = tokenIat;
+
+      // Save back to database
+      await api.patch(`/account/${userId}`, { lastTokenIat: tokenIat });
+
+      console.log(`✅ Updated lastTokenIat for user ${userId}: ${tokenIat}`);
+      return true;
+    } catch (error) {
+      console.error("Error updating lastTokenIat:", error);
+      return false;
+    }
   },
 
   async validateUserExists(userId: string): Promise<boolean> {
@@ -466,18 +494,12 @@ export const authService = {
 
   async validateSession(userId: string): Promise<boolean> {
     try {
-      return await sessionService.isSessionValid(userId);
+      // Chỉ kiểm tra JWT-based session conflict
+      const hasJWTConflict = await this.checkSessionConflictByJWT(userId);
+      return !hasJWTConflict;
     } catch (error) {
       console.error("Error validating session:", error);
       return false;
     }
-  },
-
-  initializeSessionFromCookie(): void {
-    sessionService.initializeFromCookie();
-  },
-
-  setForceLogoutCallback(callback: () => void): void {
-    sessionService.setForceLogoutCallback(callback);
   },
 };

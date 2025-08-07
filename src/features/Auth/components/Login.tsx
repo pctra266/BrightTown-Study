@@ -10,8 +10,6 @@ import {
     IconButton,
     InputAdornment,
     Alert,
-    FormControlLabel,
-    Checkbox,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
@@ -23,11 +21,10 @@ const Login = () => {
         password: "",
     });
     const [showPassword, setShowPassword] = useState(false);
-    const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const { login,loginWithGoogle  } = useAuth();
+    const { login, loginWithGoogle } = useAuth();
     const navigate = useNavigate();
 
 
@@ -71,17 +68,15 @@ const Login = () => {
         try {
             const result = await login(
                 formData.username,
-                formData.password,
-                rememberMe
+                formData.password
             );
 
             if (result.success) {
-
                 navigate("/", { replace: true });
             } else {
                 setError(result.error || "An error occurred during login");
             }
-        } catch (error) {
+        } catch {
             setError("An error occurred during login");
         } finally {
             setLoading(false);
@@ -178,24 +173,21 @@ const Login = () => {
                                 mb: 1,
                             }}
                         >
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={rememberMe}
-                                        onChange={(e) => setRememberMe(e.target.checked)}
-                                        name="rememberMe"
-                                        color="primary"
-                                    />
-                                }
-                                label="Remember me"
-                            />
                             <MuiLink
                                 component={Link}
                                 to="/forgot-password"
                                 underline="hover"
                                 variant="body2"
                             >
-                                Forgot your password?
+                                Forgot password?
+                            </MuiLink>
+                            <MuiLink
+                                component={Link}
+                                to="/register"
+                                underline="hover"
+                                variant="body2"
+                            >
+                                Sign up
                             </MuiLink>
                         </Box>
 

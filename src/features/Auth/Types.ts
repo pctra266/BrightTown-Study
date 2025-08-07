@@ -5,6 +5,7 @@ export interface Account {
   password: any;
   role: string;
   status?: boolean;
+  lastTokenIat?: number;
 }
 
 export interface Role {

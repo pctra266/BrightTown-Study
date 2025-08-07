@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import { authService } from "../features/Auth/services/AuthService";
 import { useAccountValidation } from "../hooks/useAccountValidation";
+import { jwtSessionManager } from "../services/JWTSessionManager";
 
 interface User {
     id: string;
@@ -18,8 +19,7 @@ interface AuthContextType {
     user: User | null;
     login: (
         username: string,
-        password: string,
-        rememberMe?: boolean
+        password: string
     ) => Promise<{ success: boolean; error?: string }>;
     register: (
         username: string,
@@ -54,32 +54,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     });
 
     useEffect(() => {
-        const initializeAuth = () => {
+        const initializeAuth = async () => {
             const token = authService.getToken();
             const storedUser = authService.getUser();
 
             if (token && storedUser) {
-                const userData = authService.verifyToken(token);
+                const userData = await authService.verifyToken(token);
                 if (userData) {
                     setUser(storedUser);
 
-                    authService.initializeSessionFromCookie();
-                    authService.setForceLogoutCallback(() => {
-                        console.log("Force logout due to session conflict");
-                        authService.logout();
-                        setUser(null);
-                        sessionStorage.setItem("sessionConflict", "true");
-                        const protectedRoutes = ["/user", "/admin", "/talk"];
-                        const currentPath = window.location.pathname;
-                        if (protectedRoutes.some((route) => currentPath.startsWith(route))) {
-                            window.location.href = "/login";
-                        }
-                    });
-
-                    setTimeout(async () => {
-                        const isValidSession = await authService.validateSession(storedUser.id);
-                        if (!isValidSession) {
-                            console.log("Session invalid on initialization - logging out");
+                    // Only use JWT session manager
+                    const jwtInitialized = await jwtSessionManager.initializeFromToken(storedUser.id);
+                    if (jwtInitialized) {
+                        await jwtSessionManager.startMonitoring(storedUser.id, () => {
+                            console.log("JWT session conflict detected - logging out");
                             authService.logout();
                             setUser(null);
                             sessionStorage.setItem("sessionConflict", "true");
@@ -88,8 +76,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                             if (protectedRoutes.some((route) => currentPath.startsWith(route))) {
                                 window.location.href = "/login";
                             }
-                        }
-                    }, 100);
+                        });
+
+                        setTimeout(async () => {
+                            const isValidSession = await authService.validateSession(storedUser.id);
+                            if (!isValidSession) {
+                                console.log("Session invalid on initialization - logging out");
+                                authService.logout();
+                                setUser(null);
+                                sessionStorage.setItem("sessionConflict", "true");
+                                const protectedRoutes = ["/user", "/admin", "/talk"];
+                                const currentPath = window.location.pathname;
+                                if (protectedRoutes.some((route) => currentPath.startsWith(route))) {
+                                    window.location.href = "/login";
+                                }
+                            }
+                        }, 100);
+                    } else {
+                        authService.logout();
+                        setUser(null);
+                    }
                 } else {
                     authService.logout();
                     setUser(null);
@@ -105,7 +111,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             const currentUser = authService.getUser();
 
             if (token && currentUser) {
-                const userData = authService.verifyToken(token);
+                const userData = await authService.verifyToken(token);
                 if (!userData) {
                     authService.logout();
                     setUser(null);
@@ -120,28 +126,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                     return;
                 }
 
-                const isSessionValid = await authService.validateSession(currentUser.id);
-                if (!isSessionValid) {
-                    console.log("Session invalidated - logging out");
-                    authService.logout();
-                    setUser(null);
-                    sessionStorage.setItem("sessionConflict", "true");
-
-                    const protectedRoutes = ["/user", "/admin", "/talk"];
-                    const currentPath = window.location.pathname;
-                    if (protectedRoutes.some((route) => currentPath.startsWith(route))) {
-                        window.location.href = "/login";
-                    }
-                    return;
-                }
-
-
                 const userExists = await authService.validateUserExists(currentUser.id);
                 if (!userExists) {
                     try {
                         const accountResponse = await fetch('http://localhost:9000/account');
                         const accounts = await accountResponse.json();
-                        const account = accounts.find((acc: any) => acc.id === currentUser.id);
+                        const account = accounts.find((acc: { id: string; status: boolean }) => acc.id === currentUser.id);
 
                         if (!account) {
                             sessionStorage.setItem("accountDeleted", "true");
@@ -171,10 +161,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const login = async (
         username: string,
-        password: string,
-        rememberMe: boolean = false
+        password: string
     ): Promise<{ success: boolean; error?: string }> => {
-        const result = await authService.login(username, password, rememberMe);
+        const result = await authService.login(username, password);
 
         if (result.success && result.user) {
             const userData: User = {
@@ -184,6 +173,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             };
 
             setUser(userData);
+
+            // Initialize JWT session manager for new session
+            setTimeout(async () => {
+                const jwtInitialized = await jwtSessionManager.initializeFromToken(userData.id);
+                if (jwtInitialized) {
+                    await jwtSessionManager.startMonitoring(userData.id, () => {
+                        console.log("JWT session conflict detected during session - logging out");
+                        authService.logout();
+                        setUser(null);
+                        sessionStorage.setItem("sessionConflict", "true");
+                        const protectedRoutes = ["/user", "/admin", "/talk"];
+                        const currentPath = window.location.pathname;
+                        if (protectedRoutes.some((route) => currentPath.startsWith(route))) {
+                            window.location.href = "/login";
+                        }
+                    });
+                } else {
+                    console.warn("Failed to initialize JWT session manager after login");
+                }
+            }, 100);
+
             return { success: true };
         }
 
@@ -219,6 +229,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     const logout = () => {
+        // Stop JWT session monitoring
+        jwtSessionManager.stopMonitoring();
+
         authService.logout();
         setUser(null);
     };
