@@ -3,7 +3,7 @@ export type User = {
   username: string;
   password: string;
   role: string;
-  status: boolean;
+  status: boolean | null;
 };
 
 export type FlashcardMap = {
@@ -108,6 +108,31 @@ export const addUser = async (
   }
 };
 
+export const softDeleteUser = async (id: string) => {
+  try {
+    const response = await fetch(`http://localhost:9000/account/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: null }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to soft delete user");
+    }
+    return { success: true };
+  } catch (error) {
+    console.error("Error soft deleting user");
+    let errorMessage = "Unknown error";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    return { success: false, message: errorMessage };
+  }
+};
+
+
 export const deleteUser = async (id: string) => {
   try {
     const response = await fetch(`http://localhost:9000/account/${id}`, {
@@ -127,6 +152,32 @@ export const deleteUser = async (id: string) => {
     return { success: false, message: errorMessage };
   }
 };
+
+export const restoreUser = async (id: string) => {
+  try {
+    const response = await fetch(`http://localhost:9000/account/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: true }), 
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to restore user");
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error restoring user");
+    let errorMessage = "Unknown error";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    return { success: false, message: errorMessage };
+  }
+};
+
 
 export const updateUser = async (
   updatedUser: User
