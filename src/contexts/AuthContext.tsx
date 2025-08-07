@@ -63,7 +63,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 if (userData) {
                     setUser(storedUser);
 
-                    // Chỉ dùng JWT session manager
+                    // Only use JWT session manager
                     const jwtInitialized = await jwtSessionManager.initializeFromToken(storedUser.id);
                     if (jwtInitialized) {
                         await jwtSessionManager.startMonitoring(storedUser.id, () => {
