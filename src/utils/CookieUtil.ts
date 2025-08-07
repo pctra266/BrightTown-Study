@@ -6,7 +6,7 @@ export const setCookie = (name: string, value: string, days?: number) => {
     expires = "; expires=" + date.toUTCString();
   }
 
-  // Trong môi trường development, không cần Secure
+  // In development environment, Secure flag is not needed
   const isProduction = window.location.protocol === "https:";
   const secureFlag = isProduction ? "; Secure" : "";
 
