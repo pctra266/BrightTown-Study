@@ -23,7 +23,7 @@ import DiscussionDetail from "../features/Discussion/components/DiscussionDetail
 import ProtectedRoute from "../features/AdminDashboard/ProtectedRoute";
 import CreateDiscussion from "../features/Discussion/components/CreateDiscussion";
 import ProtectedRouteUser from "./ProtectedRouteUser";
-
+import RecycleBin from "../features/AdminDashboard/RecycleBin";
 const routers = createBrowserRouter([
   {
     path: "/",
@@ -67,6 +67,7 @@ const routers = createBrowserRouter([
           { path: "users/create", element: <UserCreate /> },
           { path: "users/:id/edit", element: <UserEdit /> },
           { path: "flashcards", element: <FlashcardList /> },
+          { path: "recycle", element: <RecycleBin /> },
         ],
       },
     ],

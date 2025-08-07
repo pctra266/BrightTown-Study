@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import LeftMenu from "../LeftMenu";
 import Alert from "../Alert";
-import { fetchUsersAndFlashcards, deleteUser } from "./userService";
+import { fetchUsersAndFlashcards, softDeleteUser } from "./userService";
 import type { User, FlashcardMap } from "./userService";
 import { useAuth } from "../../../contexts/AuthContext";
-import Pagination from "../Pagination"; // Import Pagination component
+import Pagination from "../Pagination"; 
 
 export default function ManagerUser() {
   const [users, setUsers] = useState<User[]>([]);
@@ -47,7 +47,6 @@ export default function ManagerUser() {
     fetchData();
   }, []);
 
-  // Reset page về 1 mỗi khi filter/search thay đổi
   useEffect(() => {
     setCurrentPage(1);
   }, [filterRole, filterStatus, searchUsername]);
@@ -62,20 +61,22 @@ export default function ManagerUser() {
     setExpanded(newExpanded);
   };
 
-  const filteredUsers = users.filter((u) => {
-    const matchRole = filterRole === "all" || u.role === filterRole;
-    const matchStatus = filterStatus === "all" || String(u.status) === filterStatus;
-    const matchSearch =
-      searchUsername.trim() === "" || u.username.toLowerCase().includes(searchUsername.toLowerCase());
+  const filteredUsers = users
+    .filter((u) => u.status !== null) 
+    .filter((u) => {
+      const matchRole = filterRole === "all" || u.role === filterRole;
+      const matchStatus = filterStatus === "all" || String(u.status) === filterStatus;
+      const matchSearch =
+        searchUsername.trim() === "" || u.username.toLowerCase().includes(searchUsername.toLowerCase());
 
-    if (user?.role === "1" && u.role === "0") {
-      return false;
-    }
+      if (user?.role === "1" && u.role === "0") {
+        return false;
+      }
 
-    return matchRole && matchStatus && matchSearch;
-  });
+      return matchRole && matchStatus && matchSearch;
+    });
 
-  // Lấy phần dữ liệu trang hiện tại
+
   const paginatedUsers = filteredUsers.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -174,9 +175,8 @@ export default function ManagerUser() {
                     </td>
                     <td className="px-4 py-2">
                       <span
-                        className={`px-2 py-1 rounded text-sm ${
-                          userItem.status ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-                        }`}
+                        className={`px-2 py-1 rounded text-sm ${userItem.status ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                          }`}
                       >
                         {userItem.status ? "Active" : "Inactive"}
                       </span>
@@ -293,14 +293,20 @@ export default function ManagerUser() {
                 onClick={async () => {
                   const id = confirmDeleteId;
                   setConfirmDeleteId(null);
-                  const result = await deleteUser(id);
+                  const result = await softDeleteUser(id);
                   if (result.success) {
-                    setUsers((prev) => prev.filter((u) => u.id !== id));
+                    setUsers((prev) =>
+                      prev.map((u) =>
+                        u.id === id ? { ...u, status: null } : u
+                      )
+                    );
                     setExpanded((prev) => {
                       const newExpanded = new Set(prev);
                       newExpanded.delete(id);
                       return newExpanded;
                     });
+                  } else {
+                    setAlert({ type: "warning", message: result.message || "Failed to delete" });
                   }
                 }}
               >
