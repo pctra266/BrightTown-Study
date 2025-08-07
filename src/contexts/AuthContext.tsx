@@ -174,7 +174,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
             setUser(userData);
 
-            // Khởi tạo JWT session manager cho session mới
+            // Initialize JWT session manager for new session
             setTimeout(async () => {
                 const jwtInitialized = await jwtSessionManager.initializeFromToken(userData.id);
                 if (jwtInitialized) {
