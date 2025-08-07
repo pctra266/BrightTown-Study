@@ -27,7 +27,9 @@ interface AuthContextType {
     ) => Promise<{ success: boolean; message: string }>;
     logout: () => void;
     isAuthenticated: boolean;
+    loginWithGoogle: () => Promise<{ success: boolean; error?: string }>; // NEW
 }
+
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -187,6 +189,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
         return { success: false, error: result.error };
     };
+    const loginWithGoogle = async (): Promise<{ success: boolean; error?: string }> => {
+        const result = await authService.loginByGoogle();
+    
+        if (result.success && result.user) {
+            const userData: User = {
+                id: result.user.id,
+                username: result.user.username,
+                role: result.user.role,
+            };
+    
+            setUser(userData);
+            return { success: true };
+        }
+    
+        return { success: false, error: result.error };
+    };
+    
 
     const register = async (
         username: string,
@@ -210,6 +229,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         register,
         logout,
         isAuthenticated: !!user,
+        loginWithGoogle,
     };
 
     if (loading) {
