@@ -8,14 +8,22 @@ export enum BookMode {
   VIEW = "View",
 }
 
+interface Chapter {
+  name: string;
+  status: "pending" | "approved" | "rejected";
+}
+
 export interface Book {
   id?: string | number;
   isbn: string;
   title: string;
   author: string;
   copies: number;
-  chapters?: string[];
-  content?: string;
+  chapters?: Chapter[];
+  content?: { [key: string]: string };
+  userId?: string;
+  status?: "pending" | "approved" | "rejected";
+  chapterStatuses?: { [key: string]: "pending" | "approved" | "rejected" };
 }
 
 export type BookAction = {
@@ -32,10 +40,14 @@ type Props = {
 const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
   const [newBook, setNewBook] = useState<Book>({
     id: book.id,
-    isbn: "",
-    title: "",
-    author: "",
-    copies: 0,
+    isbn: book.isbn || "",
+    title: book.title || "",
+    author: book.author || "",
+    copies: book.copies || 0,
+    chapters: book.chapters || [],
+    content: book.content || {},
+    userId: book.userId || "",
+    status: book.status || "pending",
   });
   const [error, setError] = useState<{
     isbnError: string;
@@ -59,21 +71,31 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
         document.getElementById("book-title")?.focus();
       }, 500);
     }
-  }, [mode]);
-
-  useEffect(() => {
-    setNewBook({ ...book });
-  }, [book]);
+    setNewBook({
+      id: book.id,
+      isbn: book.isbn || "",
+      title: book.title || "",
+      author: book.author || "",
+      copies: book.copies || 0,
+      chapters: book.chapters || [],
+      content: book.content || {},
+      userId: book.userId || "",
+      status: mode === BookMode.CREATE ? "pending" : book.status || "approved",
+    });
+  }, [book, mode]);
 
   const handleClear = () => {
-    setNewBook((prevState) => ({
-      ...prevState,
-      id: mode === BookMode.EDIT ? prevState.id : undefined,
-      isbn: mode === BookMode.EDIT ? prevState.isbn : "",
+    setNewBook({
+      id: mode === BookMode.EDIT ? book.id : undefined,
+      isbn: mode === BookMode.EDIT ? book.isbn : "",
       title: "",
       author: "",
       copies: 0,
-    }));
+      chapters: [],
+      content: {},
+      userId: "",
+      status: "pending",
+    });
     setError({
       isbnError: " ",
       titleError: " ",
@@ -148,15 +170,15 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
           <CancelIcon sx={{ color: "white" }} />
         </IconButton>
       </Box>
-      
+
       <Box sx={{ p: 2 }}>
         <Typography
           variant="h5"
-          sx={{ 
-            color: "white", 
-            fontWeight: "bold", 
+          sx={{
+            color: "white",
+            fontWeight: "bold",
             textAlign: "left",
-            mb: 3
+            mb: 3,
           }}
         >
           {mode} Book
@@ -167,7 +189,7 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
             sx={{
               color: "white",
               fontWeight: "bold",
-              mb: 0.5
+              mb: 0.5,
             }}
           >
             Book ISBN
@@ -179,9 +201,9 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
               sx: {
                 color: "white",
                 backgroundColor: "rgba(255, 255, 255, 0.1)",
-                "& .MuiInputBase-input": { 
+                "& .MuiInputBase-input": {
                   color: "white",
-                  padding: "8px 0"
+                  padding: "8px 0",
                 },
                 "& .MuiInput-underline:before": { borderBottomColor: "#1976D2" },
                 "& .MuiInput-underline:after": { borderBottomColor: "#1976D2" },
@@ -217,21 +239,21 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
             error={error.isbnError !== " "}
             helperText={error.isbnError !== " " ? error.isbnError : " "}
             FormHelperTextProps={{
-              sx: { 
-                color: "red", 
+              sx: {
+                color: "red",
                 marginLeft: 0,
-                height: "20px"
+                height: "20px",
               },
             }}
           />
           {mode === BookMode.VIEW && (
             <Typography
-              sx={{ 
-                color: "#afe619", 
+              sx={{
+                color: "#afe619",
                 mt: 0.5,
                 fontStyle: "italic",
                 fontSize: "0.875rem",
-                height: "20px"
+                height: "20px",
               }}
             >
               Read Only
@@ -244,7 +266,7 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
             sx={{
               color: "white",
               fontWeight: "bold",
-              mb: 0.5
+              mb: 0.5,
             }}
           >
             Book Title *
@@ -256,9 +278,9 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
               sx: {
                 color: "white",
                 backgroundColor: "rgba(255, 255, 255, 0.1)",
-                "& .MuiInputBase-input": { 
+                "& .MuiInputBase-input": {
                   color: "white",
-                  padding: "8px 0"
+                  padding: "8px 0",
                 },
                 "& .MuiInput-underline:before": { borderBottomColor: "#1976D2" },
                 "& .MuiInput-underline:after": { borderBottomColor: "#1976D2" },
@@ -294,21 +316,21 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
             error={error.titleError !== " "}
             helperText={error.titleError !== " " ? error.titleError : " "}
             FormHelperTextProps={{
-              sx: { 
-                color: "red", 
+              sx: {
+                color: "red",
                 marginLeft: 0,
-                height: "20px"
+                height: "20px",
               },
             }}
           />
           {mode === BookMode.VIEW && (
             <Typography
-              sx={{ 
-                color: "#afe619", 
+              sx={{
+                color: "#afe619",
                 mt: 0.5,
                 fontStyle: "italic",
                 fontSize: "0.875rem",
-                height: "20px"
+                height: "20px",
               }}
             >
               Read Only
@@ -321,7 +343,7 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
             sx={{
               color: "white",
               fontWeight: "bold",
-              mb: 0.5
+              mb: 0.5,
             }}
           >
             Book Author *
@@ -333,9 +355,9 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
               sx: {
                 color: "white",
                 backgroundColor: "rgba(255, 255, 255, 0.1)",
-                "& .MuiInputBase-input": { 
+                "& .MuiInputBase-input": {
                   color: "white",
-                  padding: "8px 0"
+                  padding: "8px 0",
                 },
                 "& .MuiInput-underline:before": { borderBottomColor: "#1976D2" },
                 "& .MuiInput-underline:after": { borderBottomColor: "#1976D2" },
@@ -371,21 +393,21 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
             error={error.authorError !== " "}
             helperText={error.authorError !== " " ? error.authorError : " "}
             FormHelperTextProps={{
-              sx: { 
-                color: "red", 
+              sx: {
+                color: "red",
                 marginLeft: 0,
-                height: "20px"
+                height: "20px",
               },
             }}
           />
           {mode === BookMode.VIEW && (
             <Typography
-              sx={{ 
-                color: "#afe619", 
+              sx={{
+                color: "#afe619",
                 mt: 0.5,
                 fontStyle: "italic",
                 fontSize: "0.875rem",
-                height: "20px"
+                height: "20px",
               }}
             >
               Read Only
@@ -398,7 +420,7 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
             sx={{
               color: "white",
               fontWeight: "bold",
-              mb: 0.5
+              mb: 0.5,
             }}
           >
             Book Copies *
@@ -410,71 +432,55 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
               sx: {
                 color: "white",
                 backgroundColor: "rgba(255, 255, 255, 0.1)",
-                "& .MuiInputBase-input": { 
+                "& .MuiInputBase-input": {
                   color: "white",
-                  padding: "8px 0"
+                  padding: "8px 0",
                 },
                 "& .MuiInput-underline:before": { borderBottomColor: "#1976D2" },
                 "& .MuiInput-underline:after": { borderBottomColor: "#1976D2" },
               },
             }}
             id="book-copies"
+            type="number"
             fullWidth
             variant="standard"
-            type="number"
-            value={newBook.copies === 0 ? "" : newBook.copies}
-            inputProps={{ min: "0", max: "50" }}
-            onKeyDown={(event) => {
-              if (
-                event.key === "e" ||
-                event.key === "-" ||
-                event.key === "." ||
-                event.key === "+" ||
-                event.key === "E"
-              ) {
-                event.preventDefault();
-              }
-            }}
+            value={newBook.copies}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              const { value } = event.target;
-              if (value === "") {
-                setNewBook((prevState) => ({
-                  ...prevState,
-                  copies: 0,
-                }));
+              const value = parseInt(event.target.value);
+              if (isNaN(value) || value <= 0) {
                 setError((prevState) => ({
                   ...prevState,
-                  copiesError: "Book copies are required",
+                  copiesError: "Enter valid number of book copies",
                 }));
-              } else if (!isNaN(Number(value)) && Number(value) <= 50) {
-                setNewBook((prevState) => ({
-                  ...prevState,
-                  copies: Number(value),
-                }));
+              } else {
                 setError((prevState) => ({
                   ...prevState,
                   copiesError: " ",
                 }));
               }
+              setNewBook((prevState) => ({
+                ...prevState,
+                copies: value,
+              }));
             }}
             error={error.copiesError !== " "}
             helperText={error.copiesError !== " " ? error.copiesError : " "}
             FormHelperTextProps={{
-              sx: { 
-                color: "red", 
+              sx: {
+                color: "red",
                 marginLeft: 0,
-                height: "20px"
+                height: "20px",
               },
             }}
           />
           {mode === BookMode.VIEW && (
             <Typography
-              sx={{ 
-                color: "#afe619", 
+              sx={{
+                color: "#afe619",
                 mt: 0.5,
                 fontStyle: "italic",
                 fontSize: "0.875rem",
-                height: "20px"
+                height: "20px",
               }}
             >
               Read Only
@@ -483,22 +489,31 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
         </Box>
       </Box>
 
-      {(mode === BookMode.CREATE || mode === BookMode.EDIT) && (
-        <Box display="flex" justifyContent="flex-end" gap={2} pb={2} pt={4} pr={4}>
+      {mode !== BookMode.VIEW && (
+        <Box sx={{ p: 2, display: "flex", gap: 2 }}>
           <Button
             variant="contained"
-            color="inherit"
-            sx={{ fontWeight: "bold", minWidth: "100px", background: "linear-gradient(45deg, #b41313, #c1df17)", '&:hover': { background: "linear-gradient(45deg, #1557a0, #0cc770)" } }}
-            onClick={handleClear}
+            sx={{
+              flex: 1,
+              fontWeight: "bold",
+              background: "linear-gradient(135deg, #1976D2, #42A5F5)",
+              "&:hover": { background: "linear-gradient(135deg, #1557a0, #42A5F5)" },
+            }}
+            onClick={handleAction}
           >
-            Clear
+            {mode === BookMode.CREATE ? "Create" : "Update"}
           </Button>
           <Button
             variant="contained"
-            sx={{ fontWeight: "bold", minWidth: "100px", backgroundColor: "#1976D2", '&:hover': { backgroundColor: "#15a05a" } }}
-            onClick={handleAction}
+            sx={{
+              flex: 1,
+              fontWeight: "bold",
+              background: "linear-gradient(135deg, #d32f2f, #ef5350)",
+              "&:hover": { background: "linear-gradient(135deg, #b71c1c, #ef5350)" },
+            }}
+            onClick={handleClear}
           >
-            {mode} Book
+            Clear
           </Button>
         </Box>
       )}
