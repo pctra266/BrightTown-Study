@@ -21,7 +21,7 @@ export class JWTSessionManager {
   }
 
   /**
-   * Khởi tạo session metadata từ JWT token hiện tại
+   * Initialize session metadata from current JWT token
    */
   async initializeFromToken(userId: string): Promise<boolean> {
     const token = authService.getToken();
