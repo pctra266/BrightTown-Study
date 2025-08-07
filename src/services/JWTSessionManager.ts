@@ -49,7 +49,7 @@ export class JWTSessionManager {
   }
 
   /**
-   * Bắt đầu giám sát session conflict dựa trên JWT
+   * Start monitoring session conflicts based on JWT
    */
   async startMonitoring(userId: string, onConflict: () => void): Promise<void> {
     if (!onConflict || typeof onConflict !== "function") {
