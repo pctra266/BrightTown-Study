@@ -5,8 +5,18 @@ export const setCookie = (name: string, value: string, days?: number) => {
     date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
     expires = "; expires=" + date.toUTCString();
   }
+
+  // Trong môi trường development, không cần Secure
+  const isProduction = window.location.protocol === "https:";
+  const secureFlag = isProduction ? "; Secure" : "";
+
   document.cookie =
-    name + "=" + (value || "") + expires + "; path=/; SameSite=Strict; Secure";
+    name +
+    "=" +
+    (value || "") +
+    expires +
+    "; path=/; SameSite=Strict" +
+    secureFlag;
 };
 
 export const getCookie = (name: string): string | null => {
@@ -21,7 +31,12 @@ export const getCookie = (name: string): string | null => {
 };
 
 export const eraseCookie = (name: string) => {
+  // Trong môi trường development, không cần Secure
+  const isProduction = window.location.protocol === "https:";
+  const secureFlag = isProduction ? "; Secure" : "";
+
   document.cookie =
     name +
-    "=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Strict; Secure";
+    "=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Strict" +
+    secureFlag;
 };
