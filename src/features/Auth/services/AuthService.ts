@@ -7,6 +7,9 @@ import type {
   RegisterResponse,
   TokenRefreshResponse,
 } from "../Types";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { auth} from "./firebase"; 
+import { CleaningServices } from "@mui/icons-material";
 
 export const authService = {
   async login(
@@ -86,8 +89,96 @@ export const authService = {
         error: "An error occurred during login",
       };
     }
+  },async loginByGoogle(): Promise<LoginResponse> {
+      try {
+        const accountResponse = await api.get("/account");
+        const accounts: Account[] = accountResponse.data;
+      
+        const provider = new GoogleAuthProvider();
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+      
+        if (!user.email) {
+          return {
+            success: false,
+            error: "Google account has no email",
+          };
+        }
+      
+        let account = accounts.find((acc: Account) => acc.email === user.email);
+        let newAccount: Account | null = null;
+      
+        if (account) {
+          if (account.status === false) {
+            return {
+              success: false,
+              error: "Your account has been locked. Please contact administrator.",
+            };
+          }
+        } else {
+          // Create new account object
+          newAccount = {
+            id: user.uid,
+            username: user.displayName || user.email || "Unknown",
+            email: user.email,
+            password: undefined,
+            role: "2",
+            status: true,
+          };
+      
+          try {
+            const res = await fetch("http://localhost:9000/account", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(newAccount),
+            });
+      
+            if (!res.ok) {
+              console.warn("Failed to save to db.json: ", await res.text());
+            } else {
+              console.log("Saved to db.json");
+            }
+          } catch (jsonErr) {
+            console.warn("Failed to save to db.json:", jsonErr);
+          }
+      
+          account = newAccount;
+        }
+      
+        const userData = {
+          id: account.id,
+          username: account.username,
+          role: account.role,
+        };
+      
+        await sessionService.createSession(account.id);
+        console.log("Session created for Google login");
+      
+        const token = this.generateToken(userData); 
+        const refreshToken = this.generateRefreshToken(userData);
+      
+        setCookie("accessToken", token, 7);
+        setCookie("refreshToken", refreshToken, 30);
+        setCookie("rememberMe", "true", 30);
+        setCookie("user", JSON.stringify(userData), 7);
+      
+        return {
+          success: true,
+          user: userData,
+          token,
+          refreshToken,
+        };
+      } catch (error) {
+        console.error("Google sign-in failed:", error);
+        return {
+          success: false,
+          error: "Google sign-in failed",
+        };
+      }
   },
-
+  
   async register(
     username: string,
     password: string
@@ -286,37 +377,42 @@ export const authService = {
   },
 
   generateToken(userData: any, rememberMe: boolean = false): string {
-    const header = btoa(JSON.stringify({ alg: "HS256", typ: "JWT" }));
+    const header = this.btoaUnicode(JSON.stringify({ alg: "HS256", typ: "JWT" }));
     const expiration = rememberMe
       ? Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60
       : Math.floor(Date.now() / 1000) + 24 * 60 * 60;
-
-    const payload = btoa(
+  
+    const payload =  this.btoaUnicode(
       JSON.stringify({
         ...userData,
         exp: expiration,
         iat: Math.floor(Date.now() / 1000),
       })
     );
-    const signature = btoa("mock-signature");
+    const signature =  this.btoaUnicode("mock-signature");
     return `${header}.${payload}.${signature}`;
-  },
+  }
+  ,
 
   generateRefreshToken(userData: any, rememberMe: boolean = false): string {
-    const header = btoa(JSON.stringify({ alg: "HS256", typ: "JWT" }));
+    const header = this.btoaUnicode(JSON.stringify({ alg: "HS256", typ: "JWT" }));
     const expiration = rememberMe
       ? Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60
       : Math.floor(Date.now() / 1000) + 24 * 60 * 60;
 
-    const payload = btoa(
+    const payload = this.btoaUnicode(
       JSON.stringify({
         ...userData,
         exp: expiration,
         iat: Math.floor(Date.now() / 1000),
       })
     );
-    const signature = btoa("mock-refresh-signature");
+    const signature = this.btoaUnicode("mock-refresh-signature");
     return `${header}.${payload}.${signature}`;
+  },
+  
+  btoaUnicode(str: string): string {
+    return btoa(unescape(encodeURIComponent(str)));
   },
 
   verifyToken(token: string): any {
