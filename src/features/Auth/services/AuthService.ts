@@ -386,10 +386,6 @@ export const authService = {
     return token;
   },
 
-  btoaUnicode(str: string): string {
-    return btoa(unescape(encodeURIComponent(str)));
-  },
-
   async verifyToken(token: string): Promise<JWTPayload | null> {
     try {
       const { payload } = await jwtVerify(token, JWT_SECRET);
