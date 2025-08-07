@@ -97,24 +97,6 @@
       "id": "0554"
     },
     {
-      "id": "0985",
-      "name": "last set",
-      "description": "t",
-      "flashcards": [
-        {
-          "id": "be595790-8cce-4a04-a470-8eaf3f1df9d3",
-          "question": "so gi bang 1",
-          "answer": "1"
-        },
-        {
-          "id": "6ebeb926-3502-4549-84e1-e5b231c38011",
-          "question": "so gi bang 2",
-          "answer": "2"
-        }
-      ],
-      "userId": "5"
-    },
-    {
       "id": "c2e3",
       "name": "lam on lam phuoc",
       "description": "",
@@ -229,6 +211,66 @@
         }
       ],
       "userId": "1"
+    },
+    {
+      "id": "db3e",
+      "name": "JAVA",
+      "description": "Fe",
+      "flashcards": [
+        {
+          "id": "97edbad3-6370-423d-b535-6602d4aa3d55",
+          "question": "a",
+          "answer": "a",
+          "image": null
+        },
+        {
+          "id": "d9848d0d-795b-4f74-8a15-bc933758256d",
+          "question": "b",
+          "answer": "b",
+          "image": null
+        }
+      ],
+      "userId": "1"
+    },
+    {
+      "id": "a1cc",
+      "name": "C#",
+      "description": "fe",
+      "flashcards": [
+        {
+          "id": "094b2476-f2a7-4ea0-8e2e-42976dba39f4",
+          "question": "a",
+          "answer": "a",
+          "image": null
+        },
+        {
+          "id": "36439713-ce3c-4f47-8d1f-17e5dba3c9d7",
+          "question": "b",
+          "answer": "b",
+          "image": null
+        }
+      ],
+      "userId": "1"
+    },
+    {
+      "id": "671f",
+      "name": "Node",
+      "description": "FE",
+      "flashcards": [
+        {
+          "id": "5bf45f98-edf4-42c2-8793-6c79f3b802e6",
+          "question": "a",
+          "answer": "a",
+          "image": null
+        },
+        {
+          "id": "9b84d1cb-ecdf-46fa-940b-df85a4bc2bf6",
+          "question": "b",
+          "answer": "b",
+          "image": null
+        }
+      ],
+      "userId": "1"
     }
   ],
   "account": [
@@ -236,67 +278,104 @@
       "id": "1",
       "username": "admin",
       "password": "123456",
-      "role": "1",
-      "status": true
+      "role": "0",
+      "status": true,
+      "lastTokenIat": 0
     },
     {
       "id": "2",
-      "username": "truong1",
+      "username": "truong",
       "password": "123456",
-      "role": "2",
-      "status": true
+      "role": "1",
+      "status": true,
+      "lastTokenIat": 1754559039
     },
     {
       "id": "4",
       "username": "pctra266",
       "password": "pctra266",
       "role": "2",
-      "status": true
+      "status": true,
+      "lastTokenIat": 1754556360
     },
     {
       "id": "5",
       "username": "trapham266",
       "password": "trapham266",
       "role": "2",
-      "status": true
+      "status": true,
+      "lastTokenIat": 0
     },
     {
       "id": "6",
       "username": "bill",
       "password": "123456",
       "role": "2",
-      "status": false
+      "status": false,
+      "lastTokenIat": 0
     },
     {
       "id": "7",
       "username": "bill123",
       "password": "888888",
       "role": "2",
-      "status": true
+      "status": true,
+      "lastTokenIat": 0
     },
     {
       "id": "8",
       "username": "hieu12",
       "password": "2@Stunning",
       "role": "2",
-      "status": true
+      "status": true,
+      "lastTokenIat": 0
     },
     {
       "id": "9",
       "username": "hieuqw123",
       "password": "123456789Hh@",
       "role": "2",
-      "status": true
+      "status": true,
+      "lastTokenIat": 0
     },
     {
       "id": "10",
-      "username": "hieuit124",
-      "password": "2@Stunning",
+      "username": "bill9999",
+      "password": "123456",
       "role": "2",
-      "status": true
+      "status": true,
+      "lastTokenIat": 0
+    },
+    {
+      "id": "11",
+      "username": "bill1010",
+      "password": "123456",
+      "role": "2",
+      "status": true,
+      "lastTokenIat": 0
+    },
+    {
+      "id": "12",
+      "username": "billq1331",
+      "password": "123456",
+      "role": "1",
+      "status": true,
+      "lastTokenIat": 0
+    },
+    {
+      "id": "13",
+      "username": "bill1232131",
+      "password": "123456",
+      "role": "2",
+      "status": true,
+      "lastTokenIat": 0
     }
   ],
   "role": [
+    {
+      "id": "0",
+      "role": "superadmin"
+    },
     {
       "id": "1",
       "role": "admin"
@@ -558,17 +637,228 @@
       "content": {},
       "status": "pending",
       "userId": "7"
+    }
+  ]
+,
+  "discussions": [
+    {
+      "id": "1",
+      "title": "How to effectively use flashcards for studying anything else?",
+      "content": "I'm struggling with memorizing vocabulary using flashcards. What are some effective techniques you recommend yet?",
+      "authorId": "2",
+      "authorName": "truong",
+      "createdAt": "2024-01-15T10:30:00Z",
+      "updatedAt": "2025-06-10T06:49:16.533Z",
+      "isEdited": true,
+      "upvotes": 1,
+      "downvotes": 1,
+      "score": 0,
+      "userVotes": {
+        "3": "upvote",
+        "4": "downvote"
+      },
+      "views": 2,
+      "viewedBy": [
+        "4",
+        "1"
+      ],
+      "answers": [
+        {
+          "id": "1",
+          "content": "I recommend using spaced repetition. Review cards at increasing intervals - 1 day, 3 days, 1 week, etc.",
+          "authorId": "3",
+          "authorName": "tqt",
+          "createdAt": "2024-01-15T14:20:00Z",
+          "updatedAt": null,
+          "isEdited": false,
+          "upvotes": 1,
+          "downvotes": 0,
+          "score": 1,
+          "userVotes": {
+            "2": "upvote"
+          }
+        },
+        {
+          "id": "2",
+          "content": "Try the Leitner system! Organize cards into different boxes based on how well you know them.\nGood luck",
+          "authorId": "4",
+          "authorName": "pctra266",
+          "createdAt": "2024-01-15T16:45:00Z",
+          "updatedAt": "2025-06-10T07:44:12.113Z",
+          "isEdited": true,
+          "upvotes": 1,
+          "downvotes": 1,
+          "score": 0,
+          "userVotes": {
+            "2": "downvote",
+            "3": "upvote"
+          }
+        }
+      ]
     },
     {
-      "id": "790c",
-      "isbn": "978-3-16-148410-6",
-      "title": "Advanced Programming",
-      "author": "Jane Doe",
-      "copies": 6,
-      "chapters": [],
-      "content": {},
-      "userId": "10",
-      "status": "pending"
+      "id": "2",
+      "title": "Best time of day to study?",
+      "content": "When do you find yourself most productive when studying? Morning, afternoon, or evening?",
+      "authorId": "3",
+      "authorName": "tqt",
+      "createdAt": "2024-01-14T08:15:00Z",
+      "updatedAt": null,
+      "isEdited": false,
+      "upvotes": 0,
+      "downvotes": 0,
+      "score": 0,
+      "userVotes": {},
+      "views": 2,
+      "viewedBy": [
+        "1",
+        "2"
+      ],
+      "answers": [
+        {
+          "id": "3",
+          "content": "I'm definitely a morning person. My brain is freshest right after I wake up.",
+          "authorId": "2",
+          "authorName": "truong",
+          "createdAt": "2024-01-14T09:30:00Z",
+          "updatedAt": null,
+          "isEdited": false,
+          "upvotes": 0,
+          "downvotes": 0,
+          "score": 0,
+          "userVotes": {}
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "title": "How to stay motivated while studying?",
+      "content": "I often lose motivation after a few weeks of studying. Any tips on maintaining long-term motivation?",
+      "authorId": "4",
+      "authorName": "pctra266",
+      "createdAt": "2024-01-13T19:22:00Z",
+      "updatedAt": null,
+      "isEdited": false,
+      "upvotes": 0,
+      "downvotes": 0,
+      "score": 0,
+      "userVotes": {},
+      "views": 2,
+      "viewedBy": [
+        "1",
+        "2"
+      ],
+      "answers": [
+        {
+          "id": "4",
+          "content": "Set small, achievable goals and celebrate when you reach them. Also, find a study buddy for accountability!",
+          "authorId": "2",
+          "authorName": "truong",
+          "createdAt": "2024-01-13T20:15:00Z",
+          "updatedAt": null,
+          "isEdited": false,
+          "upvotes": 0,
+          "downvotes": 0,
+          "score": 0,
+          "userVotes": {}
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "title": "Effective note-taking strategies?",
+      "content": "What note-taking methods do you use? I'm looking for something more effective than just writing everything down.",
+      "authorId": "2",
+      "authorName": "truong",
+      "createdAt": "2024-01-12T13:45:00Z",
+      "updatedAt": null,
+      "isEdited": false,
+      "upvotes": 0,
+      "downvotes": 0,
+      "score": 0,
+      "userVotes": {},
+      "views": 1,
+      "viewedBy": [
+        "1"
+      ],
+      "answers": []
+    },
+    {
+      "id": "5",
+      "title": "How to prepare for exams efficiently?",
+      "content": "With limited time before exams, what's the most efficient way to review all the material?",
+      "authorId": "3",
+      "authorName": "tqt",
+      "createdAt": "2024-01-11T16:20:00Z",
+      "updatedAt": null,
+      "isEdited": false,
+      "upvotes": 0,
+      "downvotes": 0,
+      "score": 0,
+      "userVotes": {},
+      "views": 2,
+      "viewedBy": [
+        "1",
+        "2"
+      ],
+      "answers": [
+        {
+          "id": "6",
+          "content": "Focus on active recall rather than just re-reading. Test yourself frequently!",
+          "authorId": "4",
+          "authorName": "pctra266",
+          "createdAt": "2024-01-11T18:45:00Z",
+          "updatedAt": null,
+          "isEdited": false,
+          "upvotes": 0,
+          "downvotes": 0,
+          "score": 0,
+          "userVotes": {}
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "title": "Lalala",
+      "content": "Lalala",
+      "authorId": "4",
+      "authorName": "pctra266",
+      "createdAt": "2025-06-10T07:41:52.222Z",
+      "updatedAt": null,
+      "isEdited": false,
+      "upvotes": 1,
+      "downvotes": 0,
+      "score": 1,
+      "userVotes": {
+        "2": "upvote"
+      },
+      "views": 2,
+      "viewedBy": [
+        "2",
+        "1"
+      ],
+      "answers": []
+    },
+    {
+      "id": "7",
+      "title": "Kakaka",
+      "content": "Kakaka",
+      "authorId": "2",
+      "authorName": "truong",
+      "createdAt": "2025-06-10T07:58:28.223Z",
+      "updatedAt": null,
+      "isEdited": false,
+      "upvotes": 0,
+      "downvotes": 1,
+      "score": -1,
+      "userVotes": {
+        "4": "downvote"
+      },
+      "views": 1,
+      "viewedBy": [
+        "4"
+      ],
+      "answers": []
     }
   ]
 }
