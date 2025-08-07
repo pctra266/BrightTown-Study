@@ -65,7 +65,7 @@ export class JWTSessionManager {
       return;
     }
 
-    // Kiểm tra ít thường xuyên hơn trước đây (3 giây)
+    // Check less frequently than before (3 seconds)
     this.conflictCheckInterval = window.setInterval(async () => {
       await this.checkForConflict();
     }, 3000);
