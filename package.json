@@ -20,6 +20,7 @@
     "axios": "^1.11.0",
     "bootstrap": "^5.3.7",
     "jose": "^6.0.12",
+    "firebase": "^12.0.0",
     "json-server": "^1.0.0-beta.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

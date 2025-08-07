@@ -24,7 +24,7 @@ const Login = () => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const { login } = useAuth();
+    const { login, loginWithGoogle } = useAuth();
     const navigate = useNavigate();
 
 
@@ -80,6 +80,15 @@ const Login = () => {
             setError("An error occurred during login");
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleGoogleLogin = async () => {
+        const result = await loginWithGoogle();
+        if (result.success) {
+            navigate("/");
+        } else {
+            setError(result.error || "An error occurred during login");
         }
     };
 
@@ -191,6 +200,16 @@ const Login = () => {
                         >
                             {loading ? "Logging in..." : "Login"}
                         </Button>
+                        <div className="bg-amber-300 cursor-pointer" onClick={handleGoogleLogin}>Sign in with Google</div>
+
+                        <Box sx={{ textAlign: "center", mt: 2 }}>
+                            <Typography variant="body2">
+                                Don't have an account?{" "}
+                                <MuiLink component={Link} to="/register" underline="hover">
+                                    Sign up here
+                                </MuiLink>
+                            </Typography>
+                        </Box>
                     </Box>
                 </Paper>
             </Box>
