@@ -229,7 +229,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     const logout = () => {
-        // Dừng JWT session monitoring
+        // Stop JWT session monitoring
         jwtSessionManager.stopMonitoring();
 
         authService.logout();
