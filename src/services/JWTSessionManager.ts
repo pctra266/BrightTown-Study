@@ -90,7 +90,7 @@ export class JWTSessionManager {
   }
 
   /**
-   * Kiểm tra session conflict bằng database lastTokenIat
+   * Check session conflict using database lastTokenIat
    */
   private async checkForConflict(): Promise<void> {
     if (!this.sessionMetadata) return;
