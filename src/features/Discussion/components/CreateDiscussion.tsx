@@ -21,10 +21,131 @@ const CreateDiscussion = () => {
     const [content, setContent] = useState("");
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState("");
+    const [titleError, setTitleError] = useState("");
+    const [contentError, setContentError] = useState("");
+    const [titleCharCount, setTitleCharCount] = useState(0);
+    const [contentCharCount, setContentCharCount] = useState(0);
+
+
+    const validateTitle = (titleText: string): string => {
+        const trimmedTitle = titleText.trim();
+
+        if (!trimmedTitle) {
+            return "Title cannot be empty.";
+        }
+
+        if (trimmedTitle.length < 5) {
+            return "Title must be at least 5 characters long.";
+        }
+
+        if (trimmedTitle.length > 200) {
+            return "Title cannot exceed 200 characters.";
+        }
+
+
+        const wordCount = trimmedTitle.split(/\s+/).length;
+        if (wordCount < 2) {
+            return "Title must contain at least 2 words.";
+        }
+
+
+        const repeatedCharsPattern = /(.)\1{4,}/;
+        if (repeatedCharsPattern.test(trimmedTitle)) {
+            return "Title contains too many repeated characters.";
+        }
+
+        return "";
+    };
+
+    const validateContent = (contentText: string): string => {
+        const trimmedContent = contentText.trim();
+
+        if (!trimmedContent) {
+            return "Content cannot be empty.";
+        }
+
+        if (trimmedContent.length < 20) {
+            return "Content must be at least 20 characters long.";
+        }
+
+        if (trimmedContent.length > 5000) {
+            return "Content cannot exceed 5000 characters.";
+        }
+
+
+        const wordCount = trimmedContent.split(/\s+/).length;
+        if (wordCount < 5) {
+            return "Content must contain at least 5 words.";
+        }
+
+
+        const repeatedCharsPattern = /(.)\1{9,}/;
+        if (repeatedCharsPattern.test(trimmedContent)) {
+            return "Content contains too many repeated characters.";
+        }
+
+        return "";
+    };
+
+
+    const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const newTitle = event.target.value;
+        setTitle(newTitle);
+        setTitleCharCount(newTitle.length);
+
+
+        if (newTitle.length > 0) {
+            const validationError = validateTitle(newTitle);
+            setTitleError(validationError);
+        } else {
+            setTitleError("");
+        }
+
+
+        if (error) {
+            setError("");
+        }
+    };
+
+    const handleContentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const newContent = event.target.value;
+        setContent(newContent);
+        setContentCharCount(newContent.length);
+
+
+        if (newContent.length > 0) {
+            const validationError = validateContent(newContent);
+            setContentError(validationError);
+        } else {
+            setContentError("");
+        }
+
+
+        if (error) {
+            setError("");
+        }
+    };
 
     const handleSubmit = async () => {
-        if (!title.trim() || !content.trim()) {
-            setError("Please fill in both title and content of the question.");
+
+        setError("");
+        setTitleError("");
+        setContentError("");
+
+
+        const titleValidationError = validateTitle(title);
+        const contentValidationError = validateContent(content);
+
+        if (titleValidationError) {
+            setTitleError(titleValidationError);
+        }
+
+        if (contentValidationError) {
+            setContentError(contentValidationError);
+        }
+
+
+        if (titleValidationError || contentValidationError) {
             return;
         }
 
@@ -33,14 +154,13 @@ const CreateDiscussion = () => {
             return;
         }
 
-        // Allow both users (role "2") and admins (role "1") to create discussions
+
         if (user.role !== "2" && user.role !== "1") {
             setError("You don't have permission to ask questions.");
             return;
         }
 
         setSubmitting(true);
-        setError("");
 
         try {
             const newDiscussion = await discussionService.createDiscussion({
@@ -92,22 +212,44 @@ const CreateDiscussion = () => {
                         <TextField
                             fullWidth
                             label="Question Title"
-                            placeholder="Enter your question title..."
+                            placeholder="Enter your question title... (minimum 5 characters, 2 words)"
                             value={title}
-                            onChange={(e) => setTitle(e.target.value)}
+                            onChange={handleTitleChange}
+                            error={Boolean(titleError)}
+                            helperText={
+                                titleError ||
+                                `${titleCharCount}/200 characters`
+                            }
                             required
                         />
+
+                        {titleError && (
+                            <Alert severity="error" sx={{ mt: 1 }}>
+                                {titleError}
+                            </Alert>
+                        )}
 
                         <TextField
                             fullWidth
                             multiline
                             rows={8}
                             label="Question Content"
-                            placeholder="Describe your question in detail..."
+                            placeholder="Describe your question in detail... (minimum 20 characters, 5 words)"
                             value={content}
-                            onChange={(e) => setContent(e.target.value)}
+                            onChange={handleContentChange}
+                            error={Boolean(contentError)}
+                            helperText={
+                                contentError ||
+                                `${contentCharCount}/5000 characters`
+                            }
                             required
                         />
+
+                        {contentError && (
+                            <Alert severity="error" sx={{ mt: 1 }}>
+                                {contentError}
+                            </Alert>
+                        )}
 
                         <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
                             <Button
@@ -121,7 +263,7 @@ const CreateDiscussion = () => {
                                 variant="contained"
                                 startIcon={<Send />}
                                 onClick={handleSubmit}
-                                disabled={!title.trim() || !content.trim() || submitting}
+                                disabled={submitting || Boolean(titleError) || Boolean(contentError)}
                             >
                                 {submitting ? "Posting..." : "Post Question"}
                             </Button>

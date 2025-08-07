@@ -42,7 +42,7 @@ import {
     type Discussion,
     type Answer,
 } from "../services/DiscussionService";
-// import VoteButtons from "./VoteButtons";
+
 
 const DiscussionDetail = () => {
     const { id } = useParams<{ id: string }>();
@@ -52,6 +52,8 @@ const DiscussionDetail = () => {
     const [loading, setLoading] = useState(true);
     const [answerContent, setAnswerContent] = useState("");
     const [submitting, setSubmitting] = useState(false);
+    const [answerError, setAnswerError] = useState("");
+    const [answerCharCount, setAnswerCharCount] = useState(0);
 
     const [currentAnswerPage, setCurrentAnswerPage] = useState(1);
     const [answerSortBy, setAnswerSortBy] = useState("newest");
@@ -112,7 +114,7 @@ const DiscussionDetail = () => {
     const filterAndSortAnswers = () => {
         if (!discussion) return;
 
-        let sorted = [...discussion.answers];
+        const sorted = [...discussion.answers];
 
         switch (answerSortBy) {
             case "newest":
@@ -137,6 +139,37 @@ const DiscussionDetail = () => {
 
         setFilteredAnswers(sorted);
         setCurrentAnswerPage(1);
+    };
+
+
+    const validateAnswer = (content: string): string => {
+        const trimmedContent = content.trim();
+
+        if (!trimmedContent) {
+            return "Answer cannot be empty.";
+        }
+
+        if (trimmedContent.length < 10) {
+            return "Answer must be at least 10 characters long.";
+        }
+
+        if (trimmedContent.length > 2000) {
+            return "Answer cannot exceed 2000 characters.";
+        }
+
+
+        const repeatedCharsPattern = /(.)\1{9,}/;
+        if (repeatedCharsPattern.test(trimmedContent)) {
+            return "Answer contains too many repeated characters.";
+        }
+
+
+        const wordCount = trimmedContent.split(/\s+/).length;
+        if (wordCount < 3) {
+            return "Answer must contain at least 3 words.";
+        }
+
+        return "";
     };
 
     const handleVoteOnQuestion = async (voteType: "upvote" | "downvote") => {
@@ -175,7 +208,17 @@ const DiscussionDetail = () => {
     };
 
     const handleSubmitAnswer = async () => {
-        if (!answerContent.trim() || !user || !id || !discussion) return;
+        if (!user || !id || !discussion) return;
+
+
+        setAnswerError("");
+
+
+        const validationError = validateAnswer(answerContent);
+        if (validationError) {
+            setAnswerError(validationError);
+            return;
+        }
 
         setSubmitting(true);
         try {
@@ -188,10 +231,27 @@ const DiscussionDetail = () => {
 
             setDiscussion(updatedDiscussion);
             setAnswerContent("");
+            setAnswerCharCount(0);
+            setAnswerError("");
         } catch (error) {
             console.error("Error submitting answer:", error);
+            setAnswerError("Failed to submit answer. Please try again.");
         } finally {
             setSubmitting(false);
+        }
+    };
+
+    const handleAnswerContentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const content = event.target.value;
+        setAnswerContent(content);
+        setAnswerCharCount(content.length);
+
+
+        if (content.length > 0) {
+            const validationError = validateAnswer(content);
+            setAnswerError(validationError);
+        } else {
+            setAnswerError("");
         }
     };
 
@@ -229,7 +289,15 @@ const DiscussionDetail = () => {
     };
 
     const handleUpdateAnswer = async (answerId: string) => {
-        if (!editAnswerContent.trim() || !id || !discussion) return;
+        if (!id || !discussion) return;
+
+
+        const validationError = validateAnswer(editAnswerContent);
+        if (validationError) {
+
+            alert(validationError);
+            return;
+        }
 
         try {
             const updatedDiscussion = await discussionService.updateAnswer(
@@ -245,6 +313,7 @@ const DiscussionDetail = () => {
             setEditAnswerContent("");
         } catch (error) {
             console.error("Error updating answer:", error);
+            alert("Failed to update answer. Please try again.");
         }
     };
 
@@ -288,7 +357,7 @@ const DiscussionDetail = () => {
 
     const canVote = useCallback(
         (authorId: string) => {
-            // Allow both users and admins to vote, but not on their own posts
+
             return isAuthenticated && user?.id !== authorId;
         },
         [isAuthenticated, user?.id]
@@ -506,7 +575,7 @@ const DiscussionDetail = () => {
                     Answers ({discussion.answers.length})
                 </Typography>
 
-                {/* {discussion.answers.length > 0 && (
+                {discussion.answers.length > 0 && (
                     <FormControl size="small" sx={{ minWidth: 150 }}>
                         <InputLabel>Sort answers by</InputLabel>
                         <Select
@@ -520,7 +589,7 @@ const DiscussionDetail = () => {
                             <MenuItem value="lowestScore">Lowest Score</MenuItem>
                         </Select>
                     </FormControl>
-                )} */}
+                )}
             </Stack>
 
             {discussion.answers.length === 0 ? (
@@ -686,7 +755,7 @@ const DiscussionDetail = () => {
                             <Pagination
                                 count={totalAnswerPages}
                                 page={currentAnswerPage}
-                                onChange={(event, value) => setCurrentAnswerPage(value)}
+                                onChange={(_, value) => setCurrentAnswerPage(value)}
                                 color="primary"
                                 size="medium"
                             />
@@ -697,7 +766,7 @@ const DiscussionDetail = () => {
 
             <Divider sx={{ my: 4 }} />
 
-            {/* Answer form
+            {/* Answer form */}
             {isAuthenticated ? (
                 <Card>
                     <CardContent>
@@ -709,27 +778,40 @@ const DiscussionDetail = () => {
                             fullWidth
                             multiline
                             rows={4}
-                            placeholder="Write your answer..."
+                            placeholder="Write your answer... (minimum 10 characters, 3 words)"
                             value={answerContent}
-                            onChange={(e) => setAnswerContent(e.target.value)}
+                            onChange={handleAnswerContentChange}
+                            error={Boolean(answerError)}
+                            helperText={
+                                answerError ||
+                                `${answerCharCount}/2000 characters`
+                            }
                             sx={{ mb: 2 }}
                         />
 
-                        <Button
-                            variant="contained"
-                            startIcon={<Send />}
-                            onClick={handleSubmitAnswer}
-                            disabled={!answerContent.trim() || submitting}
-                        >
-                            {submitting ? "Posting..." : "Post Answer"}
-                        </Button>
+                        {answerError && (
+                            <Alert severity="error" sx={{ mb: 2 }}>
+                                {answerError}
+                            </Alert>
+                        )}
+
+                        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                            <Button
+                                variant="contained"
+                                startIcon={<Send />}
+                                onClick={handleSubmitAnswer}
+                                disabled={submitting || Boolean(answerError)}
+                            >
+                                {submitting ? "Posting..." : "Post Answer"}
+                            </Button>
+                        </Box>
                     </CardContent>
                 </Card>
             ) : (
                 <Alert severity="warning">
                     You need to log in to answer questions.
                 </Alert>
-            )} */}
+            )}
 
             {/* Delete Question Dialog */}
             <Dialog
