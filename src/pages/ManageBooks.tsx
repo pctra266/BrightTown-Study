@@ -8,7 +8,6 @@ import {
   InputAdornment,
   TextField,
   Tooltip,
-  Typography,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -18,10 +17,19 @@ import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
+import ReplayIcon from "@mui/icons-material/Replay";
 import Toast, { type ToastData } from "../features/library-book/components/Toast";
 import CreateEditViewBook, { BookMode, type Book } from "../features/library-book/components/CreateEditViewBook";
 import api from "../api/api";
 import { useAuth } from "../contexts/AuthContext";
+
+interface Chapter {
+  name: string;
+  status: "pending" | "approved" | "rejected";
+}
 
 const ManageBooks = () => {
   const { user } = useAuth();
@@ -33,7 +41,8 @@ const ManageBooks = () => {
     author: "",
     copies: 0,
     chapters: [],
-    content: "",
+    content: {},
+    status: "pending",
   });
   const [openNewBook, setOpenNewBook] = useState<boolean>(false);
   const [openEditBook, setOpenEditBook] = useState<boolean>(false);
@@ -42,6 +51,20 @@ const ManageBooks = () => {
     open: false,
     message: "",
     type: "success",
+  });
+
+  const normalizeBook = (book: any): Book => ({
+    ...book,
+    id: String(book.id),
+    chapters: book.chapters
+      ? book.chapters.map((ch: any) =>
+          typeof ch === "string" ? { name: ch, status: book.chapterStatuses?.[ch] || "approved" } : ch
+        )
+      : [],
+    content: book.content || {},
+    chapterStatuses: book.chapterStatuses || {},
+    userId: book.userId || "",
+    status: book.status || "approved",
   });
 
   const columns: GridColDef[] = [
@@ -118,6 +141,21 @@ const ManageBooks = () => {
       headerClassName: "author-header",
     },
     {
+      field: "status",
+      headerName: "Status",
+      type: "string",
+      minWidth: 120,
+      renderHeader: (params) => (
+        <strong style={{ color: "white" }}>{params.colDef.headerName}</strong>
+      ),
+      headerAlign: "left",
+      align: "left",
+      sortable: true,
+      disableColumnMenu: true,
+      flex: 1,
+      headerClassName: "author-header",
+    },
+    {
       field: "actions",
       headerName: "Actions",
       type: "actions",
@@ -131,7 +169,7 @@ const ManageBooks = () => {
       align: "center",
       flex: 1.2,
       renderCell: (params) => (
-        <>
+        <Box display="flex" alignItems="center" gap={1}>
           <Tooltip title="View book">
             <IconButton
               onClick={() => {
@@ -149,7 +187,56 @@ const ManageBooks = () => {
               <VisibilityIcon />
             </IconButton>
           </Tooltip>
-          {user && (user.id === params.row.userId || user.role === "1") && (
+          {user && user.role !== "1" && user.id === params.row.userId && (
+            <Tooltip title={params.row.status === "pending" ? "Pending approval" : params.row.status === "rejected" ? "Rejected" : "Approved"}>
+              <IconButton
+                sx={{
+                  color:
+                    params.row.status === "pending"
+                      ? "#ff9800"
+                      : params.row.status === "rejected"
+                      ? "#d32f2f"
+                      : "#4caf50",
+                  "&:hover": {
+                    backgroundColor:
+                      params.row.status === "pending"
+                        ? "rgba(255, 152, 0, 0.1)"
+                        : params.row.status === "rejected"
+                        ? "rgba(211, 47, 47, 0.1)"
+                        : "rgba(76, 175, 80, 0.1)",
+                  },
+                }}
+              >
+                {params.row.status === "pending" ? (
+                  <HourglassEmptyIcon />
+                ) : params.row.status === "rejected" ? (
+                  <CloseIcon />
+                ) : (
+                  <CheckIcon />
+                )}
+              </IconButton>
+            </Tooltip>
+          )}
+          {user && user.id === params.row.userId && params.row.status === "rejected" && (
+            <Tooltip title="Resubmit for approval">
+              <IconButton
+                onClick={() => {
+                  setSelectedBook(params.row);
+                  setOpenEditBook(true);
+                }}
+                sx={{
+                  color: "#1976D2",
+                  "&:hover": {
+                    color: "#1557a0",
+                    backgroundColor: "rgba(25, 118, 210, 0.1)",
+                  },
+                }}
+              >
+                <ReplayIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+          {user && (user.id === params.row.userId || user.role === "1") && params.row.status === "approved" && (
             <>
               <Tooltip title="Edit book">
                 <IconButton
@@ -184,7 +271,39 @@ const ManageBooks = () => {
               </Tooltip>
             </>
           )}
-        </>
+          {user && user.role === "1" && params.row.status === "pending" && (
+            <>
+              <Tooltip title="Approve book">
+                <IconButton
+                  onClick={() => handleApprove(params.row.id)}
+                  sx={{
+                    color: "#4caf50",
+                    "&:hover": {
+                      color: "#388e3c",
+                      backgroundColor: "rgba(76, 175, 80, 0.1)",
+                    },
+                  }}
+                >
+                  <CheckIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Reject book">
+                <IconButton
+                  onClick={() => handleReject(params.row.id)}
+                  sx={{
+                    color: "#d32f2f",
+                    "&:hover": {
+                      color: "#b71c1c",
+                      backgroundColor: "rgba(211, 47, 47, 0.1)",
+                    },
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
+              </Tooltip>
+            </>
+          )}
+        </Box>
       ),
       headerClassName: "author-header",
     },
@@ -193,16 +312,18 @@ const ManageBooks = () => {
   const loadBooks = async () => {
     try {
       const response = await api.get("/books");
-      console.log("Loaded books from server:", response.data);
+      console.log("Books from server:", response.data);
       if (response.data && Array.isArray(response.data)) {
-        const normalizedBooks = response.data.map((book: Book) => ({
-          ...book,
-          id: String(book.id),
-          chapters: book.chapters || [],
-          content: book.content || "",
-          userId: book.userId || "",
-        }));
-        setRows(normalizedBooks);
+        const normalizedBooks = response.data.map((book: Book) => normalizeBook(book));
+        const filteredBooks = user
+          ? user.role === "1"
+            ? normalizedBooks.filter(book => book.status === "approved" || book.status === "pending")
+            : normalizedBooks.filter(book => book.status === "approved" || book.userId === user.id)
+          : normalizedBooks.filter(book => book.status === "approved");
+        console.log("Current user:", user);
+        console.log("Normalized books:", normalizedBooks);
+        console.log("Filtered books:", filteredBooks);
+        setRows(filteredBooks);
         setToastConfig({
           open: true,
           message: "Books loaded successfully",
@@ -217,7 +338,7 @@ const ManageBooks = () => {
       setRows([]);
       setToastConfig({
         open: true,
-        message: "Failed to load books. Please ensure json-server is running at http://localhost:9000.",
+        message: "Failed to load books. Please check json-server at http://localhost:9000.",
         type: "error",
       });
     }
@@ -266,14 +387,14 @@ const ManageBooks = () => {
         userId: user.id,
         chapters: book.chapters || [],
         content: book.content || {},
+        status: "pending",
       });
-      setRows((prevRows) => [
-        ...prevRows,
-        { ...newBookResponse.data, id: String(newBookResponse.data.id) },
-      ]);
+      console.log("New book response:", newBookResponse.data);
+      const newBook = normalizeBook(newBookResponse.data);
+      setRows((prevRows) => [...prevRows, newBook]);
       setToastConfig({
         open: true,
-        message: "New book added successfully",
+        message: "Book submitted for approval",
         type: "success",
       });
       setOpenNewBook(false);
@@ -281,7 +402,7 @@ const ManageBooks = () => {
       console.error("Error creating book:", err);
       setToastConfig({
         open: true,
-        message: err.message || "Failed to add new book",
+        message: err.message || "Failed to submit book for approval",
         type: "error",
       });
     }
@@ -290,7 +411,7 @@ const ManageBooks = () => {
   const handleUpdate = async (book: Book) => {
     try {
       if (!book.id) {
-        throw new Error("Book ID is missing");
+        throw new Error("Missing book ID");
       }
       if (!user) {
         throw new Error("You must be logged in to edit a book");
@@ -298,15 +419,22 @@ const ManageBooks = () => {
       if (user.id !== book.userId && user.role !== "1") {
         throw new Error("You do not have permission to edit this book");
       }
-      await api.put(`/books/${String(book.id)}`, book);
+      const updatedBook = {
+        ...book,
+        status: book.status === "rejected" ? "pending" : book.status,
+      };
+      console.log("Updating book:", updatedBook);
+      await api.put(`/books/${String(book.id)}`, updatedBook);
+      const response = await api.get(`/books/${String(book.id)}`);
+      const normalizedBook = normalizeBook(response.data);
       setRows((prevRows) =>
         prevRows.map((row) =>
-          String(row.id) === String(book.id) ? { ...book, id: String(book.id) } : row
+          String(row.id) === String(book.id) ? normalizedBook : row
         ) as Book[]
       );
       setToastConfig({
         open: true,
-        message: "Book updated successfully",
+        message: book.status === "rejected" ? "Book resubmitted for approval" : "Book updated successfully",
         type: "success",
       });
       setOpenEditBook(false);
@@ -317,6 +445,7 @@ const ManageBooks = () => {
         message: err.message || "Failed to update book",
         type: "error",
       });
+      await loadBooks();
     }
   };
 
@@ -333,14 +462,12 @@ const ManageBooks = () => {
       if (user.id !== book.userId && user.role !== "1") {
         throw new Error("You do not have permission to delete this book");
       }
+      if (book.status !== "approved") {
+        throw new Error("Only approved books can be deleted");
+      }
       console.log(`Attempting to delete book with ID: ${idString}`);
-      const response = await api.delete(`/books/${idString}`);
-      console.log("Delete response:", response);
-      setRows((prevRows) => {
-        const newRows = prevRows.filter((row) => String(row.id) !== idString);
-        console.log("Updated rows after delete:", newRows);
-        return newRows;
-      });
+      await api.delete(`/books/${idString}`);
+      setRows((prevRows) => prevRows.filter((row) => String(row.id) !== idString));
       setToastConfig({
         open: true,
         message: "Book deleted successfully",
@@ -354,6 +481,74 @@ const ManageBooks = () => {
         message: err.message || "Failed to delete book. Data reloaded to sync.",
         type: "error",
       });
+    }
+  };
+
+  const handleApprove = async (id: string | number) => {
+    try {
+      const idString = String(id);
+      const book = rows.find((row) => String(row.id) === idString);
+      if (!book) {
+        throw new Error("Book not found");
+      }
+      if (!user || user.role !== "1") {
+        throw new Error("Only admins can approve books");
+      }
+      await api.put(`/books/${idString}`, { ...book, status: "approved" });
+      const response = await api.get(`/books/${idString}`);
+      const normalizedBook = normalizeBook(response.data);
+      setRows((prevRows) =>
+        prevRows.map((row) =>
+          String(row.id) === idString ? normalizedBook : row
+        )
+      );
+      setToastConfig({
+        open: true,
+        message: "Book approved successfully",
+        type: "success",
+      });
+    } catch (err: any) {
+      console.error("Error approving book:", err);
+      setToastConfig({
+        open: true,
+        message: err.message || "Failed to approve book",
+        type: "error",
+      });
+      await loadBooks();
+    }
+  };
+
+  const handleReject = async (id: string | number) => {
+    try {
+      const idString = String(id);
+      const book = rows.find((row) => String(row.id) === idString);
+      if (!book) {
+        throw new Error("Book not found");
+      }
+      if (!user || user.role !== "1") {
+        throw new Error("Only admins can reject books");
+      }
+      await api.put(`/books/${idString}`, { ...book, status: "rejected" });
+      const response = await api.get(`/books/${idString}`);
+      const normalizedBook = normalizeBook(response.data);
+      setRows((prevRows) =>
+        prevRows.map((row) =>
+          String(row.id) === idString ? normalizedBook : row
+        )
+      );
+      setToastConfig({
+        open: true,
+        message: "Book rejected successfully",
+        type: "success",
+      });
+    } catch (err: any) {
+      console.error("Error rejecting book:", err);
+      setToastConfig({
+        open: true,
+        message: err.message || "Failed to reject book",
+        type: "error",
+      });
+      await loadBooks();
     }
   };
 
@@ -439,14 +634,22 @@ const ManageBooks = () => {
                     fontWeight: "bold",
                     width: { xs: "100%", sm: "auto" },
                     background: "linear-gradient(135deg, #1976D2, #42A5F5)",
-                    '&:hover': { background: "linear-gradient(135deg, #1557a0, #42A5F5)" }
+                    "&:hover": { background: "linear-gradient(135deg, #1557a0, #42A5F5)" },
                   }}
                   onClick={() => {
-                    setSelectedBook({ isbn: "", title: "", author: "", copies: 0, chapters: [], content: "" });
+                    setSelectedBook({
+                      isbn: "",
+                      title: "",
+                      author: "",
+                      copies: 0,
+                      chapters: [],
+                      content: {},
+                      status: "pending",
+                    });
                     setOpenNewBook(true);
                   }}
                 >
-                  Add Book
+                  Add book
                 </Button>
               )}
             </Grid>
