@@ -31,7 +31,7 @@ export const getCookie = (name: string): string | null => {
 };
 
 export const eraseCookie = (name: string) => {
-  // Trong môi trường development, không cần Secure
+  // In development environment, Secure flag is not needed
   const isProduction = window.location.protocol === "https:";
   const secureFlag = isProduction ? "; Secure" : "";
 
