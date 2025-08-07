@@ -263,7 +263,7 @@ const CreateDiscussion = () => {
                                 variant="contained"
                                 startIcon={<Send />}
                                 onClick={handleSubmit}
-                                disabled={submitting || Boolean(titleError) || Boolean(contentError) || !title.trim() || !content.trim()}
+                                disabled={submitting || Boolean(titleError) || Boolean(contentError)}
                             >
                                 {submitting ? "Posting..." : "Post Question"}
                             </Button>
