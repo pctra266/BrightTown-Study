@@ -107,7 +107,7 @@ const CreateDiscussion = () => {
         }
     };
 
-    const handleContentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleContentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newContent = event.target.value;
         setContent(newContent);
         setContentCharCount(newContent.length);
