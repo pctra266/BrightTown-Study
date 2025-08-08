@@ -61,7 +61,7 @@ const fetchUserProfile = async (userId: string): Promise<UserProfileData> => {
     const userResponse = await fetch(`${API_BASE}/account`);
     const users = await userResponse.json();
     const user = users.find((u: any) => u.id === userId);
-    
+
     if (!user) {
       throw new Error('User not found');
     }
@@ -222,18 +222,17 @@ const UserProfile: React.FC = () => {
                 <h1 className="text-3xl font-bold">{profile.username}</h1>
                 <p className="text-purple-100">{getRoleDisplayName(profile.role)}</p>
                 <div className="flex items-center space-x-2 mt-2">
-                  <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
-                    profile.status
+                  <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${profile.status
                       ? 'bg-green-100 text-green-800'
                       : 'bg-red-100 text-red-800'
-                  }`}>
+                    }`}>
                     {profile.status ? 'Active' : 'Inactive'}
                   </span>
                 </div>
               </div>
             </div>
           </div>
-          
+
           {/* Activity Stats */}
           <div className="px-6 py-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -268,7 +267,7 @@ const UserProfile: React.FC = () => {
                 View All →
               </Link>
             </div>
-            
+
             {activity?.flashcardSets.length ? (
               <div className="space-y-4 max-h-96 overflow-y-auto">
                 {activity.flashcardSets.slice(0, 5).map((set) => (
@@ -317,7 +316,7 @@ const UserProfile: React.FC = () => {
                 View All →
               </Link>
             </div>
-            
+
             {activity?.discussions.length ? (
               <div className="space-y-4 max-h-96 overflow-y-auto">
                 {activity.discussions.slice(0, 5).map((discussion) => (
@@ -376,17 +375,16 @@ const UserProfile: React.FC = () => {
                 View All →
               </Link>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {activity.books.slice(0, 6).map((book) => (
                 <div key={book.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
                   <h3 className="font-medium text-gray-900">{book.title}</h3>
                   <p className="text-sm text-gray-600 mt-1">by {book.author}</p>
-                  <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium mt-2 ${
-                    book.status === 'approved' ? 'bg-green-100 text-green-800' :
-                    book.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-red-100 text-red-800'
-                  }`}>
+                  <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium mt-2 ${book.status === 'approved' ? 'bg-green-100 text-green-800' :
+                      book.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
+                    }`}>
                     {book.status}
                   </span>
                 </div>
