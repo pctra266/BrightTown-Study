@@ -27,7 +27,6 @@ const Login = () => {
     const { login, loginWithGoogle } = useAuth();
     const navigate = useNavigate();
 
-
     React.useEffect(() => {
         const accountDeleted = sessionStorage.getItem("accountDeleted");
         const sessionExpired = sessionStorage.getItem("sessionExpired");
@@ -200,7 +199,15 @@ const Login = () => {
                         >
                             {loading ? "Logging in..." : "Login"}
                         </Button>
-                        <div className="bg-amber-300 cursor-pointer" onClick={handleGoogleLogin}>Sign in with Google</div>
+                        <Button
+                            fullWidth
+                            variant="outlined"
+                            onClick={handleGoogleLogin}
+                            sx={{ mt: 1, mb: 2 }}
+                            
+                        >
+                            Sign in with Google
+                        </Button>
 
                         <Box sx={{ textAlign: "center", mt: 2 }}>
                             <Typography variant="body2">
