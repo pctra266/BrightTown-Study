@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
     Container,
     Paper,
@@ -14,6 +14,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useAuth } from "../../../contexts/AuthContext";
+import { TurnstileWrapper, type TurnstileRef } from "../../../components/TurnstileWrapper";
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -23,9 +24,13 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
     const { login, loginWithGoogle } = useAuth();
     const navigate = useNavigate();
+    const turnstileRef = useRef<TurnstileRef>(null);
+
+    const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 
     React.useEffect(() => {
         const accountDeleted = sessionStorage.getItem("accountDeleted");
@@ -59,24 +64,57 @@ const Login = () => {
         setShowPassword(!showPassword);
     };
 
+    const handleTurnstileSuccess = (token: string) => {
+        setTurnstileToken(token);
+    };
+
+    const handleTurnstileError = () => {
+        setTurnstileToken(null);
+        setError("Captcha verification failed. Please try again.");
+    };
+
+    const handleTurnstileExpire = () => {
+        setTurnstileToken(null);
+        setError("Captcha expired. Please verify again.");
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
+
+        // Check if Turnstile is enabled and token is required
+        if (turnstileSiteKey && !turnstileToken) {
+            setError("Please complete the captcha verification.");
+            return;
+        }
+
         setLoading(true);
 
         try {
+            // Pass the turnstile token to the login function
             const result = await login(
                 formData.username,
-                formData.password
+                formData.password,
+                turnstileToken || undefined
             );
 
             if (result.success) {
                 navigate("/", { replace: true });
             } else {
                 setError(result.error || "An error occurred during login");
+                // Reset Turnstile on login failure
+                if (turnstileSiteKey && turnstileRef.current) {
+                    turnstileRef.current.reset();
+                    setTurnstileToken(null);
+                }
             }
         } catch {
             setError("An error occurred during login");
+            // Reset Turnstile on error
+            if (turnstileSiteKey && turnstileRef.current) {
+                turnstileRef.current.reset();
+                setTurnstileToken(null);
+            }
         } finally {
             setLoading(false);
         }
@@ -163,6 +201,24 @@ const Login = () => {
                                 ),
                             }}
                         />
+
+                        {/* Cloudflare Turnstile Captcha */}
+                        {turnstileSiteKey && (
+                            <Box sx={{ mt: 2, mb: 2, display: "flex", justifyContent: "center" }}>
+                                <TurnstileWrapper
+                                    ref={turnstileRef}
+                                    siteKey={turnstileSiteKey}
+                                    onSuccess={handleTurnstileSuccess}
+                                    onError={handleTurnstileError}
+                                    onExpire={handleTurnstileExpire}
+                                    theme="auto"
+                                    size="normal"
+                                    language="en"
+                                    disabled={loading}
+                                />
+                            </Box>
+                        )}
+
                         <Box
                             sx={{
                                 display: "flex",
@@ -194,7 +250,7 @@ const Login = () => {
                             type="submit"
                             fullWidth
                             variant="contained"
-                            disabled={loading}
+                            disabled={loading || (turnstileSiteKey && !turnstileToken)}
                             sx={{ mt: 3, mb: 2 }}
                         >
                             {loading ? "Logging in..." : "Login"}
