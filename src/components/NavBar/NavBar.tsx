@@ -312,9 +312,10 @@ const Navbar = React.memo(() => {
                         {isAuthenticated ? (
                             <>
                                 <Button
+                                    component={Link}
+                                    to="/profile"
                                     variant="outlined"
                                     sx={styles.signUpButtonStyles}
-                                    disabled
                                 >
                                     {user?.username}-{getDisplayRole(user?.role || "")}
                                 </Button>
