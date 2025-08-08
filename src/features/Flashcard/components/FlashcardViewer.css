@@ -15,16 +15,6 @@
   transform: rotateY(180deg);
 }
 
-/* Smooth card hover animation */
-.card-container:hover .card-inner:not(.flipped) {
-  transform: rotateY(5deg) rotateX(5deg);
-}
-
-.card-container:hover .card-inner.flipped {
-  transform: rotateY(185deg) rotateX(5deg);
-}
-
-/* Add subtle depth to cards */
 .face {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }

@@ -10,7 +10,7 @@ const LibraryBackGround = ({ children }: LibraryBackGroundProps) => {
       className=" min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center py-12"
       
     >
-      <Fog></Fog>
+      {/* <Fog></Fog> */}
       <div className="relative w-full">
         <div className=" flex-col flex justify-center items-center gap-8 ">
           {children}

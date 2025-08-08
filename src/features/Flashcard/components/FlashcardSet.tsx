@@ -40,7 +40,7 @@ const FlashcardSet: React.FC<FlashcardSetProps> = ({
   };
 
   return (
-    <div className="flex items-center justify-between bg-white/90 backdrop-blur-sm rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 h-20">
+    <div className="flex items-center justify-between  backdrop-blur-sm rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 h-20">
       <div className="min-w-full px-2.5">
         <div className="flex items-center justify-between h-full">
           <div className="flex-1 cursor-pointer h-full" onClick={handlePlay}>
@@ -56,10 +56,10 @@ const FlashcardSet: React.FC<FlashcardSetProps> = ({
               </div>
 
               <div className="flex-1 min-w-0 flex flex-col justify-center h-full py-1">
-                <h3 className="text-lg font-semibold text-gray-800 mb-1 truncate hover:text-[#1976D2] transition-colors duration-200">
+                <h3 className="text-lg font-semibold  mb-1 truncate hover:text-[#1976D2] transition-colors duration-200">
                   {FlashcardSet.name}
                 </h3>
-                <p className="text-gray-600 text-sm line-clamp-2 leading-relaxed flex-1 overflow-hidden">
+                <p className=" text-sm line-clamp-2 leading-relaxed flex-1 overflow-hidden">
                   {FlashcardSet.description || "No description provided"}
                 </p>
               </div>
