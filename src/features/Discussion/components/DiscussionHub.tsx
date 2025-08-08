@@ -49,7 +49,7 @@ interface Discussion {
 const DiscussionHub = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { isAuthenticated, user } = useAuth();
+    const { isAuthenticated } = useAuth();
     const [discussions, setDiscussions] = useState<Discussion[]>([]);
     const [filteredDiscussions, setFilteredDiscussions] = useState<Discussion[]>(
         []
@@ -58,7 +58,7 @@ const DiscussionHub = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [sortBy, setSortBy] = useState("newest");
     const [currentPage, setCurrentPage] = useState(1);
-    // const discussionsPerPage = 5;
+    const discussionsPerPage = 5;
 
     useEffect(() => {
         loadDiscussions();
@@ -147,13 +147,12 @@ const DiscussionHub = () => {
     };
 
 
-    // const totalPages = Math.ceil(filteredDiscussions.length / discussionsPerPage);
-    // const startIndex = (currentPage - 1) * discussionsPerPage;
-    // const currentDiscussions = filteredDiscussions.slice(
-    //     startIndex,
-    //     startIndex + discussionsPerPage
-    // );
-    const currentDiscussions = filteredDiscussions; // For now, show all discussions without pagination
+    const totalPages = Math.ceil(filteredDiscussions.length / discussionsPerPage);
+    const startIndex = (currentPage - 1) * discussionsPerPage;
+    const currentDiscussions = filteredDiscussions.slice(
+        startIndex,
+        startIndex + discussionsPerPage
+    );
 
     if (loading) {
         return (
@@ -201,10 +200,9 @@ const DiscussionHub = () => {
                 )}
             </Box>
 
-            {/* Filters
             <Box sx={{ mb: 4 }}>
                 <Grid container spacing={2} alignItems="center">
-                    <Grid item xs={12} md={6}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                         <TextField
                             fullWidth
                             placeholder="Search questions..."
@@ -213,7 +211,7 @@ const DiscussionHub = () => {
                             size="small"
                         />
                     </Grid>
-                    <Grid item xs={12} md={3}>
+                    <Grid size={{ xs: 12, md: 3 }}>
                         <FormControl fullWidth size="small">
                             <InputLabel>Sort by</InputLabel>
                             <Select
@@ -231,7 +229,7 @@ const DiscussionHub = () => {
                         </FormControl>
                     </Grid>
                 </Grid>
-            </Box> */}
+            </Box>
 
             {/* Questions List */}
             <Box sx={{ mb: 4 }}>
@@ -340,20 +338,20 @@ const DiscussionHub = () => {
                 )}
             </Box>
 
-            {/* Pagination
             {totalPages > 1 && (
                 <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
                     <Pagination
                         count={totalPages}
                         page={currentPage}
-                        onChange={(event, value) => setCurrentPage(value)}
+                        onChange={(_, value) => setCurrentPage(value)}
                         color="primary"
                         size="large"
                         showFirstButton
                         showLastButton
                     />
                 </Box>
-            )} */}
+            )}
+
         </Container>
     );
 };

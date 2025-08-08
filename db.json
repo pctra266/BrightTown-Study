@@ -369,6 +369,14 @@
       "role": "2",
       "status": true,
       "lastTokenIat": 0
+    },
+    {
+      "id": "XhMHLRSU9HVYU5wY4Sm5LrRYYj43",
+      "username": "Trương Quốc Trường",
+      "email": "tqtolympia@gmail.com",
+      "role": "2",
+      "status": true,
+      "lastTokenIat": 1754627046
     }
   ],
   "role": [
@@ -656,10 +664,11 @@
         "3": "upvote",
         "4": "downvote"
       },
-      "views": 2,
+      "views": 3,
       "viewedBy": [
         "4",
-        "1"
+        "1",
+        "XhMHLRSU9HVYU5wY4Sm5LrRYYj43"
       ],
       "answers": [
         {
@@ -848,14 +857,16 @@
       "updatedAt": null,
       "isEdited": false,
       "upvotes": 0,
-      "downvotes": 1,
-      "score": -1,
+      "downvotes": 2,
+      "score": -2,
       "userVotes": {
-        "4": "downvote"
+        "4": "downvote",
+        "XhMHLRSU9HVYU5wY4Sm5LrRYYj43": "downvote"
       },
-      "views": 1,
+      "views": 2,
       "viewedBy": [
-        "4"
+        "4",
+        "XhMHLRSU9HVYU5wY4Sm5LrRYYj43"
       ],
       "answers": []
     }
