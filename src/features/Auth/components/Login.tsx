@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Turnstile } from "@marsidev/react-turnstile";
 import { useAuth } from "../../../contexts/AuthContext";
 
 const Login = () => {
@@ -23,9 +24,14 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
     const { login, loginWithGoogle } = useAuth();
     const navigate = useNavigate();
+
+    const resetCaptcha = () => {
+        setCaptchaToken(null);
+    };
 
     React.useEffect(() => {
         const accountDeleted = sessionStorage.getItem("accountDeleted");
@@ -64,6 +70,13 @@ const Login = () => {
         setError("");
         setLoading(true);
 
+        // Validate captcha
+        if (!captchaToken) {
+            setError("Please complete the captcha verification");
+            setLoading(false);
+            return;
+        }
+
         try {
             const result = await login(
                 formData.username,
@@ -74,20 +87,29 @@ const Login = () => {
                 navigate("/", { replace: true });
             } else {
                 setError(result.error || "An error occurred during login");
+                resetCaptcha(); // Reset captcha on login failure
             }
         } catch {
             setError("An error occurred during login");
+            resetCaptcha(); // Reset captcha on error
         } finally {
             setLoading(false);
         }
     };
 
     const handleGoogleLogin = async () => {
+        // Validate captcha for Google login too
+        if (!captchaToken) {
+            setError("Please complete the captcha verification");
+            return;
+        }
+
         const result = await loginWithGoogle();
         if (result.success) {
             navigate("/");
         } else {
             setError(result.error || "An error occurred during login");
+            resetCaptcha(); // Reset captcha on Google login failure
         }
     };
 
@@ -190,11 +212,34 @@ const Login = () => {
                             </MuiLink>
                         </Box>
 
+                        {/* Cloudflare Turnstile Captcha */}
+                        <Box sx={{ mt: 2, mb: 2 }}>
+                            <Turnstile
+                                siteKey={import.meta.env.VITE_CLOUDFLARE_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"}
+                                onSuccess={(token) => setCaptchaToken(token)}
+                                onError={() => {
+                                    setCaptchaToken(null);
+                                    setError("Captcha verification failed. Please try again.");
+                                }}
+                                onExpire={() => {
+                                    setCaptchaToken(null);
+                                    setError("Captcha expired. Please verify again.");
+                                }}
+                                theme="auto"
+                                size="normal"
+                            />
+                            {!captchaToken && (
+                                <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                                    Please complete the security verification above to continue
+                                </Typography>
+                            )}
+                        </Box>
+
                         <Button
                             type="submit"
                             fullWidth
                             variant="contained"
-                            disabled={loading}
+                            disabled={loading || !captchaToken}
                             sx={{ mt: 3, mb: 2 }}
                         >
                             {loading ? "Logging in..." : "Login"}
@@ -203,6 +248,7 @@ const Login = () => {
                             fullWidth
                             variant="outlined"
                             onClick={handleGoogleLogin}
+                            disabled={!captchaToken}
                             sx={{ mt: 1, mb: 2 }}
                             
                         >
