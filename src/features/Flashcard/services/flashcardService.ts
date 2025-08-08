@@ -21,7 +21,7 @@ export const getFlashcardSetById = async (flashcardSetId: string, userId: string
 
 
 export const createFlashcardSet = async (data: Omit<FlashcardSet, 'id'>, userId: string): Promise<FlashcardSet> => {
-  const flashcardSet = { ...data, userId };
+  const flashcardSet = { ...data, userId, status: true };
   const response = await api.post<FlashcardSet>('/flashcardSets', flashcardSet);
   return response.data;
 };
@@ -30,7 +30,7 @@ export const updateFlashcardSet = async (
   flashcardSetId: string,
   data: Omit<FlashcardSet, 'id'>,
   userId: string,
-  role: string
+  role: string,
 ): Promise<FlashcardSet> => {
   if (role !== '1') {
     const set = await getFlashcardSetById(flashcardSetId, userId, role);
@@ -38,7 +38,8 @@ export const updateFlashcardSet = async (
       throw new Error('Unauthorized access');
     }
   }
-  const response = await api.put<FlashcardSet>(`/flashcardSets/${flashcardSetId}`, data);
+  const currentSet = await getFlashcardSetById(flashcardSetId, userId, role);
+  const response = await api.put<FlashcardSet>(`/flashcardSets/${flashcardSetId}`, { ...data, status: currentSet.status });
   return response.data;
 };
 
