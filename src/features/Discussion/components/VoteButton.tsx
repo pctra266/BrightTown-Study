@@ -60,7 +60,7 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({
                                 : "text.secondary",
                 }}
             >
-                {score || 0}
+                {score}
             </Typography>
 
             <IconButton
