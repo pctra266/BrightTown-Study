@@ -17,6 +17,7 @@ export interface FlashcardSet {
   description: string;
   userId: string;
   flashcards: FlashcardItem[];
+  status : boolean
 }
 
 export interface FlashcardSetMeta {
