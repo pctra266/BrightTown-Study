@@ -19,7 +19,8 @@ interface AuthContextType {
     user: User | null;
     login: (
         username: string,
-        password: string
+        password: string,
+        turnstileToken?: string
     ) => Promise<{ success: boolean; error?: string }>;
     register: (
         username: string,
@@ -161,9 +162,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const login = async (
         username: string,
-        password: string
+        password: string,
+        turnstileToken?: string
     ): Promise<{ success: boolean; error?: string }> => {
-        const result = await authService.login(username, password);
+        const result = await authService.login(username, password, turnstileToken);
 
         if (result.success && result.user) {
             const userData: User = {
