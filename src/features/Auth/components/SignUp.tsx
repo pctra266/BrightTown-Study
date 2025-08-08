@@ -17,6 +17,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useAuth } from "../../../contexts/AuthContext";
 
 const SignUp = () => {
+    const { loginWithGoogle } = useAuth();
     const [formData, setFormData] = useState({
         username: "",
         password: "",
@@ -76,6 +77,14 @@ const SignUp = () => {
         }
 
         return null;
+    };
+    const handleGoogleLogin = async () => {
+        const result = await loginWithGoogle();
+        if (result.success) {
+            setSuccess("Sign Up successfully");
+        } else {
+            setError(result.error || "An error occurred during login");
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -151,6 +160,7 @@ const SignUp = () => {
                     <Typography component="h1" variant="h4" gutterBottom>
                         Sign Up
                     </Typography>
+
 
                     {error && (
                         <Alert severity="error" sx={{ width: "100%", mb: 2 }}>
@@ -244,6 +254,15 @@ const SignUp = () => {
                             sx={{ mt: 3, mb: 2 }}
                         >
                             {loading ? "Creating Account..." : "Sign Up"}
+                        </Button>
+                        <Button
+                            fullWidth
+                            variant="outlined"
+                            onClick={handleGoogleLogin}
+                            sx={{ mt: 1, mb: 2 }}
+
+                        >
+                            Sign up with Google
                         </Button>
 
                         <Box sx={{ textAlign: "center", mt: 2 }}>

@@ -8,7 +8,7 @@ interface TowerProp{
 
 const Tower:React.FC<TowerProp> = ({srcImage,nameTower,path}) => {
   return (
-    <div className="relative h-full inline-block glow-on-hover">
+    <div className="relative inline-block glow-on-hover h-[300px]">
     <Link to={path} className="h-full inline-block">
       <img
         src={srcImage}

@@ -24,6 +24,7 @@ import ProtectedRoute from "../features/AdminDashboard/ProtectedRoute";
 import CreateDiscussion from "../features/Discussion/components/CreateDiscussion";
 import ProtectedRouteUser from "./ProtectedRouteUser";
 import RecycleBin from "../features/AdminDashboard/RecycleBin";
+import UserProfile from "../features/UserProfile/components/UserProfile";
 const routers = createBrowserRouter([
   {
     path: "/",
@@ -49,6 +50,14 @@ const routers = createBrowserRouter([
       { path: "forgot-password", element: <ForgotPassword /> },
       { path: "/talk", element: <DiscussionHub /> },
       { path: "/talk/:id", element: <DiscussionDetail /> },
+      {
+        path: "/profile",
+        element: (
+          <ProtectedRoute>
+            <UserProfile />
+          </ProtectedRoute>
+        )
+      },
       {
         path: "/talk/new",
         element: (

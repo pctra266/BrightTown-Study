@@ -207,7 +207,7 @@ const Navbar = React.memo(() => {
     );
 
     return (
-        <AppBar position="static" color="secondary">
+        <AppBar position="fixed" color="secondary">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     {/* Desktop Logo */}
@@ -312,9 +312,10 @@ const Navbar = React.memo(() => {
                         {isAuthenticated ? (
                             <>
                                 <Button
+                                    component={Link}
+                                    to="/profile"
                                     variant="outlined"
                                     sx={styles.signUpButtonStyles}
-                                    disabled
                                 >
                                     {user?.username}-{getDisplayRole(user?.role || "")}
                                 </Button>
