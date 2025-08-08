@@ -1,21 +1,29 @@
 import "./BackGround.css"
 import Cloud from "../../assets/images/Cloud.png";
 import Balloon from "../../assets/images/Ballon.png";
+import { useThemeMode } from '../../contexts/ThemeContext'; 
+
 const BackGround = () => {
+    const { actualTheme } = useThemeMode();
   return (
     <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
-        <img
+      {actualTheme === 'dark' || <img
           src={Balloon}
           className="absolute top-[75%] left-[2%] w-[170px] opacity-80 animate-balloon3 hidden md:block"
-        />
-        <img
+        />}
+        {actualTheme === 'dark' ||
+         <img
           src={Balloon}
           className="absolute top-[15%] right-[10%] w-[90px] opacity-90 animate-balloon2 hidden md:block"
         />
-        <img
+        }
+       {actualTheme === 'dark' ||
+       <img
           src={Balloon}
           className="absolute top-[70%] right-[2%] w-[75px] opacity-80 animate-balloon1 hidden md:block"
         />
+       }
+        
         <img
           src={Cloud}
           className="absolute top-[5%] left-[-300px] w-[160px] opacity-80 blur-sm animate-cloud1 hidden md:block"
