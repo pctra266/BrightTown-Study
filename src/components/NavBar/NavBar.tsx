@@ -15,6 +15,7 @@ import {
     Button,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CastForEducationIcon from "@mui/icons-material/CastForEducation";
 import { useTheme } from "@mui/material/styles";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
@@ -311,6 +312,15 @@ const Navbar = React.memo(() => {
                     <Stack direction="row" spacing={2} sx={{ mr: 1 }}>
                         {isAuthenticated ? (
                             <>
+                                <Button
+                                    component={Link}
+                                    to="/profile"
+                                    startIcon={<AccountCircleIcon />}
+                                    variant="outlined"
+                                    sx={styles.signUpButtonStyles}
+                                >
+                                    Profile
+                                </Button>
                                 <Button
                                     variant="outlined"
                                     sx={styles.signUpButtonStyles}
