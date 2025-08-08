@@ -171,38 +171,25 @@ const FlashcardSets: React.FC<FlashcardSetsProps> = ({
 
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <div className="flex-1 relative">
-            <svg
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
             <input
               type="text"
               placeholder="Search flashcard sets..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="shadow-lg w-full pl-10 pr-4 py-3 bg-white/90 backdrop-blur-sm border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1976D2] focus:border-transparent transition-all duration-200 "
+              className="shadow-lg w-full pl-10 pr-4 py-3 backdrop-blur-sm border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1976D2] focus:border-transparent transition-all duration-200 "
             />
           </div>
 
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as "name" | "description")}
-            className="px-4 py-3 bg-white/90 backdrop-blur-sm border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1976D2] focus:border-transparent transition-all duration-200 shadow-lg"
+            className="px-4 py-3  backdrop-blur-sm border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1976D2] focus:border-transparent transition-all duration-200 shadow-lg"
           >
             <option value="name">Sort by Name</option>
             <option value="description">Sort by Description</option>
           </select>
 
-          <div className="shadow-lg flex bg-white/90 backdrop-blur-sm rounded-lg border border-white/30 p-1">
+          <div className="shadow-lg flex  backdrop-blur-sm rounded-lg border border-white/30 p-1">
             <button
               onClick={() => setViewMode("list")}
               className={`px-4 py-2 rounded-md transition-all duration-200 ${
@@ -301,7 +288,7 @@ const FlashcardSets: React.FC<FlashcardSetsProps> = ({
 
           {totalPages > 1 && (
             <div className="flex justify-center items-center mt-2">
-              <div className="flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-lg">
+              <div className="flex items-center gap-2 backdrop-blur-sm rounded-lg p-2 shadow-lg">
                 <button
                   className="p-2 text-gray-600 hover:text-[#1976D2] hover:bg-white/70 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:text-gray-600 disabled:hover:bg-transparent"
                   onClick={goToPrevious}
