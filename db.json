@@ -280,7 +280,7 @@
       "password": "123456",
       "role": "0",
       "status": true,
-      "lastTokenIat": 0
+      "lastTokenIat": 1754630183
     },
     {
       "id": "2",
@@ -377,6 +377,14 @@
       "role": "2",
       "status": true,
       "lastTokenIat": 1754627046
+    },
+    {
+      "id": "RcrQyKMJoMePqbkVTS8JF9l11Jg2",
+      "username": "Trà Phạm",
+      "email": "phamtra001@gmail.com",
+      "role": "2",
+      "status": null,
+      "lastTokenIat": 1754630369
     }
   ],
   "role": [
@@ -856,18 +864,68 @@
       "createdAt": "2025-06-10T07:58:28.223Z",
       "updatedAt": null,
       "isEdited": false,
-      "upvotes": 0,
-      "downvotes": 2,
+      "upvotes": 1,
+      "downvotes": 3,
       "score": -2,
       "userVotes": {
+        "1": "downvote",
         "4": "downvote",
-        "XhMHLRSU9HVYU5wY4Sm5LrRYYj43": "downvote"
+        "XhMHLRSU9HVYU5wY4Sm5LrRYYj43": "downvote",
+        "RcrQyKMJoMePqbkVTS8JF9l11Jg2": "upvote"
       },
-      "views": 2,
+      "views": 4,
       "viewedBy": [
         "4",
-        "XhMHLRSU9HVYU5wY4Sm5LrRYYj43"
+        "XhMHLRSU9HVYU5wY4Sm5LrRYYj43",
+        "1",
+        "RcrQyKMJoMePqbkVTS8JF9l11Jg2"
       ],
+      "answers": [
+        {
+          "id": "1",
+          "content": "rat ngu hahaah",
+          "authorId": "1",
+          "authorName": "admin",
+          "createdAt": "2025-08-08T05:15:29.573Z",
+          "updatedAt": null,
+          "isEdited": false,
+          "upvotes": 0,
+          "downvotes": 0,
+          "score": 0,
+          "userVotes": {}
+        },
+        {
+          "id": "2",
+          "content": "rat hay hahah",
+          "authorId": "RcrQyKMJoMePqbkVTS8JF9l11Jg2",
+          "authorName": "Trà Phạm",
+          "createdAt": "2025-08-08T05:16:13.527Z",
+          "updatedAt": null,
+          "isEdited": false,
+          "upvotes": 1,
+          "downvotes": 0,
+          "score": 1,
+          "userVotes": {
+            "1": "upvote"
+          }
+        }
+      ]
+    },
+    {
+      "id": "8",
+      "title": "Fix title please!",
+      "content": "hay fix title cho toi",
+      "authorId": "RcrQyKMJoMePqbkVTS8JF9l11Jg2",
+      "authorName": "Trà Phạm",
+      "createdAt": "2025-08-08T05:18:50.475Z",
+      "updatedAt": null,
+      "isEdited": false,
+      "upvotes": 0,
+      "downvotes": 0,
+      "score": 0,
+      "userVotes": {},
+      "views": 0,
+      "viewedBy": [],
       "answers": []
     }
   ]

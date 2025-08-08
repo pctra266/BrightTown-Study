@@ -5,7 +5,7 @@ const MainLayout = () => {
     return (
         <>
             <Navbar />
-            <main>
+            <main className="relative top-15">
                 <Outlet />
             </main>
         </>

@@ -13,7 +13,7 @@ const Home = () => {
 
 
   return (
-    <div className={`relative top-15 min-h-screen ${backgroundClasses} overflow-hidden p-2 sm:p-4 flex flex-col gap-2 sm:gap-4 justify-center`}>
+    <div className={`relative min-h-screen ${backgroundClasses} overflow-hidden p-2 sm:p-4 flex flex-col gap-2 sm:gap-4 justify-center`}>
   
   <BackGround/>
   <div className="relative z-10 w-full max-w-6xl mx-auto">
