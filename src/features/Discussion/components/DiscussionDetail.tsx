@@ -42,6 +42,7 @@ import {
     type Discussion,
     type Answer,
 } from "../services/DiscussionService";
+import VoteButtons from "./VoteButton";
 
 
 const DiscussionDetail = () => {
@@ -408,7 +409,6 @@ const DiscussionDetail = () => {
             <Card sx={{ mb: 4 }}>
                 <CardContent>
                     <Stack direction="row" spacing={2}>
-                        {/* Vote buttons for question
                         <VoteButtons
                             score={discussion.score}
                             userVote={
@@ -419,7 +419,7 @@ const DiscussionDetail = () => {
                             onUpvote={() => handleVoteOnQuestion("upvote")}
                             onDownvote={() => handleVoteOnQuestion("downvote")}
                             disabled={!canVote(discussion.authorId)}
-                        /> */}
+                        />
 
                         <Box sx={{ flex: 1 }}>
                             {editingQuestion ? (
@@ -603,7 +603,6 @@ const DiscussionDetail = () => {
                             <Card key={answer.id} variant="outlined">
                                 <CardContent>
                                     <Stack direction="row" spacing={2}>
-                                        {/* Vote buttons for answer
                                         <VoteButtons
                                             score={answer.score}
                                             userVote={
@@ -616,8 +615,7 @@ const DiscussionDetail = () => {
                                                 handleVoteOnAnswer(answer.id, "downvote")
                                             }
                                             disabled={!canVote(answer.authorId)}
-                                        /> */}
-
+                                        />
                                         <Box sx={{ flex: 1 }}>
                                             {editingAnswer === answer.id ? (
                                                 <Box>
