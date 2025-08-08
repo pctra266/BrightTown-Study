@@ -23,7 +23,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
     
-    "types": ["vitest/globals", "node"]
+    "types": ["node"]
   },
   "include": ["src"]
 }
