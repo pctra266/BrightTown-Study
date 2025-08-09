@@ -11,7 +11,6 @@ import {
   Button,
   Drawer,
   TextField,
-  Tooltip,
 } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -22,18 +21,12 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CancelIcon from "@mui/icons-material/Cancel";
-import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
-import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
-import ReplayIcon from "@mui/icons-material/Replay";
-
 import api from "../../../api/api";
 import Toast, { type ToastData } from "../components/Toast";
 import { useAuth } from "../../../contexts/AuthContext";
 
 interface Chapter {
   name: string;
-  status: "pending" | "approved" | "rejected";
 }
 
 interface Book {
@@ -45,8 +38,6 @@ interface Book {
   chapters?: Chapter[];
   content?: { [key: string]: string };
   userId?: string;
-  status?: "pending" | "approved" | "rejected";
-  chapterStatuses?: { [key: string]: "pending" | "approved" | "rejected" };
 }
 
 class ErrorBoundary extends React.Component {
@@ -91,15 +82,9 @@ const BookDetails = () => {
   const normalizeBook = (data: any): Book => ({
     ...data,
     id: String(data.id),
-    chapters: data.chapters
-      ? data.chapters.map((ch: any) =>
-          typeof ch === "string" ? { name: ch, status: data.chapterStatuses?.[ch] || "approved" } : ch
-        )
-      : [],
+    chapters: data.chapters ? data.chapters.map((ch: any) => ({ name: ch.name })) : [],
     content: data.content || {},
-    chapterStatuses: data.chapterStatuses || {},
     userId: data.userId || "",
-    status: data.status || "approved",
   });
 
   const loadBookDetails = async () => {
@@ -114,9 +99,7 @@ const BookDetails = () => {
     }
 
     try {
-      console.log(`Fetching book with ID: ${id}`);
       const response = await api.get(`/books/${id}`);
-      console.log("API response:", response.data);
       if (response.data) {
         const loadedBook = normalizeBook(response.data);
         setBook(loadedBook);
@@ -132,7 +115,7 @@ const BookDetails = () => {
         throw new Error("No data returned from server");
       }
     } catch (err: any) {
-      console.error("Error loading book details:", err.message, err.response?.data);
+      console.error("Error loading book details:", err.message);
       setToastConfig({
         open: true,
         message: `Failed to load book details: ${err.message}`,
@@ -187,21 +170,13 @@ const BookDetails = () => {
       });
       return;
     }
-    if (book.status !== "approved") {
-      setToastConfig({
-        open: true,
-        message: "Cannot modify chapters of a book that is not approved",
-        type: "error",
-      });
-      return;
-    }
 
     try {
       const updatedChapters = editChapter
         ? (book.chapters || []).map((ch) =>
-            ch.name === editChapter ? { name: chapterName, status: ch.status } : ch
+            ch.name === editChapter ? { name: chapterName } : ch
           )
-        : [...(book.chapters || []), { name: chapterName, status: "pending" }];
+        : [...(book.chapters || []), { name: chapterName }];
 
       if (!editChapter && book.chapters?.some((ch) => ch.name === chapterName)) {
         setToastConfig({
@@ -220,19 +195,10 @@ const BookDetails = () => {
         delete updatedContent[editChapter];
       }
 
-      const updatedChapterStatuses = {
-        ...(book.chapterStatuses || {}),
-        [chapterName]: editChapter ? book.chapterStatuses?.[editChapter] || "approved" : "pending",
-      };
-      if (editChapter && editChapter !== chapterName) {
-        delete updatedChapterStatuses[editChapter];
-      }
-
       const updatedBook = {
         ...book,
         chapters: updatedChapters,
         content: updatedContent,
-        chapterStatuses: updatedChapterStatuses,
       };
 
       await api.put(`/books/${id}`, updatedBook);
@@ -251,11 +217,11 @@ const BookDetails = () => {
       setEditChapter(null);
       setToastConfig({
         open: true,
-        message: editChapter ? "Chapter updated successfully" : "Chapter submitted for approval",
+        message: editChapter ? "Chapter updated successfully" : "Chapter added successfully",
         type: "success",
       });
     } catch (err: any) {
-      console.error("Error updating book:", err.message, err.response?.data);
+      console.error("Error updating book:", err.message);
       setToastConfig({
         open: true,
         message: `Failed to update book: ${err.message}`,
@@ -282,37 +248,16 @@ const BookDetails = () => {
       });
       return;
     }
-    if (book.status !== "approved") {
-      setToastConfig({
-        open: true,
-        message: "Cannot delete chapters of a book that is not approved",
-        type: "error",
-      });
-      return;
-    }
 
     try {
-      const chapterObj = book.chapters?.find((ch) => ch.name === chapter);
-      if (chapterObj?.status !== "approved") {
-        setToastConfig({
-          open: true,
-          message: "Only approved chapters can be deleted",
-          type: "error",
-        });
-        return;
-      }
-
       const updatedChapters = (book.chapters || []).filter((ch) => ch.name !== chapter);
       const updatedContent = { ...(typeof book.content === "object" ? book.content : {}) };
       delete updatedContent[chapter];
-      const updatedChapterStatuses = { ...(book.chapterStatuses || {}) };
-      delete updatedChapterStatuses[chapter];
 
       const updatedBook = {
         ...book,
         chapters: updatedChapters,
         content: updatedContent,
-        chapterStatuses: updatedChapterStatuses,
       };
 
       await api.put(`/books/${id}`, updatedBook);
@@ -328,7 +273,7 @@ const BookDetails = () => {
         type: "success",
       });
     } catch (err: any) {
-      console.error("Error deleting chapter:", err.message, err.response?.data);
+      console.error("Error deleting chapter:", err.message);
       setToastConfig({
         open: true,
         message: `Failed to delete chapter: ${err.message}`,
@@ -340,173 +285,11 @@ const BookDetails = () => {
 
   const handleEditChapter = (chapter: string) => {
     if (!book) return;
-    const chapterObj = book.chapters?.find((ch) => ch.name === chapter);
-    if (chapterObj?.status !== "approved" && chapterObj?.status !== "rejected") {
-      setToastConfig({
-        open: true,
-        message: "Only approved or rejected chapters can be edited",
-        type: "error",
-      });
-      return;
-    }
     if (typeof book.content === "object") {
       setChapterName(chapter);
       setChapterContent(book.content[chapter] || "");
       setEditChapter(chapter);
       setOpenDrawer(true);
-    }
-  };
-
-  const handleApproveChapter = async (chapter: string) => {
-    if (!book || !id) {
-      setToastConfig({
-        open: true,
-        message: "Book data is missing",
-        type: "error",
-      });
-      return;
-    }
-    if (!user || user.role !== "1") {
-      setToastConfig({
-        open: true,
-        message: "Only admins can approve chapters",
-        type: "error",
-      });
-      return;
-    }
-
-    try {
-      const updatedChapterStatuses = {
-        ...(book.chapterStatuses || {}),
-        [chapter]: "approved",
-      };
-      const updatedBook = {
-        ...book,
-        chapterStatuses: updatedChapterStatuses,
-        chapters: book.chapters?.map((ch) =>
-          ch.name === chapter ? { ...ch, status: "approved" } : ch
-        ),
-      };
-
-      await api.put(`/books/${id}`, updatedBook);
-      const response = await api.get(`/books/${id}`);
-      const loadedBook = normalizeBook(response.data);
-      setBook(loadedBook);
-      setToastConfig({
-        open: true,
-        message: "Chapter approved successfully",
-        type: "success",
-      });
-    } catch (err: any) {
-      console.error("Error approving chapter:", err);
-      setToastConfig({
-        open: true,
-        message: `Failed to approve chapter: ${err.message}`,
-        type: "error",
-      });
-      await loadBookDetails();
-    }
-  };
-
-  const handleRejectChapter = async (chapter: string) => {
-    if (!book || !id) {
-      setToastConfig({
-        open: true,
-        message: "Book data is missing",
-        type: "error",
-      });
-      return;
-    }
-    if (!user || user.role !== "1") {
-      setToastConfig({
-        open: true,
-        message: "Only admins can reject chapters",
-        type: "error",
-      });
-      return;
-    }
-
-    try {
-      const updatedChapterStatuses = {
-        ...(book.chapterStatuses || {}),
-        [chapter]: "rejected",
-      };
-      const updatedBook = {
-        ...book,
-        chapterStatuses: updatedChapterStatuses,
-        chapters: book.chapters?.map((ch) =>
-          ch.name === chapter ? { ...ch, status: "rejected" } : ch
-        ),
-      };
-
-      await api.put(`/books/${id}`, updatedBook);
-      const response = await api.get(`/books/${id}`);
-      const loadedBook = normalizeBook(response.data);
-      setBook(loadedBook);
-      setToastConfig({
-        open: true,
-        message: "Chapter rejected successfully",
-        type: "success",
-      });
-    } catch (err: any) {
-      console.error("Error rejecting chapter:", err);
-      setToastConfig({
-        open: true,
-        message: `Failed to reject chapter: ${err.message}`,
-        type: "error",
-      });
-      await loadBookDetails();
-    }
-  };
-
-  const handleResubmitChapter = async (chapter: string) => {
-    if (!book || !id) {
-      setToastConfig({
-        open: true,
-        message: "Book data is missing",
-        type: "error",
-      });
-      return;
-    }
-    if (!user || (user.id !== book.userId && user.role !== "1")) {
-      setToastConfig({
-        open: true,
-        message: "You do not have permission to resubmit this chapter",
-        type: "error",
-      });
-      return;
-    }
-
-    try {
-      const updatedChapterStatuses = {
-        ...(book.chapterStatuses || {}),
-        [chapter]: "pending",
-      };
-      const updatedBook = {
-        ...book,
-        chapterStatuses: updatedChapterStatuses,
-        chapters: book.chapters?.map((ch) =>
-          ch.name === chapter ? { ...ch, status: "pending" } : ch
-        ),
-      };
-
-      await api.put(`/books/${id}`, updatedBook);
-      const response = await api.get(`/books/${id}`);
-      const loadedBook = normalizeBook(response.data);
-      setBook(loadedBook);
-      setToastConfig({
-        open: true,
-        message: "Chapter resubmitted for approval",
-        type: "success",
-      });
-    } catch (err: any) {
-      console.error("Error resubmitting chapter:", err);
-      setToastConfig({
-        open: true,
-        message: `Failed to resubmit chapter: ${err.message}`,
-        type: "error",
-      });
-      await loadBookDetails();
     }
   };
 
@@ -638,7 +421,7 @@ const BookDetails = () => {
               {book.title}
             </Typography>
           </Box>
-          {user && (user.id === book.userId || user.role === "1") && book.status === "approved" && (
+          {user && (user.id === book.userId || user.role === "1") && (
             <Button
               variant="contained"
               startIcon={<AddIcon />}
@@ -678,151 +461,47 @@ const BookDetails = () => {
           >
             <List>
               {book.chapters && book.chapters.length > 0 ? (
-                book.chapters
-                  .filter((chapter) =>
-                    user && (user.id === book.userId || user.role === "1")
-                      ? true // Show all chapters (including rejected) for owner or admin
-                      : chapter.status === "approved" // Show only approved chapters for others
-                  )
-                  .map((chapter, index) => (
-                    <React.Fragment key={index}>
-                      <ListItem
-                        sx={{
-                          "&.Mui-selected": {
-                            backgroundColor: "rgba(255, 255, 255, 0.2)",
-                            borderRadius: "6px",
-                          },
-                          "&:hover": {
-                            backgroundColor: "rgba(255, 255, 255, 0.1)",
-                            borderRadius: "6px",
-                          },
-                        }}
-                      >
-                        <ListItemText
-                          primary={`Chapter ${index + 1}: ${chapter.name}`}
-                          primaryTypographyProps={{ fontSize: "0.9rem", color: "white" }}
-                          onClick={() => setSelectedChapter(chapter.name)}
-                        />
-                        {user && (user.id === book.userId || user.role === "1") && (
-                          <>
-                            {(chapter.status === "approved" || chapter.status === "rejected") && (
-                              <>
-                                <Tooltip title="Edit chapter">
-                                  <IconButton
-                                    onClick={() => handleEditChapter(chapter.name)}
-                                    sx={{ color: "#fff", mr: 1 }}
-                                  >
-                                    <EditIcon />
-                                  </IconButton>
-                                </Tooltip>
-                              </>
-                            )}
-                            {chapter.status === "approved" && (
-                              <Tooltip title="Delete chapter">
-                                <IconButton
-                                  onClick={() => handleDeleteChapter(chapter.name)}
-                                  sx={{ color: "#d32f2f", mr: 1 }}
-                                >
-                                  <DeleteIcon />
-                                </IconButton>
-                              </Tooltip>
-                            )}
-                            <Tooltip
-                              title={
-                                chapter.status === "pending"
-                                  ? "Pending approval"
-                                  : chapter.status === "rejected"
-                                  ? "Rejected"
-                                  : "Approved"
-                              }
-                            >
-                              <IconButton
-                                sx={{
-                                  color:
-                                    chapter.status === "pending"
-                                      ? "#ff9800"
-                                      : chapter.status === "rejected"
-                                      ? "#d32f2f"
-                                      : "#4caf50",
-                                  "&:hover": {
-                                    backgroundColor:
-                                      chapter.status === "pending"
-                                        ? "rgba(255, 152, 0, 0.1)"
-                                        : chapter.status === "rejected"
-                                        ? "rgba(211, 47, 47, 0.1)"
-                                        : "rgba(76, 175, 80, 0.1)",
-                                  },
-                                }}
-                              >
-                                {chapter.status === "pending" ? (
-                                  <HourglassEmptyIcon />
-                                ) : chapter.status === "rejected" ? (
-                                  <CloseIcon />
-                                ) : (
-                                  <CheckIcon />
-                                )}
-                              </IconButton>
-                            </Tooltip>
-                            {(user.id === book.userId || user.role === "1") && chapter.status === "rejected" && (
-                              <Tooltip title="Resubmit chapter for approval">
-                                <IconButton
-                                  onClick={() => handleResubmitChapter(chapter.name)}
-                                  sx={{
-                                    color: "#d21919",
-                                    "&:hover": {
-                                      color: "#c71010",
-                                      backgroundColor: "rgba(25, 118, 210, 0.1)",
-                                    },
-                                  }}
-                                >
-                                  <ReplayIcon />
-                                </IconButton>
-                              </Tooltip>
-                            )}
-                            {user && user.role === "1" && chapter.status === "pending" && (
-                              <>
-                                <Tooltip title="Approve chapter">
-                                  <IconButton
-                                    onClick={() => handleApproveChapter(chapter.name)}
-                                    sx={{
-                                      color: "#4caf50",
-                                      "&:hover": {
-                                        color: "#388e3c",
-                                        backgroundColor: "rgba(76, 175, 80, 0.1)",
-                                      },
-                                    }}
-                                  >
-                                    <CheckIcon />
-                                  </IconButton>
-                                </Tooltip>
-                                <Tooltip title="Reject chapter">
-                                  <IconButton
-                                    onClick={() => handleRejectChapter(chapter.name)}
-                                    sx={{
-                                      color: "#d32f2f",
-                                      "&:hover": {
-                                        color: "#b71c1c",
-                                        backgroundColor: "rgba(211, 47, 47, 0.1)",
-                                      },
-                                    }}
-                                  >
-                                    <CloseIcon />
-                                  </IconButton>
-                                </Tooltip>
-                              </>
-                            )}
-                          </>
-                        )}
-                      </ListItem>
-                      {index < book.chapters!.filter((chapter) =>
-                        user && (user.id === book.userId || user.role === "1")
-                          ? true
-                          : chapter.status === "approved"
-                      ).length - 1 && (
-                        <Divider sx={{ borderColor: "rgba(255, 255, 255, 0.3)" }} />
+                book.chapters.map((chapter, index) => (
+                  <React.Fragment key={index}>
+                    <ListItem
+                      sx={{
+                        "&.Mui-selected": {
+                          backgroundColor: "rgba(255, 255, 255, 0.2)",
+                          borderRadius: "6px",
+                        },
+                        "&:hover": {
+                          backgroundColor: "rgba(255, 255, 255, 0.1)",
+                          borderRadius: "6px",
+                        },
+                      }}
+                    >
+                      <ListItemText
+                        primary={`Chapter ${index + 1}: ${chapter.name}`}
+                        primaryTypographyProps={{ fontSize: "0.9rem", color: "white" }}
+                        onClick={() => setSelectedChapter(chapter.name)}
+                      />
+                      {user && (user.id === book.userId || user.role === "1") && (
+                        <>
+                          <IconButton
+                            onClick={() => handleEditChapter(chapter.name)}
+                            sx={{ color: "#fff", mr: 1 }}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton
+                            onClick={() => handleDeleteChapter(chapter.name)}
+                            sx={{ color: "#d32f2f", mr: 1 }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </>
                       )}
-                    </React.Fragment>
-                  ))
+                    </ListItem>
+                    {index < book.chapters!.length - 1 && (
+                      <Divider sx={{ borderColor: "rgba(255, 255, 255, 0.3)" }} />
+                    )}
+                  </React.Fragment>
+                ))
               ) : (
                 <ListItem>
                   <ListItemText primary="No chapters available" sx={{ color: "white" }} />

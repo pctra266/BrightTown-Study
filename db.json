@@ -302,7 +302,7 @@
       "password": "123456",
       "role": "0",
       "status": true,
-      "lastTokenIat": 1754645656
+      "lastTokenIat": 1754722418
     },
     {
       "id": "2",
@@ -326,7 +326,7 @@
       "password": "trapham266",
       "role": "2",
       "status": true,
-      "lastTokenIat": 0
+      "lastTokenIat": 1754666149
     },
     {
       "id": "6",
@@ -407,6 +407,14 @@
       "role": "2",
       "status": null,
       "lastTokenIat": 1754630369
+    },
+    {
+      "id": "14",
+      "username": "hieu1234",
+      "password": "2@Stunning",
+      "role": "2",
+      "status": true,
+      "lastTokenIat": 1754723621
     }
   ],
   "role": [
@@ -427,254 +435,55 @@
     {
       "id": "1795",
       "isbn": "978-3-16-148410-9",
-      "title": "Clean Codedd",
+      "title": "Clean Code",
       "author": "Robert C. Martin",
       "copies": 7,
-      "userId": "7",
-      "status": "approved",
+      "userId": "14",
       "chapters": [
         {
-          "name": "Introduction",
-          "status": "approved"
+          "name": "Introduction"
         },
         {
-          "name": "Meaningful Names",
-          "status": "approved"
+          "name": "Meaningful Names"
         },
         {
-          "name": "Functions",
-          "status": "approved"
+          "name": "Functions"
         },
         {
-          "name": "Comments",
-          "status": "approved"
-        },
-        {
-          "name": "Formatting",
-          "status": "approved"
-        },
-        {
-          "name": "Objects and Data Structures",
-          "status": "approved"
-        },
-        {
-          "name": "Error Handling",
-          "status": "approved"
-        },
-        {
-          "name": "Unit Tests",
-          "status": "approved"
-        },
-        {
-          "name": "Classes",
-          "status": "approved"
-        },
-        {
-          "name": "System Designggg",
-          "status": "approved"
-        },
-        {
-          "name": "fgg",
-          "status": "pending"
-        },
-        {
-          "name": "fg",
-          "status": "pending"
+          "name": "ferfr"
         }
       ],
       "content": {
         "Introduction": "Clean Code introduces the principles, patterns, and best practices for writing clean, readable, and maintainable code.",
         "Meaningful Names": "This chapter explains how to choose descriptive and unambiguous names for variables, functions, and classes.",
         "Functions": "Guidelines for writing small, well-structured, and reusable functions are provided here.",
-        "Comments": "Discusses when comments are helpful and when they are just noise, promoting self-explanatory code.",
-        "Formatting": "Describes code formatting rules that improve readability and consistency across the project.",
-        "Objects and Data Structures": "Explores how to properly design objects, encapsulate data, and reduce complexity.",
-        "Error Handling": "Teaches how to handle errors gracefully, avoiding exceptions that obscure the intent of the code.",
-        "Unit Tests": "Highlights the importance of automated testing and how to write effective unit tests.",
-        "Classes": "Covers principles for designing robust, cohesive, and loosely coupled classes.",
-        "fgg": "rgr",
-        "fg": "fgrfrgr",
-        "System Designggg": "Focuses on building scalable, maintainable, and well-structured software architectures."
-      },
-      "chapterStatuses": {
-        "Introduction": "approved",
-        "Meaningful Names": "approved",
-        "Functions": "approved",
-        "Comments": "approved",
-        "Formatting": "approved",
-        "Objects and Data Structures": "approved",
-        "Error Handling": "approved",
-        "Unit Tests": "approved",
-        "Classes": "approved",
-        "fgg": "pending",
-        "fg": "pending",
-        "System Designggg": "approved"
+        "ferfr": "rffr"
       }
     },
     {
       "id": "e390",
       "isbn": "978-3-16-148410-1",
-      "title": "The Great Journey",
+      "title": "The Great Journeyyyy",
       "author": "Robert Martin",
       "copies": 7,
-      "userId": "7",
-      "status": "approved",
       "chapters": [
-        "Prologue",
-        "The Call to Adventure",
-        "Trials and Tribulations",
-        "Return Home"
+        {
+          "name": "Prologue"
+        },
+        {
+          "name": "The Call to Adventure"
+        },
+        {
+          "name": "Return Home"
+        }
       ],
       "content": {
         "Prologue": "An introduction to a young hero destined to embark on a life-changing journey.",
         "The Call to Adventure": "The hero leaves home to explore new lands and face unforeseen challenges.",
-        "Trials and Tribulations": "Battles, friendships, and betrayals shape the hero’s destiny.",
         "Return Home": "The journey ends with wisdom gained and a new perspective on life."
       },
-      "chapterStatuses": {
-        "Prologue": "approved",
-        "The Call to Adventure": "approved",
-        "Trials and Tribulations": "approved",
-        "Return Home": "approved"
-      }
-    },
-    {
-      "id": "e391",
-      "isbn": "978-3-16-148410-2",
-      "title": "Advanced Programming",
-      "author": "Jane Doe",
-      "copies": 7,
-      "chapters": [
-        {
-          "name": "Data Structures",
-          "status": "approved"
-        },
-        {
-          "name": "Algorithms",
-          "status": "approved"
-        },
-        {
-          "name": "Design Patterns",
-          "status": "approved"
-        },
-        {
-          "name": "Parallel Computing",
-          "status": "approved"
-        },
-        {
-          "name": "fg",
-          "status": "pending"
-        }
-      ],
-      "content": {
-        "Data Structures": "This chapter explores arrays, linked lists, trees, graphs, and hash tables with real-world examples of implementation.",
-        "Algorithms": "Focuses on sorting, searching, and optimization techniques with time complexity analysis.",
-        "Design Patterns": "Introduces reusable solutions to common software design problems like Singleton, Observer, and Factory patterns.",
-        "Parallel Computing": "Covers multi-threading, concurrency, and distributed systems programming.",
-        "fg": "rfrf"
-      },
-      "userId": "7",
+      "userId": "14",
       "status": "approved"
-    },
-    {
-      "id": "886a",
-      "isbn": "978-3-16-148410-7",
-      "title": "Clean Codeee",
-      "author": "Robert Martin",
-      "copies": 5,
-      "chapters": [],
-      "content": {},
-      "status": "pending",
-      "userId": "7",
-      "chapterStatuses": {}
-    },
-    {
-      "id": "d8f0",
-      "isbn": "978-3-16-148410-8",
-      "title": "Introduction to Algorithms",
-      "author": "Thomas H. Cormen",
-      "copies": 3,
-      "userId": "6",
-      "status": "rejected",
-      "chapters": [
-        "Foundations",
-        "Sorting and Order Statistics",
-        "Data Structures",
-        "Graph Algorithms"
-      ],
-      "content": {
-        "Foundations": "Introduces mathematical foundations and asymptotic notation for algorithm analysis.",
-        "Sorting and Order Statistics": "Covers sorting algorithms like quicksort and mergesort, and order statistics.",
-        "Data Structures": "Explores heaps, hash tables, and binary search trees.",
-        "Graph Algorithms": "Discusses graph traversal, shortest paths, and minimum spanning trees."
-      },
-      "chapterStatuses": {
-        "Foundations": "rejected",
-        "Sorting and Order Statistics": "rejected",
-        "Data Structures": "rejected",
-        "Graph Algorithms": "rejected"
-      }
-    },
-    {
-      "id": "5a51",
-      "isbn": "978-3-16-148410-4",
-      "title": "Design Patterns",
-      "author": "Erich Gamma",
-      "copies": 4,
-      "chapters": [
-        {
-          "name": "Creational Patterns",
-          "status": "rejected"
-        },
-        {
-          "name": "Structural Patterns",
-          "status": "rejected"
-        },
-        {
-          "name": "Behavioral Patterns",
-          "status": "rejected"
-        }
-      ],
-      "content": {
-        "Creational Patterns": "Explains patterns like Factory, Singleton, and Builder for object creation.",
-        "Structural Patterns": "Covers Adapter, Composite, and Proxy patterns for structuring objects.",
-        "Behavioral Patterns": "Describes Observer, Strategy, and Command patterns for object interactions."
-      },
-      "userId": "7",
-      "status": "pending"
-    },
-    {
-      "id": "a329",
-      "isbn": "978-3-16-148410-3",
-      "title": "Clean Code",
-      "author": "Robert Martin",
-      "copies": 7,
-      "chapters": [],
-      "content": {},
-      "status": "pending",
-      "userId": "7"
-    },
-    {
-      "id": "8b55",
-      "isbn": "978-3-16-148410-5",
-      "title": "Clean Code",
-      "author": "Robert Martin",
-      "copies": 7,
-      "chapters": [],
-      "content": {},
-      "status": "pending",
-      "userId": "7"
-    },
-    {
-      "id": "0a7e",
-      "isbn": "678-3-16-148410-3",
-      "title": "Clean",
-      "author": "Robert Martin",
-      "copies": 7,
-      "chapters": [],
-      "content": {},
-      "status": "pending",
-      "userId": "7"
     }
   ],
   "discussions": [
@@ -967,8 +776,14 @@
     {
       "id": "ad2c",
       "date": "2025-08-08",
-      "visits": 3,
+      "visits": 7,
       "flashcardsStudied": 2
+    },
+    {
+      "id": "fcce",
+      "date": "2025-08-09",
+      "visits": 2,
+      "flashcardsStudied": 0
     }
   ]
 }
