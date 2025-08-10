@@ -302,7 +302,7 @@
       "password": "123456",
       "role": "0",
       "status": true,
-      "lastTokenIat": 1754722418
+      "lastTokenIat": 1754836276
     },
     {
       "id": "2",
@@ -326,7 +326,7 @@
       "password": "trapham266",
       "role": "2",
       "status": true,
-      "lastTokenIat": 1754666149
+      "lastTokenIat": 1754840203
     },
     {
       "id": "6",
@@ -484,6 +484,23 @@
       },
       "userId": "14",
       "status": "approved"
+    },
+    {
+      "id": "7dd2",
+      "isbn": "978-3-16-147410-9",
+      "title": "as",
+      "author": "dasdfa",
+      "copies": 1,
+      "chapters": [
+        {
+          "name": "a"
+        }
+      ],
+      "content": {
+        "a": "b"
+      },
+      "userId": "1",
+      "status": "pending"
     }
   ],
   "discussions": [
@@ -755,8 +772,10 @@
       "downvotes": 0,
       "score": 0,
       "userVotes": {},
-      "views": 0,
-      "viewedBy": [],
+      "views": 1,
+      "viewedBy": [
+        "1"
+      ],
       "answers": []
     }
   ],
@@ -788,8 +807,8 @@
     {
       "id": "495e",
       "date": "2025-08-10",
-      "visits": 1,
-      "flashcardsStudied": 0
+      "visits": 7,
+      "flashcardsStudied": 1
     }
   ]
 }
