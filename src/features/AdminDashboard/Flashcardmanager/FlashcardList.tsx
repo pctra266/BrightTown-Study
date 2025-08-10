@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import LeftMenu from '../LeftMenu';
 import type { FlashcardSet } from './flashcardService';
-import { getAllFlashcardSets, deleteFlashcardSet } from './flashcardService';
+import { getAllFlashcardSets, deleteFlashcardSet,updateFlashcardSetStatus } from './flashcardService';
 import { Link } from 'react-router-dom';
-import Pagination from '../Pagination';  
+import Pagination from '../Pagination';
 
 const FlashcardList = () => {
     const [flashcardSets, setFlashcardSets] = useState<FlashcardSet[]>([]);
@@ -16,28 +16,46 @@ const FlashcardList = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const sets = await getAllFlashcardSets();
+            let sets = await getAllFlashcardSets();
+            sets = sets.map(set => ({
+                ...set,
+                status: typeof set.status === 'boolean' ? set.status : true
+            }));
+
             setFlashcardSets(sets);
         };
         fetchData();
     }, []);
 
-    // Reset trang về 1 mỗi khi filter/search/sort thay đổi
     useEffect(() => {
         setCurrentPage(1);
     }, [searchName, filterStatus, filterUserId, sortOrder]);
 
-    const toggleStatus = (id: string) => {
+    const toggleStatus = async (id: string) => {
         setFlashcardSets(prev =>
             prev.map(set =>
                 set.id === id ? { ...set, status: !set.status } : set
             )
         );
+
+        const setToUpdate = flashcardSets.find(set => set.id === id);
+        if (setToUpdate) {
+            const newStatus = !setToUpdate.status;
+            const success = await updateFlashcardSetStatus(id, newStatus);
+            if (!success) {
+                alert("Failed to update status on server.");
+                setFlashcardSets(prev =>
+                    prev.map(set =>
+                        set.id === id ? { ...set, status: setToUpdate.status } : set
+                    )
+                );
+            }
+        }
     };
 
+
     const handleDelete = async (id: string) => {
-        const confirmDelete = window.confirm("Are you sure you want to delete this flashcard set?");
-        if (!confirmDelete) return;
+        if (!window.confirm("Are you sure you want to delete this flashcard set?")) return;
 
         const success = await deleteFlashcardSet(id);
         if (success) {
@@ -53,15 +71,12 @@ const FlashcardList = () => {
             (filterStatus === 'all' || String(set.status) === filterStatus) &&
             (filterUserId.trim() === '' || set.userId.includes(filterUserId))
         )
-        .sort((a, b) => {
-            if (sortOrder === 'asc') {
-                return a.name.localeCompare(b.name);
-            } else {
-                return b.name.localeCompare(a.name);
-            }
-        });
+        .sort((a, b) =>
+            sortOrder === 'asc'
+                ? a.name.localeCompare(b.name)
+                : b.name.localeCompare(a.name)
+        );
 
-    // Lấy bộ flashcard hiện tại theo trang
     const paginatedSets = filteredSets.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
@@ -142,7 +157,7 @@ const FlashcardList = () => {
                                 <th className="px-4 py-3">Name</th>
                                 <th className="px-4 py-3">Description</th>
                                 <th className="px-4 py-3">Status</th>
-                                <th className="px-4 py-3 " style={{ paddingLeft: '75px' }}>Actions</th>
+                                <th className="px-4 py-3 text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -157,14 +172,14 @@ const FlashcardList = () => {
                                             <button
                                                 onClick={() => toggleStatus(set.id)}
                                                 className={`px-3 py-1 rounded-md text-sm font-medium shadow-sm ${set.status
-                                                    ? 'bg-green-200 text-green-800'
-                                                    : 'bg-gray-300 text-gray-700'
+                                                        ? 'bg-green-200 text-green-800'
+                                                        : 'bg-gray-300 text-gray-700'
                                                     }`}
                                             >
                                                 {set.status ? 'Show' : 'Hide'}
                                             </button>
                                         </td>
-                                        <td className="px-4 py-2 space-x-2">
+                                        <td className="px-4 py-2 space-x-2 text-center">
                                             <Link to={`/library/flashcard/${set.id}/play`}
                                                 state={{ from: 'manageflashcard' }}>
                                                 <button className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 shadow-sm">View</button>
@@ -192,8 +207,6 @@ const FlashcardList = () => {
                         </tbody>
                     </table>
                 </div>
-
-                {/* Pagination */}
                 <Pagination
                     currentPage={currentPage}
                     totalItems={filteredSets.length}
