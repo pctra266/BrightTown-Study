@@ -27,6 +27,7 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
 import { discussionService } from "../services/DiscussionService";
+import ClickableUsername from "../../../components/ClickableUsername";
 
 interface Discussion {
     id: string;
@@ -292,9 +293,9 @@ const DiscussionHub = () => {
                                         alignItems="center"
                                         flexWrap="wrap"
                                     >
-                                        <Chip
-                                            icon={<Person />}
-                                            label={discussion.authorName}
+                                        <ClickableUsername
+                                            userId={discussion.authorId}
+                                            username={discussion.authorName}
                                             size="small"
                                             variant="outlined"
                                         />

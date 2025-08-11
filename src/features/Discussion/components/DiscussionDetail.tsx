@@ -43,6 +43,7 @@ import {
     type Answer,
 } from "../services/DiscussionService";
 import VoteButtons from "./VoteButton";
+import ClickableUsername from "../../../components/ClickableUsername";
 
 
 const DiscussionDetail = () => {
@@ -505,9 +506,9 @@ const DiscussionDetail = () => {
                                         alignItems="center"
                                         flexWrap="wrap"
                                     >
-                                        <Chip
-                                            icon={<Person />}
-                                            label={discussion.authorName}
+                                        <ClickableUsername
+                                            userId={discussion.authorId}
+                                            username={discussion.authorName}
                                             size="small"
                                             variant="outlined"
                                         />
@@ -689,9 +690,9 @@ const DiscussionDetail = () => {
                                                         alignItems="center"
                                                         flexWrap="wrap"
                                                     >
-                                                        <Chip
-                                                            icon={<Person />}
-                                                            label={answer.authorName}
+                                                        <ClickableUsername
+                                                            userId={answer.authorId}
+                                                            username={answer.authorName}
                                                             size="small"
                                                             variant="outlined"
                                                         />

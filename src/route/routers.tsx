@@ -25,6 +25,7 @@ import CreateDiscussion from "../features/Discussion/components/CreateDiscussion
 import ProtectedRouteUser from "./ProtectedRouteUser";
 import RecycleBin from "../features/AdminDashboard/RecycleBin";
 import UserProfile from "../features/UserProfile/components/UserProfile";
+import UserProfileView from "../features/UserProfile/components/UserProfileView";
 const routers = createBrowserRouter([
   {
     path: "/",
@@ -57,6 +58,10 @@ const routers = createBrowserRouter([
             <UserProfile />
           </ProtectedRoute>
         )
+      },
+      {
+        path: "/user/:id",
+        element: <UserProfileView />
       },
       {
         path: "/talk/new",
