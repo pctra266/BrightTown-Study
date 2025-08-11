@@ -25,6 +25,7 @@ import CreateDiscussion from "../features/Discussion/components/CreateDiscussion
 import ProtectedRouteUser from "./ProtectedRouteUser";
 import RecycleBin from "../features/AdminDashboard/RecycleBin";
 import UserProfile from "../features/UserProfile/components/UserProfile";
+import PublicUserProfile from "../features/UserProfile/components/PublicUserProfile";
 const routers = createBrowserRouter([
   {
     path: "/",
@@ -35,11 +36,12 @@ const routers = createBrowserRouter([
       { path: "login", element: <Login /> },
       { path: "register", element: <SignUp /> },
       { path: "library", element: <Library /> },
-      {path:"/library/flashcard",
-        element: <ProtectedRouteUser/>,
-        children:[
-          {path:"new", element:  <FlashCardsCreate />},
-          {path:"edit/:id", element:  <FlashcardsUpdate />},
+      {
+        path: "/library/flashcard",
+        element: <ProtectedRouteUser />,
+        children: [
+          { path: "new", element: <FlashCardsCreate /> },
+          { path: "edit/:id", element: <FlashcardsUpdate /> },
         ]
       },
       { path: "/library/flashcard/:id/play", element: <FlashcardsPlay /> },
@@ -57,6 +59,10 @@ const routers = createBrowserRouter([
             <UserProfile />
           </ProtectedRoute>
         )
+      },
+      {
+        path: "/user/:userId",
+        element: <PublicUserProfile />
       },
       {
         path: "/talk/new",
