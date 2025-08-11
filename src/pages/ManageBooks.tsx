@@ -61,21 +61,6 @@ const ManageBooks = () => {
 
   const columns: GridColDef[] = [
     {
-      field: "isbn",
-      headerName: "ISBN",
-      type: "string",
-      minWidth: 180,
-      renderHeader: (params) => (
-        <strong style={{ color: "white" }}>{params.colDef.headerName}</strong>
-      ),
-      headerAlign: "left",
-      align: "left",
-      sortable: true,
-      disableColumnMenu: true,
-      flex: 1.5,
-      headerClassName: "author-header",
-    },
-    {
       field: "title",
       headerName: "Title",
       type: "string",
@@ -115,6 +100,21 @@ const ManageBooks = () => {
       sortable: true,
       disableColumnMenu: true,
       flex: 2.0,
+      headerClassName: "author-header",
+    },
+    {
+      field: "copies",
+      headerName: "Copies",
+      type: "number",
+      minWidth: 120,
+      renderHeader: (params) => (
+        <strong style={{ color: "white" }}>{params.colDef.headerName}</strong>
+      ),
+      headerAlign: "left",
+      align: "left",
+      sortable: true,
+      disableColumnMenu: true,
+      flex: 1.2,
       headerClassName: "author-header",
     },
     {
