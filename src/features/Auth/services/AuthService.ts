@@ -9,6 +9,7 @@ import type {
 } from "../Types";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "./firebase";
+import { CleaningServices } from "@mui/icons-material";
 
 // JWT Secret key - Trong production nên lưu trong environment variables
 const JWT_SECRET = new TextEncoder().encode("your-super-secret-jwt-key-2025");
@@ -81,61 +82,28 @@ export const authService = {
     try {
       const accountResponse = await api.get("/account");
       const accounts: Account[] = accountResponse.data;
-
+  
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-
+  
       if (!user.email) {
+        return { success: false, error: "Google account has no email" };
+      }
+  
+      const account = accounts.find((acc) => acc.email === user.email);
+  
+      if (!account) {
+        return { success: false, error: "Invalid email" };
+      }
+  
+      if (!account.status) {
         return {
           success: false,
-          error: "Google account has no email",
+          error: "Your account has been locked. Please contact administrator.",
         };
       }
-
-      let account = accounts.find((acc: Account) => acc.email === user.email);
-      let newAccount: Account | null = null;
-
-      if (account) {
-        if (!account.status) {
-          return {
-            success: false,
-            error:
-              "Your account has been locked. Please contact administrator.",
-          };
-        }
-      } else {
-        // Create new account object
-        newAccount = {
-          id: user.uid,
-          username: user.displayName || user.email || "Unknown",
-          email: user.email,
-          password: undefined,
-          role: "2",
-          status: true,
-        };
-
-        try {
-          const res = await fetch("http://localhost:9000/account", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(newAccount),
-          });
-
-          if (!res.ok) {
-            console.warn("Failed to save to db.json: ", await res.text());
-          } else {
-            console.log("Saved to db.json");
-          }
-        } catch (jsonErr) {
-          console.warn("Failed to save to db.json:", jsonErr);
-        }
-
-        account = newAccount;
-      }
-
+  
       const userData = {
         id: account.id,
         username: account.username,
@@ -143,31 +111,86 @@ export const authService = {
       };
       const token = await this.generateToken(userData);
       const refreshToken = await this.generateRefreshToken(userData);
-
-      // Decode token để lấy iat và update vào database
+  
       const decoded = await this.verifyToken(token);
       if (decoded?.iat) {
         await this.updateLastTokenIat(account.id, decoded.iat);
       }
-
-      // Set cookies với thời gian mặc định (24h)
+  
       setCookie("accessToken", token);
       setCookie("refreshToken", refreshToken);
-     setCookie("user", JSON.stringify(userData));
-      return {
-        success: true,
-        user: userData,
-        token,
-        refreshToken,
-      };
+      setCookie("user", JSON.stringify(userData));
+  
+      return { success: true, user: userData, token, refreshToken };
     } catch (error) {
       console.error("Google sign-in failed:", error);
-      return {
-        success: false,
-        error: "Google sign-in failed",
-      };
+      return { success: false, error: "Google sign-in failed" };
     }
   },
+  
+  async signUpByGoogle(): Promise<LoginResponse> {
+    try {
+      const accountResponse = await api.get("/account");
+      const accounts: Account[] = accountResponse.data;
+  
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+  
+      if (!user.email) {
+        return { success: false, error: "Google account has no email" };
+      }
+      console.log("user email",user.email);
+      console.log("all accounts",accounts);
+      const existingAccount = accounts.find((acc) => acc.email === user.email);
+      if (existingAccount) {
+        return { success: false, error: "Email already registered" };
+      }
+  
+      const newAccount: Account = {
+        id: user.uid,
+        username: user.displayName || user.email || "Unknown",
+        email: user.email,
+        password: undefined,
+        role: "2",
+        status: true,
+      };
+  
+      const res = await fetch("http://localhost:9000/account", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newAccount),
+      });
+  
+      if (!res.ok) {
+        return { success: false, error: "Failed to save new account" };
+      }
+  
+      const userData = {
+        id: newAccount.id,
+        username: newAccount.username,
+        role: newAccount.role,
+      };
+  
+      const token = await this.generateToken(userData);
+      const refreshToken = await this.generateRefreshToken(userData);
+  
+      const decoded = await this.verifyToken(token);
+      if (decoded?.iat) {
+        await this.updateLastTokenIat(newAccount.id, decoded.iat);
+      }
+  
+      setCookie("accessToken", token);
+      setCookie("refreshToken", refreshToken);
+      setCookie("user", JSON.stringify(userData));
+  
+      return { success: true, user: userData, token, refreshToken };
+    } catch (error) {
+      console.error("Google sign-up failed:", error);
+      return { success: false, error: "Google sign-up failed" };
+    }
+  },
+  
 
   async register(
     username: string,
