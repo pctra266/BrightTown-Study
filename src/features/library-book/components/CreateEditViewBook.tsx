@@ -1,4 +1,3 @@
-
 import React, { type ChangeEvent, useEffect, useState } from "react";
 import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -11,7 +10,6 @@ export enum BookMode {
 
 interface Chapter {
   name: string;
-  status: "pending" | "approved" | "rejected";
 }
 
 export interface Book {
@@ -23,8 +21,6 @@ export interface Book {
   chapters?: Chapter[];
   content?: { [key: string]: string };
   userId?: string;
-  status?: "pending" | "approved" | "rejected";
-  chapterStatuses?: { [key: string]: "pending" | "approved" | "rejected" };
 }
 
 export type BookAction = {
@@ -48,7 +44,6 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
     chapters: book.chapters || [],
     content: book.content || {},
     userId: book.userId || "",
-    status: book.status || "pending",
   });
   const [error, setError] = useState<{
     isbnError: string;
@@ -81,7 +76,6 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
       chapters: book.chapters || [],
       content: book.content || {},
       userId: book.userId || "",
-      status: mode === BookMode.CREATE ? "pending" : book.status || "approved",
     });
   }, [book, mode]);
 
@@ -95,7 +89,6 @@ const CreateEditViewBook: React.FC<Props> = ({ mode, book, action }) => {
       chapters: [],
       content: {},
       userId: "",
-      status: "pending",
     });
     setError({
       isbnError: " ",

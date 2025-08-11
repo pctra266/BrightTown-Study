@@ -427,7 +427,7 @@
       "password": "2@Stunning",
       "role": "2",
       "status": true,
-      "lastTokenIat": 1754723621
+      "lastTokenIat": 1754905042
     },
     {
       "id": "MA9zIKD7eDdVTJqGLIfN7PThajx1",
@@ -456,10 +456,9 @@
     {
       "id": "1795",
       "isbn": "978-3-16-148410-9",
-      "title": "Clean Code",
+      "title": "Clean Codeee",
       "author": "Robert C. Martin",
       "copies": 7,
-      "userId": "14",
       "chapters": [
         {
           "name": "Introduction"
@@ -472,56 +471,19 @@
         },
         {
           "name": "ferfr"
+        },
+        {
+          "name": "rr"
         }
       ],
       "content": {
         "Introduction": "Clean Code introduces the principles, patterns, and best practices for writing clean, readable, and maintainable code.",
         "Meaningful Names": "This chapter explains how to choose descriptive and unambiguous names for variables, functions, and classes.",
         "Functions": "Guidelines for writing small, well-structured, and reusable functions are provided here.",
-        "ferfr": "rffr"
-      }
-    },
-    {
-      "id": "e390",
-      "isbn": "978-3-16-148410-1",
-      "title": "The Great Journeyyyy",
-      "author": "Robert Martin",
-      "copies": 7,
-      "chapters": [
-        {
-          "name": "Prologue"
-        },
-        {
-          "name": "The Call to Adventure"
-        },
-        {
-          "name": "Return Home"
-        }
-      ],
-      "content": {
-        "Prologue": "An introduction to a young hero destined to embark on a life-changing journey.",
-        "The Call to Adventure": "The hero leaves home to explore new lands and face unforeseen challenges.",
-        "Return Home": "The journey ends with wisdom gained and a new perspective on life."
+        "ferfr": "rffr",
+        "rr": "rgrg"
       },
-      "userId": "14",
-      "status": "approved"
-    },
-    {
-      "id": "7dd2",
-      "isbn": "978-3-16-147410-9",
-      "title": "as",
-      "author": "dasdfa",
-      "copies": 1,
-      "chapters": [
-        {
-          "name": "a"
-        }
-      ],
-      "content": {
-        "a": "b"
-      },
-      "userId": "1",
-      "status": "pending"
+      "userId": "14"
     }
   ],
   "discussions": [
@@ -834,7 +796,7 @@
     {
       "id": "b800",
       "date": "2025-08-11",
-      "visits": 0,
+      "visits": 1,
       "flashcardsStudied": 3
     }
   ]
