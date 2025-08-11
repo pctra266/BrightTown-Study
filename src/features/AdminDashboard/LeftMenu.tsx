@@ -26,9 +26,6 @@ const LeftMenu = () => {
       <NavLink to="/admin/recycle" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
         Recyle Bin
       </NavLink>
-      <NavLink to="/ui-elements" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
-        Approve Request
-      </NavLink>
     </div>
   );
 };
