@@ -4,7 +4,6 @@ import {
     Container,
     Typography,
     Box,
-    Card,
     CardContent,
     Button,
     TextField,
@@ -24,11 +23,11 @@ import {
     InputLabel,
     Select,
     Pagination,
+    Paper,
 } from "@mui/material";
 import {
     ArrowBack,
     Person,
-    AccessTime,
     Send,
     MoreVert,
     Edit,
@@ -90,7 +89,7 @@ const DiscussionDetail = () => {
         }
     }, [discussion, answerSortBy]);
 
-    const loadDiscussion = async () => {
+    const loadDiscussion = useCallback(async () => {
         try {
             const data = await discussionService.getDiscussionById(id!);
             setDiscussion(data);
@@ -110,9 +109,9 @@ const DiscussionDetail = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [id, user]);
 
-    const filterAndSortAnswers = () => {
+    const filterAndSortAnswers = useCallback(() => {
         if (!discussion) return;
 
         const sorted = [...discussion.answers];
@@ -140,7 +139,7 @@ const DiscussionDetail = () => {
 
         setFilteredAnswers(sorted);
         setCurrentAnswerPage(1);
-    };
+    }, [discussion, answerSortBy]);
 
 
     const validateAnswer = (content: string): string => {
@@ -406,20 +405,38 @@ const DiscussionDetail = () => {
             </Button>
 
             {/* Question */}
-            <Card sx={{ mb: 4 }}>
-                <CardContent>
-                    <Stack direction="row" spacing={2}>
-                        <VoteButtons
-                            score={discussion.score}
-                            userVote={
-                                user && discussion.userVotes
-                                    ? discussion.userVotes[user.id]
-                                    : undefined
-                            }
-                            onUpvote={() => handleVoteOnQuestion("upvote")}
-                            onDownvote={() => handleVoteOnQuestion("downvote")}
-                            disabled={!canVote(discussion.authorId)}
-                        />
+            <Paper
+                elevation={0}
+                sx={{
+                    mb: 4,
+                    border: (theme) => `1px solid ${theme.palette.divider}`,
+                    borderRadius: 2,
+                    overflow: "hidden",
+                }}
+            >
+                <CardContent sx={{ p: 3 }}>
+                    <Stack direction="row" spacing={3}>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                minWidth: 48,
+                                pt: 1,
+                            }}
+                        >
+                            <VoteButtons
+                                score={discussion.score}
+                                userVote={
+                                    user && discussion.userVotes
+                                        ? discussion.userVotes[user.id]
+                                        : undefined
+                                }
+                                onUpvote={() => handleVoteOnQuestion("upvote")}
+                                onDownvote={() => handleVoteOnQuestion("downvote")}
+                                disabled={!canVote(discussion.authorId)}
+                            />
+                        </Box>
 
                         <Box sx={{ flex: 1 }}>
                             {editingQuestion ? (
@@ -468,20 +485,28 @@ const DiscussionDetail = () => {
                                         direction="row"
                                         justifyContent="space-between"
                                         alignItems="flex-start"
+                                        sx={{ mb: 2 }}
                                     >
                                         <Typography
                                             variant="h4"
                                             component="h1"
-                                            sx={{ mb: 2, fontWeight: 600, flex: 1 }}
+                                            sx={{
+                                                fontWeight: 400,
+                                                lineHeight: 1.35,
+                                                flex: 1,
+                                                mr: 2,
+                                                color: "text.primary",
+                                            }}
                                         >
                                             {discussion.title}
                                             {discussion.isEdited && (
                                                 <Chip
                                                     icon={<EditNote />}
-                                                    label="Edited"
+                                                    label="edited"
                                                     size="small"
                                                     color="secondary"
-                                                    sx={{ ml: 2 }}
+                                                    variant="outlined"
+                                                    sx={{ ml: 2, fontSize: "0.7rem" }}
                                                 />
                                             )}
                                         </Typography>
@@ -489,56 +514,102 @@ const DiscussionDetail = () => {
                                         {canEditDelete(discussion.authorId) && (
                                             <IconButton
                                                 onClick={(e) => setQuestionMenuAnchor(e.currentTarget)}
+                                                size="small"
+                                                sx={{
+                                                    color: "text.secondary",
+                                                    "&:hover": { color: "text.primary" },
+                                                }}
                                             >
                                                 <MoreVert />
                                             </IconButton>
                                         )}
                                     </Stack>
 
-                                    <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.6 }}>
+                                    <Typography
+                                        variant="body1"
+                                        sx={{
+                                            mb: 3,
+                                            lineHeight: 1.6,
+                                            fontSize: "0.875rem",
+                                            color: "text.primary",
+                                        }}
+                                    >
                                         {discussion.content}
                                     </Typography>
 
-                                    <Stack
-                                        direction="row"
-                                        spacing={2}
-                                        alignItems="center"
-                                        flexWrap="wrap"
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "flex-end",
+                                            flexWrap: "wrap",
+                                            gap: 2,
+                                        }}
                                     >
-                                        <Chip
-                                            icon={<Person />}
-                                            label={discussion.authorName}
-                                            size="small"
-                                            variant="outlined"
-                                        />
-                                        <Chip
-                                            icon={<AccessTime />}
-                                            label={`Created: ${formatDate(discussion.createdAt)}`}
-                                            size="small"
-                                            variant="outlined"
-                                        />
-                                        <Chip
-                                            icon={<Visibility />}
-                                            label={`${discussion.views} views`}
-                                            size="small"
-                                            variant="outlined"
-                                        />
-                                        {discussion.isEdited && discussion.updatedAt && (
+                                        <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
                                             <Chip
-                                                icon={<EditNote />}
-                                                label={`Edited: ${formatDate(discussion.updatedAt)}`}
+                                                icon={<Visibility />}
+                                                label={`${discussion.views} view${discussion.views !== 1 ? 's' : ''}`}
                                                 size="small"
-                                                color="secondary"
                                                 variant="outlined"
+                                                sx={{ fontSize: "0.7rem" }}
                                             />
-                                        )}
-                                    </Stack>
+                                        </Stack>
+
+                                        <Box
+                                            sx={{
+                                                p: 2,
+                                                backgroundColor: (theme) =>
+                                                    theme.palette.mode === "dark"
+                                                        ? "rgba(255, 255, 255, 0.02)"
+                                                        : "rgba(0, 116, 204, 0.02)",
+                                                borderRadius: 1,
+                                                border: (theme) => `1px solid ${theme.palette.divider}`,
+                                                minWidth: 200,
+                                            }}
+                                        >
+                                            <Typography
+                                                variant="body2"
+                                                color="text.secondary"
+                                                sx={{ fontSize: "0.7rem", mb: 0.5 }}
+                                            >
+                                                {discussion.isEdited && discussion.updatedAt
+                                                    ? `edited ${formatDate(discussion.updatedAt)}`
+                                                    : `asked ${formatDate(discussion.createdAt)}`}
+                                            </Typography>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Box
+                                                    sx={{
+                                                        width: 20,
+                                                        height: 20,
+                                                        borderRadius: "50%",
+                                                        backgroundColor: "primary.main",
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        justifyContent: "center",
+                                                    }}
+                                                >
+                                                    <Person sx={{ fontSize: 12, color: "white" }} />
+                                                </Box>
+                                                <Typography
+                                                    variant="body2"
+                                                    sx={{
+                                                        fontWeight: 500,
+                                                        fontSize: "0.75rem",
+                                                        color: "primary.main",
+                                                    }}
+                                                >
+                                                    {discussion.authorName}
+                                                </Typography>
+                                            </Stack>
+                                        </Box>
+                                    </Box>
                                 </Box>
                             )}
                         </Box>
                     </Stack>
                 </CardContent>
-            </Card>
+            </Paper>
 
             {/* Question Menu */}
             <Menu
@@ -565,218 +636,311 @@ const DiscussionDetail = () => {
             </Menu>
 
             {/* Answers section */}
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-                sx={{ mb: 3 }}
-            >
-                <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                    Answers ({discussion.answers.length})
-                </Typography>
+            <Box sx={{ mb: 4 }}>
+                <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    sx={{ mb: 3 }}
+                >
+                    <Typography
+                        variant="h5"
+                        sx={{
+                            fontWeight: 400,
+                            fontSize: "1.25rem",
+                            color: "text.primary",
+                        }}
+                    >
+                        {discussion.answers.length === 0
+                            ? "Your Answer"
+                            : `${discussion.answers.length} Answer${discussion.answers.length !== 1 ? 's' : ''}`}
+                    </Typography>
 
-                {discussion.answers.length > 0 && (
-                    <FormControl size="small" sx={{ minWidth: 150 }}>
-                        <InputLabel>Sort answers by</InputLabel>
-                        <Select
-                            value={answerSortBy}
-                            label="Sort answers by"
-                            onChange={(e) => setAnswerSortBy(e.target.value)}
-                        >
-                            <MenuItem value="newest">Newest</MenuItem>
-                            <MenuItem value="oldest">Oldest</MenuItem>
-                            <MenuItem value="highestScore">Highest Score</MenuItem>
-                            <MenuItem value="lowestScore">Lowest Score</MenuItem>
-                        </Select>
-                    </FormControl>
-                )}
-            </Stack>
+                    {discussion.answers.length > 0 && (
+                        <FormControl size="small" sx={{ minWidth: 150 }}>
+                            <InputLabel>Sort by</InputLabel>
+                            <Select
+                                value={answerSortBy}
+                                label="Sort by"
+                                onChange={(e) => setAnswerSortBy(e.target.value)}
+                            >
+                                <MenuItem value="newest">Newest</MenuItem>
+                                <MenuItem value="oldest">Oldest</MenuItem>
+                                <MenuItem value="highestScore">Highest Score</MenuItem>
+                                <MenuItem value="lowestScore">Lowest Score</MenuItem>
+                            </Select>
+                        </FormControl>
+                    )}
+                </Stack>
 
-            {discussion.answers.length === 0 ? (
-                <Alert severity="info" sx={{ mb: 4 }}>
-                    No answers yet. Be the first to answer this question!
-                </Alert>
-            ) : (
-                <>
-                    <Stack spacing={3} sx={{ mb: 4 }}>
-                        {currentAnswers.map((answer: Answer) => (
-                            <Card key={answer.id} variant="outlined">
-                                <CardContent>
-                                    <Stack direction="row" spacing={2}>
-                                        <VoteButtons
-                                            score={answer.score}
-                                            userVote={
-                                                user && answer.userVotes
-                                                    ? answer.userVotes[user.id]
-                                                    : undefined
-                                            }
-                                            onUpvote={() => handleVoteOnAnswer(answer.id, "upvote")}
-                                            onDownvote={() =>
-                                                handleVoteOnAnswer(answer.id, "downvote")
-                                            }
-                                            disabled={!canVote(answer.authorId)}
-                                        />
-                                        <Box sx={{ flex: 1 }}>
-                                            {editingAnswer === answer.id ? (
-                                                <Box>
-                                                    <TextField
-                                                        fullWidth
-                                                        multiline
-                                                        rows={4}
-                                                        value={editAnswerContent}
-                                                        onChange={(e) =>
-                                                            setEditAnswerContent(e.target.value)
-                                                        }
-                                                        sx={{ mb: 2 }}
-                                                    />
-                                                    <Stack direction="row" spacing={2}>
-                                                        <Button
-                                                            variant="contained"
-                                                            size="small"
-                                                            onClick={() => handleUpdateAnswer(answer.id)}
-                                                            disabled={!editAnswerContent.trim()}
+                {discussion.answers.length === 0 ? (
+                    <Alert
+                        severity="info"
+                        sx={{
+                            mb: 3,
+                            backgroundColor: (theme) =>
+                                theme.palette.mode === "dark" ? "rgba(33, 150, 243, 0.08)" : "rgba(33, 150, 243, 0.04)",
+                            border: (theme) => `1px solid ${theme.palette.divider}`,
+                        }}
+                    >
+                        Be the first to answer this question!
+                    </Alert>
+                ) : (
+                    <>
+                        <Stack spacing={2} sx={{ mb: 4 }}>
+                            {currentAnswers.map((answer: Answer, index: number) => (
+                                <Paper
+                                    key={answer.id}
+                                    elevation={0}
+                                    sx={{
+                                        border: (theme) => `1px solid ${theme.palette.divider}`,
+                                        borderRadius: 2,
+                                        overflow: "hidden",
+                                        backgroundColor: (theme) =>
+                                            index === 0 && answer.score > 0
+                                                ? theme.palette.mode === "dark"
+                                                    ? "rgba(94, 186, 125, 0.03)"
+                                                    : "rgba(94, 186, 125, 0.02)"
+                                                : "transparent",
+                                    }}
+                                >
+                                    <CardContent sx={{ p: 3 }}>
+                                        <Stack direction="row" spacing={3}>
+                                            <Box
+                                                sx={{
+                                                    display: "flex",
+                                                    flexDirection: "column",
+                                                    alignItems: "center",
+                                                    minWidth: 48,
+                                                    pt: 1,
+                                                }}
+                                            >
+                                                <VoteButtons
+                                                    score={answer.score}
+                                                    userVote={
+                                                        user && answer.userVotes
+                                                            ? answer.userVotes[user.id]
+                                                            : undefined
+                                                    }
+                                                    onUpvote={() => handleVoteOnAnswer(answer.id, "upvote")}
+                                                    onDownvote={() =>
+                                                        handleVoteOnAnswer(answer.id, "downvote")
+                                                    }
+                                                    disabled={!canVote(answer.authorId)}
+                                                />
+                                            </Box>
+                                            <Box sx={{ flex: 1 }}>
+                                                {editingAnswer === answer.id ? (
+                                                    <Box>
+                                                        <TextField
+                                                            fullWidth
+                                                            multiline
+                                                            rows={4}
+                                                            value={editAnswerContent}
+                                                            onChange={(e) =>
+                                                                setEditAnswerContent(e.target.value)
+                                                            }
+                                                            sx={{ mb: 2 }}
+                                                        />
+                                                        <Stack direction="row" spacing={2}>
+                                                            <Button
+                                                                variant="contained"
+                                                                size="small"
+                                                                onClick={() => handleUpdateAnswer(answer.id)}
+                                                                disabled={!editAnswerContent.trim()}
+                                                            >
+                                                                Save Changes
+                                                            </Button>
+                                                            <Button
+                                                                variant="outlined"
+                                                                size="small"
+                                                                onClick={() => {
+                                                                    setEditingAnswer(null);
+                                                                    setEditAnswerContent("");
+                                                                }}
+                                                            >
+                                                                Cancel
+                                                            </Button>
+                                                        </Stack>
+                                                    </Box>
+                                                ) : (
+                                                    <Box>
+                                                        <Stack
+                                                            direction="row"
+                                                            justifyContent="space-between"
+                                                            alignItems="flex-start"
+                                                            sx={{ mb: 2 }}
                                                         >
-                                                            Save Changes
-                                                        </Button>
-                                                        <Button
-                                                            variant="outlined"
-                                                            size="small"
-                                                            onClick={() => {
-                                                                setEditingAnswer(null);
-                                                                setEditAnswerContent("");
+                                                            <Typography
+                                                                variant="body1"
+                                                                sx={{
+                                                                    lineHeight: 1.6,
+                                                                    flex: 1,
+                                                                    mr: 2,
+                                                                    fontSize: "0.875rem",
+                                                                    color: "text.primary",
+                                                                }}
+                                                            >
+                                                                {answer.content}
+                                                                {answer.isEdited && (
+                                                                    <Chip
+                                                                        icon={<EditNote />}
+                                                                        label="edited"
+                                                                        size="small"
+                                                                        color="secondary"
+                                                                        variant="outlined"
+                                                                        sx={{ ml: 1, fontSize: "0.65rem" }}
+                                                                    />
+                                                                )}
+                                                            </Typography>
+
+                                                            {canEditDelete(answer.authorId) && (
+                                                                <IconButton
+                                                                    size="small"
+                                                                    onClick={(e) => openAnswerMenu(answer.id, e)}
+                                                                    sx={{
+                                                                        color: "text.secondary",
+                                                                        "&:hover": { color: "text.primary" },
+                                                                    }}
+                                                                >
+                                                                    <MoreVert />
+                                                                </IconButton>
+                                                            )}
+                                                        </Stack>
+
+                                                        <Box
+                                                            sx={{
+                                                                display: "flex",
+                                                                justifyContent: "flex-end",
                                                             }}
                                                         >
-                                                            Cancel
-                                                        </Button>
-                                                    </Stack>
-                                                </Box>
-                                            ) : (
-                                                <Box>
-                                                    <Stack
-                                                        direction="row"
-                                                        justifyContent="space-between"
-                                                        alignItems="flex-start"
-                                                    >
-                                                        <Typography
-                                                            variant="body1"
-                                                            sx={{ mb: 2, lineHeight: 1.6, flex: 1 }}
-                                                        >
-                                                            {answer.content}
-                                                            {answer.isEdited && (
-                                                                <Chip
-                                                                    icon={<EditNote />}
-                                                                    label="Edited"
-                                                                    size="small"
-                                                                    color="secondary"
-                                                                    sx={{ ml: 1 }}
-                                                                />
-                                                            )}
-                                                        </Typography>
-
-                                                        {canEditDelete(answer.authorId) && (
-                                                            <IconButton
-                                                                size="small"
-                                                                onClick={(e) => openAnswerMenu(answer.id, e)}
+                                                            <Box
+                                                                sx={{
+                                                                    p: 2,
+                                                                    backgroundColor: (theme) =>
+                                                                        theme.palette.mode === "dark"
+                                                                            ? "rgba(255, 255, 255, 0.02)"
+                                                                            : "rgba(0, 116, 204, 0.02)",
+                                                                    borderRadius: 1,
+                                                                    border: (theme) => `1px solid ${theme.palette.divider}`,
+                                                                    minWidth: 200,
+                                                                }}
                                                             >
-                                                                <MoreVert />
-                                                            </IconButton>
-                                                        )}
-                                                    </Stack>
+                                                                <Typography
+                                                                    variant="body2"
+                                                                    color="text.secondary"
+                                                                    sx={{ fontSize: "0.7rem", mb: 0.5 }}
+                                                                >
+                                                                    {answer.isEdited && answer.updatedAt
+                                                                        ? `edited ${formatDate(answer.updatedAt)}`
+                                                                        : `answered ${formatDate(answer.createdAt)}`}
+                                                                </Typography>
+                                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                                    <Box
+                                                                        sx={{
+                                                                            width: 20,
+                                                                            height: 20,
+                                                                            borderRadius: "50%",
+                                                                            backgroundColor: "primary.main",
+                                                                            display: "flex",
+                                                                            alignItems: "center",
+                                                                            justifyContent: "center",
+                                                                        }}
+                                                                    >
+                                                                        <Person sx={{ fontSize: 12, color: "white" }} />
+                                                                    </Box>
+                                                                    <Typography
+                                                                        variant="body2"
+                                                                        sx={{
+                                                                            fontWeight: 500,
+                                                                            fontSize: "0.75rem",
+                                                                            color: "primary.main",
+                                                                        }}
+                                                                    >
+                                                                        {answer.authorName}
+                                                                    </Typography>
+                                                                </Stack>
+                                                            </Box>
+                                                        </Box>
+                                                    </Box>
+                                                )}
 
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={2}
-                                                        alignItems="center"
-                                                        flexWrap="wrap"
+                                                {/* Answer Menu */}
+                                                <Menu
+                                                    anchorEl={answerMenuAnchor[answer.id]}
+                                                    open={Boolean(answerMenuAnchor[answer.id])}
+                                                    onClose={() => closeAnswerMenu(answer.id)}
+                                                >
+                                                    <MenuItem
+                                                        onClick={() => {
+                                                            setEditingAnswer(answer.id);
+                                                            setEditAnswerContent(answer.content);
+                                                            closeAnswerMenu(answer.id);
+                                                        }}
                                                     >
-                                                        <Chip
-                                                            icon={<Person />}
-                                                            label={answer.authorName}
-                                                            size="small"
-                                                            variant="outlined"
-                                                        />
-                                                        <Chip
-                                                            icon={<AccessTime />}
-                                                            label={`Created: ${formatDate(answer.createdAt)}`}
-                                                            size="small"
-                                                            variant="outlined"
-                                                        />
-                                                        {answer.isEdited && answer.updatedAt && (
-                                                            <Chip
-                                                                icon={<EditNote />}
-                                                                label={`Edited: ${formatDate(
-                                                                    answer.updatedAt
-                                                                )}`}
-                                                                size="small"
-                                                                color="secondary"
-                                                                variant="outlined"
-                                                            />
-                                                        )}
-                                                    </Stack>
-                                                </Box>
-                                            )}
+                                                        <Edit sx={{ mr: 1 }} /> Edit Answer
+                                                    </MenuItem>
+                                                    <MenuItem
+                                                        onClick={() => {
+                                                            setDeleteAnswerDialog(answer.id);
+                                                            closeAnswerMenu(answer.id);
+                                                        }}
+                                                    >
+                                                        <Delete sx={{ mr: 1 }} /> Delete Answer
+                                                    </MenuItem>
+                                                </Menu>
+                                            </Box>
+                                        </Stack>
+                                    </CardContent>
+                                </Paper>
+                            ))}
+                        </Stack>
 
-                                            {/* Answer Menu */}
-                                            <Menu
-                                                anchorEl={answerMenuAnchor[answer.id]}
-                                                open={Boolean(answerMenuAnchor[answer.id])}
-                                                onClose={() => closeAnswerMenu(answer.id)}
-                                            >
-                                                <MenuItem
-                                                    onClick={() => {
-                                                        setEditingAnswer(answer.id);
-                                                        setEditAnswerContent(answer.content);
-                                                        closeAnswerMenu(answer.id);
-                                                    }}
-                                                >
-                                                    <Edit sx={{ mr: 1 }} /> Edit Answer
-                                                </MenuItem>
-                                                <MenuItem
-                                                    onClick={() => {
-                                                        setDeleteAnswerDialog(answer.id);
-                                                        closeAnswerMenu(answer.id);
-                                                    }}
-                                                >
-                                                    <Delete sx={{ mr: 1 }} /> Delete Answer
-                                                </MenuItem>
-                                            </Menu>
-                                        </Box>
-                                    </Stack>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </Stack>
-
-                    {/* Answer Pagination */}
-                    {totalAnswerPages > 1 && (
-                        <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>
-                            <Pagination
-                                count={totalAnswerPages}
-                                page={currentAnswerPage}
-                                onChange={(_, value) => setCurrentAnswerPage(value)}
-                                color="primary"
-                                size="medium"
-                            />
-                        </Box>
-                    )}
-                </>
-            )}
+                        {/* Answer Pagination */}
+                        {totalAnswerPages > 1 && (
+                            <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>
+                                <Pagination
+                                    count={totalAnswerPages}
+                                    page={currentAnswerPage}
+                                    onChange={(_, value) => setCurrentAnswerPage(value)}
+                                    color="primary"
+                                    size="medium"
+                                />
+                            </Box>
+                        )}
+                    </>
+                )}
+            </Box>
 
             <Divider sx={{ my: 4 }} />
 
             {/* Answer form */}
             {isAuthenticated ? (
-                <Card>
-                    <CardContent>
-                        <Typography variant="h6" sx={{ mb: 2 }}>
+                <Paper
+                    elevation={0}
+                    sx={{
+                        border: (theme) => `1px solid ${theme.palette.divider}`,
+                        borderRadius: 2,
+                    }}
+                >
+                    <CardContent sx={{ p: 3 }}>
+                        <Typography
+                            variant="h6"
+                            sx={{
+                                mb: 2,
+                                fontWeight: 400,
+                                fontSize: "1.125rem",
+                                color: "text.primary",
+                            }}
+                        >
                             Your Answer
                         </Typography>
 
                         <TextField
                             fullWidth
                             multiline
-                            rows={4}
-                            placeholder="Write your answer... (minimum 10 characters, 3 words)"
+                            rows={6}
+                            placeholder="Write your answer here... (minimum 10 characters, 3 words)"
                             value={answerContent}
                             onChange={handleAnswerContentChange}
                             error={Boolean(answerError)}
@@ -784,11 +948,27 @@ const DiscussionDetail = () => {
                                 answerError ||
                                 `${answerCharCount}/2000 characters`
                             }
-                            sx={{ mb: 2 }}
+                            sx={{
+                                mb: 2,
+                                "& .MuiOutlinedInput-root": {
+                                    fontSize: "0.875rem",
+                                    lineHeight: 1.6,
+                                },
+                            }}
                         />
 
                         {answerError && (
-                            <Alert severity="error" sx={{ mb: 2 }}>
+                            <Alert
+                                severity="error"
+                                sx={{
+                                    mb: 2,
+                                    backgroundColor: (theme) =>
+                                        theme.palette.mode === "dark"
+                                            ? "rgba(211, 56, 61, 0.08)"
+                                            : "rgba(211, 56, 61, 0.04)",
+                                    border: (theme) => `1px solid ${theme.palette.error.main}`,
+                                }}
+                            >
                                 {answerError}
                             </Alert>
                         )}
@@ -799,14 +979,29 @@ const DiscussionDetail = () => {
                                 startIcon={<Send />}
                                 onClick={handleSubmitAnswer}
                                 disabled={submitting || Boolean(answerError)}
+                                sx={{
+                                    px: 3,
+                                    py: 1,
+                                    fontSize: "0.875rem",
+                                    fontWeight: 500,
+                                }}
                             >
-                                {submitting ? "Posting..." : "Post Answer"}
+                                {submitting ? "Posting..." : "Post Your Answer"}
                             </Button>
                         </Box>
                     </CardContent>
-                </Card>
+                </Paper>
             ) : (
-                <Alert severity="warning">
+                <Alert
+                    severity="warning"
+                    sx={{
+                        backgroundColor: (theme) =>
+                            theme.palette.mode === "dark"
+                                ? "rgba(245, 130, 37, 0.08)"
+                                : "rgba(245, 130, 37, 0.04)",
+                        border: (theme) => `1px solid ${theme.palette.warning.main}`,
+                    }}
+                >
                     You need to log in to answer questions.
                 </Alert>
             )}
