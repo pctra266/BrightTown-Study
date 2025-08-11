@@ -9,8 +9,7 @@ import { useAuth } from '../../contexts/AuthContext'
 const FlashCardsCreate = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-    const userId = user?.id || "";
-
+  const userId = user?.id || "";
   const handleSubmitCreate = async (data: Omit<FlashcardSet, 'id'>) => {
       await createFlashcardSet(data,userId);
       navigate('/library'); 

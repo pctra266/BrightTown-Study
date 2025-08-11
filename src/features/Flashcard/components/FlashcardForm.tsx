@@ -83,14 +83,17 @@ const FlashcardForm: React.FC<FlashcardFormProps> = ({
         answer: f.answer.trim(),
         image: f.image ?? null,    
       }));
-  
+    if(cards.length <2){
+      alert("You must have at least two flashcards.")
+      return;
+    }
     const payload: Omit<FlashcardSet, "id"> = {
       name: name.trim(),
       description: description.trim(),
-      flashcards: cards,
       userId,
+      flashcards: cards,
+      status: true
     };
-  
     if (FlashcardSet?.id) {
       onSubmit({ ...payload, id: FlashcardSet.id });
     } else {

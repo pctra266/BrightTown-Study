@@ -28,7 +28,8 @@ interface AuthContextType {
     ) => Promise<{ success: boolean; message: string }>;
     logout: () => void;
     isAuthenticated: boolean;
-    loginWithGoogle: () => Promise<{ success: boolean; error?: string }>; // NEW
+    loginWithGoogle: () => Promise<{ success: boolean; error?: string }>; 
+    SignUpWithGoogle: () => Promise<{ success: boolean; error?: string }>; 
 }
 
 
@@ -226,6 +227,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     
         return { success: false, error: result.error };
     };
+    const SignUpWithGoogle = async (): Promise<{ success: boolean; error?: string }> => {
+        const result = await authService.signUpByGoogle();
+    
+        if (result.success && result.user) {
+            const userData: User = {
+                id: result.user.id,
+                username: result.user.username,
+                role: result.user.role,
+            };
+            
+            setUser(userData);
+            setTimeout(async () => {
+                const jwtInitialized = await jwtSessionManager.initializeFromToken(userData.id);
+                if (jwtInitialized) {
+                    await jwtSessionManager.startMonitoring(userData.id, () => {
+                        console.log("JWT session conflict detected during session - logging out");
+                        authService.logout();
+                        setUser(null);
+                        sessionStorage.setItem("sessionConflict", "true");
+                    });
+                } else {
+                    console.warn("Failed to initialize JWT session manager after login");
+                }
+            }, 100);
+            return { success: true };
+        }
+    
+        return { success: false, error: result.error };
+    };
     
 
     const register = async (
@@ -254,6 +284,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         logout,
         isAuthenticated: !!user,
         loginWithGoogle,
+        SignUpWithGoogle
     };
 
     if (loading) {
