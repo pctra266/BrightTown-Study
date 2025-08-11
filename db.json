@@ -302,7 +302,19 @@
       "password": "123456",
       "role": "0",
       "status": true,
-      "lastTokenIat": 1754836276
+      "lastTokenIat": 1754886793,
+      "bio": "This is a test bio to verify the theme adaptation works correctly.",
+      "email": "admin@example.com",
+      "socialLinks": {
+        "website": "https://example.com",
+        "linkedin": "",
+        "github": "",
+        "twitter": ""
+      },
+      "preferences": {
+        "publicProfile": false,
+        "notifications": true
+      }
     },
     {
       "id": "2",
