@@ -25,6 +25,11 @@ import CreateDiscussion from "../features/Discussion/components/CreateDiscussion
 import ProtectedRouteUser from "./ProtectedRouteUser";
 import RecycleBin from "../features/AdminDashboard/RecycleBin";
 import UserProfile from "../features/UserProfile/components/UserProfile";
+
+// Test component for UserProfile demonstration
+const UserProfileDemo = () => {
+  return <UserProfile />;
+};
 const routers = createBrowserRouter([
   {
     path: "/",
@@ -50,6 +55,7 @@ const routers = createBrowserRouter([
       { path: "forgot-password", element: <ForgotPassword /> },
       { path: "/talk", element: <DiscussionHub /> },
       { path: "/talk/:id", element: <DiscussionDetail /> },
+      { path: "/profile-demo", element: <UserProfileDemo /> },
       {
         path: "/profile",
         element: (
