@@ -414,7 +414,7 @@
       "password": "2@Stunning",
       "role": "2",
       "status": true,
-      "lastTokenIat": 1754902515
+      "lastTokenIat": 1754903142
     }
   ],
   "role": [
@@ -461,29 +461,30 @@
       }
     },
     {
-      "id": "e390",
-      "isbn": "978-3-16-148410-1",
-      "title": "The Great Journeyyyy",
+      "id": "4960",
+      "isbn": "978-3-16-148410-6",
+      "title": "Clean Codeee",
       "author": "Robert Martin",
-      "copies": 7,
+      "copies": 9,
       "chapters": [
         {
-          "name": "Prologue"
-        },
-        {
-          "name": "The Call to Adventure"
-        },
-        {
-          "name": "Return Home"
+          "name": "gg"
         }
       ],
       "content": {
-        "Prologue": "An introduction to a young hero destined to embark on a life-changing journey.",
-        "The Call to Adventure": "The hero leaves home to explore new lands and face unforeseen challenges.",
-        "Return Home": "The journey ends with wisdom gained and a new perspective on life."
+        "gg": "rgrgr"
       },
-      "userId": "14",
-      "status": "approved"
+      "userId": "14"
+    },
+    {
+      "id": "a4b9",
+      "isbn": "978-3-16-148410-3",
+      "title": "Advanced Programming",
+      "author": "Jane Doe",
+      "copies": 10,
+      "chapters": [],
+      "content": {},
+      "userId": "14"
     }
   ],
   "discussions": [
@@ -788,7 +789,7 @@
     {
       "id": "a26d",
       "date": "2025-08-11",
-      "visits": 1,
+      "visits": 2,
       "flashcardsStudied": 0
     }
   ]

@@ -37,6 +37,7 @@ const ManageBooks = () => {
     copies: 0,
     chapters: [],
     content: {},
+    userId: "",
   });
   const [openNewBook, setOpenNewBook] = useState<boolean>(false);
   const [openEditBook, setOpenEditBook] = useState<boolean>(false);
@@ -48,14 +49,32 @@ const ManageBooks = () => {
   });
 
   const normalizeBook = (book: any): Book => ({
-    ...book,
     id: String(book.id),
+    isbn: book.isbn || "",
+    title: book.title || "",
+    author: book.author || "",
+    copies: book.copies || 0,
     chapters: book.chapters ? book.chapters.map((ch: any) => ({ name: ch.name })) : [],
     content: book.content || {},
     userId: book.userId || "",
   });
 
   const columns: GridColDef[] = [
+    {
+      field: "isbn",
+      headerName: "ISBN",
+      type: "string",
+      minWidth: 180,
+      renderHeader: (params) => (
+        <strong style={{ color: "white" }}>{params.colDef.headerName}</strong>
+      ),
+      headerAlign: "left",
+      align: "left",
+      sortable: true,
+      disableColumnMenu: true,
+      flex: 1.5,
+      headerClassName: "author-header",
+    },
     {
       field: "title",
       headerName: "Title",
@@ -68,7 +87,7 @@ const ManageBooks = () => {
       align: "left",
       sortable: true,
       disableColumnMenu: true,
-      flex: 2.5,
+      flex: 2.7,
       renderCell: (params) => (
         <Link
           to={`/books/${params.row.id}`}
@@ -95,22 +114,7 @@ const ManageBooks = () => {
       align: "left",
       sortable: true,
       disableColumnMenu: true,
-      flex: 1.8,
-      headerClassName: "author-header",
-    },
-    {
-      field: "copies",
-      headerName: "Copies",
-      type: "number",
-      minWidth: 120,
-      renderHeader: (params) => (
-        <strong style={{ color: "white" }}>{params.colDef.headerName}</strong>
-      ),
-      headerAlign: "left",
-      align: "left",
-      sortable: true,
-      disableColumnMenu: true,
-      flex: 1,
+      flex: 2.0,
       headerClassName: "author-header",
     },
     {
@@ -125,7 +129,7 @@ const ManageBooks = () => {
       ),
       headerAlign: "center",
       align: "center",
-      flex: 1.2,
+      flex: 1.3,
       renderCell: (params) => (
         <Box display="flex" alignItems="center" gap={1}>
           <Tooltip title="View book">
@@ -431,6 +435,7 @@ const ManageBooks = () => {
                     copies: 0,
                     chapters: [],
                     content: {},
+                    userId: "",
                   });
                   setOpenNewBook(true);
                 }}
