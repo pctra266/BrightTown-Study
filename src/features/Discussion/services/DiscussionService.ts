@@ -30,6 +30,7 @@ export interface Discussion {
   views: number;
   viewedBy: string[];
   answers: Answer[];
+  tags?: string[];
 }
 
 export interface CreateDiscussionData {
@@ -37,6 +38,7 @@ export interface CreateDiscussionData {
   content: string;
   authorId: string;
   authorName: string;
+  tags?: string[];
 }
 
 export interface UpdateDiscussionData {
@@ -63,7 +65,7 @@ export interface VoteData {
 export const discussionService = {
   getAllDiscussions: async (): Promise<Discussion[]> => {
     const response = await api.get("/discussions");
-    return response.data.map((discussion: any) => ({
+    return response.data.map((discussion: Discussion) => ({
       ...discussion,
       views: discussion.views ?? 0,
       viewedBy: discussion.viewedBy ?? [],
@@ -115,6 +117,7 @@ export const discussionService = {
       views: 0,
       viewedBy: [],
       answers: [],
+      tags: data.tags || [],
     };
 
     const response = await api.post("/discussions", newDiscussion);

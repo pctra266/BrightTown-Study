@@ -121,6 +121,7 @@ const Login = () => {
     };
 
     const handleGoogleLogin = async () => {
+        
         const result = await loginWithGoogle();
         if (result.success) {
             navigate("/");

@@ -25,4 +25,5 @@ export interface FlashcardSetMeta {
   name: string;
   description: string;
   userId: string;
+  status : boolean;
 }

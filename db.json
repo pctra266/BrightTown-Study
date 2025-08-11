@@ -38,7 +38,8 @@
           "answer": "Titanic",
           "image": null
         }
-      ]
+      ],
+      "status": true
     },
     {
       "id": "d3d",
@@ -68,7 +69,8 @@
           "answer": "4444",
           "image": null
         }
-      ]
+      ],
+      "status": true
     },
     {
       "name": "OnlyCat",
@@ -94,7 +96,8 @@
         }
       ],
       "userId": "5",
-      "id": "0554"
+      "id": "0554",
+      "status": true
     },
     {
       "id": "c2e3",
@@ -114,7 +117,8 @@
           "image": null
         }
       ],
-      "userId": "5"
+      "userId": "5",
+      "status": false
     },
     {
       "id": "9a0d",
@@ -142,7 +146,8 @@
           }
         }
       ],
-      "userId": "5"
+      "userId": "5",
+      "status": false
     },
     {
       "name": "new set public toi da sua cai nay",
@@ -170,7 +175,8 @@
         }
       ],
       "userId": "5",
-      "id": "3653"
+      "id": "3653",
+      "status": false
     },
     {
       "id": "e270",
@@ -190,28 +196,8 @@
           "image": null
         }
       ],
-      "userId": "2"
-    },
-    {
-      "id": "445f",
-      "name": "abc",
-      "description": "abc",
-      "flashcards": [
-        {
-          "id": "5472942e-de1b-4ffd-b113-262d98fc90b3",
-          "question": "a",
-          "answer": "b",
-          "image": null
-        },
-        {
-          "id": "f1060a44-ad0c-42c4-a2a7-bd43b42922ec",
-          "question": "a",
-          "answer": "b",
-          "image": null
-        }
-      ],
-      "userId": "1",
-      "status": true
+      "userId": "2",
+      "status": false
     },
     {
       "id": "db3e",
@@ -231,7 +217,8 @@
           "image": null
         }
       ],
-      "userId": "1"
+      "userId": "1",
+      "status": true
     },
     {
       "id": "a1cc",
@@ -251,7 +238,8 @@
           "image": null
         }
       ],
-      "userId": "1"
+      "userId": "1",
+      "status": true
     },
     {
       "id": "671f",
@@ -271,7 +259,8 @@
           "image": null
         }
       ],
-      "userId": "1"
+      "userId": "1",
+      "status": true
     },
     {
       "name": "OSG",
@@ -292,7 +281,7 @@
       ],
       "userId": "1",
       "id": "8468",
-      "status": false
+      "status": true
     }
   ],
   "account": [
@@ -302,7 +291,19 @@
       "password": "123456",
       "role": "0",
       "status": true,
-      "lastTokenIat": 1754836276
+      "lastTokenIat": 1754893850,
+      "bio": "This is a test bio to verify the theme adaptation works correctly.",
+      "email": "admin@example.com",
+      "socialLinks": {
+        "website": "https://example.com",
+        "linkedin": "",
+        "github": "",
+        "twitter": ""
+      },
+      "preferences": {
+        "publicProfile": false,
+        "notifications": true
+      }
     },
     {
       "id": "2",
@@ -310,7 +311,7 @@
       "password": "123456",
       "role": "1",
       "status": true,
-      "lastTokenIat": 1754620079
+      "lastTokenIat": 1754877107
     },
     {
       "id": "4",
@@ -318,7 +319,19 @@
       "password": "pctra266",
       "role": "2",
       "status": true,
-      "lastTokenIat": 1754556360
+      "lastTokenIat": 1754875255,
+      "bio": "I'm a passionate learner who loves technology, programming, and sharing knowledge with others. Always excited to explore new ideas and connect with fellow learners!",
+      "email": "pctra266@example.com",
+      "socialLinks": {
+        "website": "https://pctra266.dev",
+        "linkedin": "",
+        "github": "https://github.com/pctra266",
+        "twitter": ""
+      },
+      "preferences": {
+        "publicProfile": true,
+        "notifications": true
+      }
     },
     {
       "id": "5",
@@ -415,6 +428,14 @@
       "role": "2",
       "status": true,
       "lastTokenIat": 1754723621
+    },
+    {
+      "id": "MA9zIKD7eDdVTJqGLIfN7PThajx1",
+      "username": "Phong Nguyễn",
+      "role": "1",
+      "status": true,
+      "email": "phongvg04@gmail.com",
+      "lastTokenIat": 1754880384
     }
   ],
   "role": [
@@ -809,6 +830,12 @@
       "date": "2025-08-10",
       "visits": 7,
       "flashcardsStudied": 1
+    },
+    {
+      "id": "b800",
+      "date": "2025-08-11",
+      "visits": 0,
+      "flashcardsStudied": 3
     }
   ]
 }

@@ -7,6 +7,25 @@ export interface UserProfileData {
   discussionsCount: number;
   booksCount: number;
   joinedDate?: string;
+  bio?: string;
+  avatar?: string;
+  email?: string;
+  socialLinks?: {
+    website?: string;
+    linkedin?: string;
+    github?: string;
+    twitter?: string;
+  };
+  preferences?: {
+    theme?: string;
+    notifications?: boolean;
+    publicProfile?: boolean;
+  };
+  stats?: {
+    totalStudyTime?: number;
+    streak?: number;
+    achievements?: string[];
+  };
 }
 
 export interface UserActivityData {

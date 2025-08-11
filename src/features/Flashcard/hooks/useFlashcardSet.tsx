@@ -6,7 +6,11 @@ export const useFlashcardSet = (id:string,userId:string,userRole:string) => {
     const [flashcardSet, setFlashcardSet] = useState<FlashcardSet>({} as FlashcardSet);
     
     useEffect(() => {fetchFlashcardSet(id);}, []);
-    const fetchFlashcardSet = async (id: string) => {setFlashcardSet(await getFlashcardSetPublicById(id));}
+    const fetchFlashcardSet = async (id: string) => {
+        const flashcardSetData = await getFlashcardSetPublicById(id);
+        const result = flashcardSetData.status? flashcardSetData: {} as FlashcardSet;
+        setFlashcardSet(result);
+    }
     
     return { flashcardSet }
 }
