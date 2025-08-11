@@ -237,11 +237,10 @@ const UserProfile: React.FC = () => {
                     <p className="text-purple-100 text-sm">{profile.email}</p>
                   )}
                   <div className="flex items-center space-x-2 mt-2">
-                    <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
-                      profile.status
+                    <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${profile.status
                         ? 'bg-green-100 text-green-800'
                         : 'bg-red-100 text-red-800'
-                    }`}>
+                      }`}>
                       {profile.status ? 'Active' : 'Inactive'}
                     </span>
                   </div>
@@ -249,16 +248,19 @@ const UserProfile: React.FC = () => {
               </div>
               <button
                 onClick={() => setIsEditing(true)}
-                className="inline-flex items-center px-4 py-2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-medium rounded-md transition-colors"
+                className={`inline-flex items-center px-6 py-3 font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105 border-2 ${actualTheme === 'dark'
+                    ? 'bg-gray-800 hover:bg-gray-700 text-gray-100 border-gray-600/50'
+                    : 'bg-white hover:bg-gray-100 text-gray-900 border-white/20'
+                  }`}
               >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
                 Edit Profile
               </button>
             </div>
           </div>
-          
+
           {/* Bio and Social Links */}
           {(profile.bio || profile.socialLinks) && (
             <div className={`px-6 py-4 ${actualTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-50'} ${themeClasses.border} border-b`}>
@@ -313,7 +315,7 @@ const UserProfile: React.FC = () => {
                 View All →
               </Link>
             </div>
-            
+
             {activity?.flashcardSets.length ? (
               <div className="space-y-4 max-h-96 overflow-y-auto">
                 {activity.flashcardSets.slice(0, 5).map((set) => (
@@ -362,7 +364,7 @@ const UserProfile: React.FC = () => {
                 View All →
               </Link>
             </div>
-            
+
             {activity?.discussions.length ? (
               <div className="space-y-4 max-h-96 overflow-y-auto">
                 {activity.discussions.slice(0, 5).map((discussion) => (
@@ -421,17 +423,16 @@ const UserProfile: React.FC = () => {
                 View All →
               </Link>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {activity.books.slice(0, 6).map((book) => (
                 <div key={book.id} className={`${themeClasses.border} border rounded-lg p-4 ${themeClasses.hover} transition-colors`}>
                   <h3 className={`font-medium ${themeClasses.textPrimary}`}>{book.title}</h3>
                   <p className={`text-sm ${themeClasses.textSecondary} mt-1`}>by {book.author}</p>
-                  <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium mt-2 ${
-                    book.status === 'approved' ? 'bg-green-100 text-green-800' :
-                    book.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-red-100 text-red-800'
-                  }`}>
+                  <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium mt-2 ${book.status === 'approved' ? 'bg-green-100 text-green-800' :
+                      book.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
+                    }`}>
                     {book.status}
                   </span>
                 </div>

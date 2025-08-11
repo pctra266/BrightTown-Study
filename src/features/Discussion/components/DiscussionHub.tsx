@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
     Container,
     Typography,
@@ -21,6 +21,7 @@ import {
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
+import { useThemeMode } from "../../../contexts/ThemeContext";
 import { discussionService } from "../services/DiscussionService";
 
 interface Discussion {
@@ -38,13 +39,15 @@ interface Discussion {
     userVotes: { [userId: string]: "upvote" | "downvote" };
     views: number;
     viewedBy: string[];
-    answers: any[];
+    answers: unknown[];
+    tags?: string[];
 }
 
 const DiscussionHub = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { isAuthenticated } = useAuth();
+    const { actualTheme } = useThemeMode();
     const [discussions, setDiscussions] = useState<Discussion[]>([]);
     const [filteredDiscussions, setFilteredDiscussions] = useState<Discussion[]>(
         []
@@ -59,7 +62,6 @@ const DiscussionHub = () => {
         loadDiscussions();
     }, []);
 
-
     useEffect(() => {
         if (location.state?.refresh) {
             loadDiscussions();
@@ -67,10 +69,6 @@ const DiscussionHub = () => {
             window.history.replaceState({}, document.title);
         }
     }, [location.state]);
-
-    useEffect(() => {
-        filterAndSortDiscussions();
-    }, [discussions, searchTerm, sortBy]);
 
     const loadDiscussions = async () => {
         try {
@@ -83,7 +81,7 @@ const DiscussionHub = () => {
         }
     };
 
-    const filterAndSortDiscussions = () => {
+    const filterAndSortDiscussions = useCallback(() => {
         let filtered = discussions.filter(
             (discussion) =>
                 discussion.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -121,7 +119,11 @@ const DiscussionHub = () => {
 
         setFilteredDiscussions(filtered);
         setCurrentPage(1);
-    };
+    }, [discussions, searchTerm, sortBy]);
+
+    useEffect(() => {
+        filterAndSortDiscussions();
+    }, [filterAndSortDiscussions]);
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString("en-US", {
@@ -152,7 +154,7 @@ const DiscussionHub = () => {
     if (loading) {
         return (
             <Container maxWidth="lg" sx={{ py: 4 }}>
-                <Typography>Loading...</Typography>
+                <Typography sx={{ color: actualTheme === 'dark' ? '#e2e8f0' : '#1a202c' }}>Loading...</Typography>
             </Container>
         );
     }
@@ -181,7 +183,7 @@ const DiscussionHub = () => {
                             startIcon={<AddIcon />}
                             onClick={handleCreateQuestion}
                             size="large"
-                            sx={{ 
+                            sx={{
                                 minWidth: "160px",
                                 backgroundColor: "#0074cc",
                                 "&:hover": { backgroundColor: "#0063c1" }
@@ -193,8 +195,14 @@ const DiscussionHub = () => {
                 </Stack>
 
                 {!isAuthenticated && (
-                    <Box sx={{ p: 2, bgcolor: "info.light", borderRadius: 1, mb: 3 }}>
-                        <Typography variant="body2" color="info.contrastText">
+                    <Box sx={{
+                        p: 2,
+                        bgcolor: actualTheme === 'dark' ? "#1e2a3a" : "#e8f4fd",
+                        borderRadius: 1,
+                        mb: 3,
+                        border: actualTheme === 'dark' ? "1px solid #3182ce" : "1px solid #39739d"
+                    }}>
+                        <Typography variant="body2" sx={{ color: actualTheme === 'dark' ? "#63b3ed" : "#39739d" }}>
                             You need to log in to ask questions and answer questions.
                         </Typography>
                     </Box>
@@ -212,19 +220,70 @@ const DiscussionHub = () => {
                                 size="small"
                                 sx={{
                                     "& .MuiOutlinedInput-root": {
-                                        backgroundColor: "white"
+                                        backgroundColor: actualTheme === 'dark' ? '#2d3748' : '#ffffff',
+                                        color: actualTheme === 'dark' ? '#e2e8f0' : '#1a202c',
+                                        "&:hover": {
+                                            backgroundColor: actualTheme === 'dark' ? '#4a5568' : '#f7fafc',
+                                        },
+                                        "& fieldset": {
+                                            borderColor: actualTheme === 'dark' ? '#4a5568' : '#e2e8f0',
+                                        },
+                                        "&:hover fieldset": {
+                                            borderColor: actualTheme === 'dark' ? '#718096' : '#cbd5e0',
+                                        },
+                                        "&.Mui-focused fieldset": {
+                                            borderColor: actualTheme === 'dark' ? '#63b3ed' : '#3182ce',
+                                        }
+                                    },
+                                    "& .MuiInputBase-input": {
+                                        color: actualTheme === 'dark' ? '#e2e8f0' : '#1a202c',
+                                        "&::placeholder": {
+                                            color: actualTheme === 'dark' ? '#a0aec0' : '#718096',
+                                            opacity: 1
+                                        }
                                     }
                                 }}
                             />
                         </Box>
                         <Box sx={{ minWidth: { xs: "100%", md: "200px" } }}>
                             <FormControl fullWidth size="small">
-                                <InputLabel>Sort by</InputLabel>
+                                <InputLabel sx={{ color: actualTheme === 'dark' ? '#a0aec0' : '#718096' }}>Sort by</InputLabel>
                                 <Select
                                     value={sortBy}
                                     label="Sort by"
                                     onChange={(e) => setSortBy(e.target.value)}
-                                    sx={{ backgroundColor: "white" }}
+                                    sx={{
+                                        backgroundColor: actualTheme === 'dark' ? '#2d3748' : '#ffffff',
+                                        color: actualTheme === 'dark' ? '#e2e8f0' : '#1a202c',
+                                        "&:hover": {
+                                            backgroundColor: actualTheme === 'dark' ? '#4a5568' : '#f7fafc',
+                                        },
+                                        "& .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: actualTheme === 'dark' ? '#4a5568' : '#e2e8f0',
+                                        },
+                                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: actualTheme === 'dark' ? '#718096' : '#cbd5e0',
+                                        },
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: actualTheme === 'dark' ? '#63b3ed' : '#3182ce',
+                                        },
+                                        "& .MuiSelect-icon": {
+                                            color: actualTheme === 'dark' ? '#a0aec0' : '#718096',
+                                        }
+                                    }}
+                                    MenuProps={{
+                                        PaperProps: {
+                                            sx: {
+                                                backgroundColor: actualTheme === 'dark' ? '#2d3748' : '#ffffff',
+                                                "& .MuiMenuItem-root": {
+                                                    color: actualTheme === 'dark' ? '#e2e8f0' : '#1a202c',
+                                                    "&:hover": {
+                                                        backgroundColor: actualTheme === 'dark' ? '#4a5568' : '#f7fafc',
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }}
                                 >
                                     <MenuItem value="newest">Newest</MenuItem>
                                     <MenuItem value="oldest">Oldest</MenuItem>
@@ -252,11 +311,12 @@ const DiscussionHub = () => {
                                 variant="outlined"
                                 clickable
                                 sx={{
-                                    backgroundColor: "white",
-                                    borderColor: "primary.200",
+                                    backgroundColor: actualTheme === 'dark' ? '#2d3748' : '#ffffff',
+                                    borderColor: actualTheme === 'dark' ? '#4a5568' : '#e2e8f0',
+                                    color: actualTheme === 'dark' ? '#e2e8f0' : '#1a202c',
                                     "&:hover": {
-                                        backgroundColor: "primary.50",
-                                        borderColor: "primary.main"
+                                        backgroundColor: actualTheme === 'dark' ? '#4a5568' : '#edf2f7',
+                                        borderColor: actualTheme === 'dark' ? '#63b3ed' : '#3182ce'
                                     }
                                 }}
                             />
@@ -270,9 +330,11 @@ const DiscussionHub = () => {
                 {currentDiscussions.length === 0 ? (
                     <Typography
                         variant="body1"
-                        color="text.secondary"
-                        textAlign="center"
-                        sx={{ py: 4 }}
+                        sx={{
+                            color: actualTheme === 'dark' ? '#a0aec0' : '#718096',
+                            textAlign: "center",
+                            py: 4
+                        }}
                     >
                         No questions found.
                     </Typography>
@@ -284,20 +346,22 @@ const DiscussionHub = () => {
                                 variant="outlined"
                                 sx={{
                                     cursor: "pointer",
-                                    "&:hover": { 
-                                        bgcolor: "action.hover",
-                                        borderColor: "primary.main"
+                                    "&:hover": {
+                                        bgcolor: actualTheme === 'dark' ? '#2d3748' : '#f7fafc',
+                                        borderColor: actualTheme === 'dark' ? '#63b3ed' : '#3182ce'
                                     },
                                     transition: "all 0.2s",
                                     borderRadius: 0,
                                     borderBottom: discussion.id === currentDiscussions[currentDiscussions.length - 1].id ? undefined : "none",
+                                    backgroundColor: actualTheme === 'dark' ? '#1a202c' : '#ffffff',
+                                    borderColor: actualTheme === 'dark' ? '#2d3748' : '#e2e8f0'
                                 }}
                                 onClick={() => handleDiscussionClick(discussion.id)}
                             >
                                 <CardContent sx={{ p: 3 }}>
                                     <Stack direction="row" spacing={3}>
                                         {/* Stats Column - Stack Overflow Style */}
-                                        <Box sx={{ 
+                                        <Box sx={{
                                             minWidth: { xs: "auto", sm: "120px" },
                                             display: "flex",
                                             flexDirection: { xs: "row", sm: "column" },
@@ -308,46 +372,46 @@ const DiscussionHub = () => {
                                         }}>
                                             {/* Votes */}
                                             <Stack alignItems="center" spacing={0.5}>
-                                                <Typography 
-                                                    variant="h6" 
-                                                    sx={{ 
+                                                <Typography
+                                                    variant="h6"
+                                                    sx={{
                                                         fontWeight: "bold",
-                                                        color: discussion.score > 0 ? "success.main" : 
-                                                               discussion.score < 0 ? "error.main" : "text.primary"
+                                                        color: discussion.score > 0 ? (actualTheme === 'dark' ? '#68d391' : '#38a169') :
+                                                            discussion.score < 0 ? (actualTheme === 'dark' ? '#fc8181' : '#e53e3e') : (actualTheme === 'dark' ? '#e2e8f0' : '#1a202c')
                                                     }}
                                                 >
                                                     {discussion.score}
                                                 </Typography>
-                                                <Typography variant="caption" color="text.secondary">
+                                                <Typography variant="caption" sx={{ color: actualTheme === 'dark' ? '#a0aec0' : '#718096' }}>
                                                     {Math.abs(discussion.score) === 1 ? "vote" : "votes"}
                                                 </Typography>
                                             </Stack>
 
                                             {/* Answers */}
                                             <Stack alignItems="center" spacing={0.5}>
-                                                <Typography 
-                                                    variant="h6" 
-                                                    sx={{ 
+                                                <Typography
+                                                    variant="h6"
+                                                    sx={{
                                                         fontWeight: "bold",
-                                                        color: discussion.answers.length > 0 ? "primary.main" : "text.primary",
-                                                        backgroundColor: discussion.answers.length > 0 ? "primary.50" : "transparent",
+                                                        color: discussion.answers.length > 0 ? (actualTheme === 'dark' ? '#63b3ed' : '#3182ce') : (actualTheme === 'dark' ? '#e2e8f0' : '#1a202c'),
+                                                        backgroundColor: discussion.answers.length > 0 ? (actualTheme === 'dark' ? 'rgba(99, 179, 237, 0.1)' : 'rgba(49, 130, 206, 0.1)') : "transparent",
                                                         px: discussion.answers.length > 0 ? 1 : 0,
                                                         borderRadius: discussion.answers.length > 0 ? 1 : 0
                                                     }}
                                                 >
                                                     {discussion.answers.length}
                                                 </Typography>
-                                                <Typography variant="caption" color="text.secondary">
+                                                <Typography variant="caption" sx={{ color: actualTheme === 'dark' ? '#a0aec0' : '#718096' }}>
                                                     {discussion.answers.length === 1 ? "answer" : "answers"}
                                                 </Typography>
                                             </Stack>
 
                                             {/* Views */}
                                             <Stack alignItems="center" spacing={0.5}>
-                                                <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+                                                <Typography variant="body2" sx={{ fontWeight: "bold", color: actualTheme === 'dark' ? '#e2e8f0' : '#1a202c' }}>
                                                     {discussion.views}
                                                 </Typography>
-                                                <Typography variant="caption" color="text.secondary">
+                                                <Typography variant="caption" sx={{ color: actualTheme === 'dark' ? '#a0aec0' : '#718096' }}>
                                                     {discussion.views === 1 ? "view" : "views"}
                                                 </Typography>
                                             </Stack>
@@ -360,10 +424,10 @@ const DiscussionHub = () => {
                                                 <Typography
                                                     variant="h6"
                                                     component="h3"
-                                                    sx={{ 
+                                                    sx={{
                                                         fontWeight: 600,
-                                                        color: "primary.main",
-                                                        "&:hover": { color: "primary.dark" },
+                                                        color: actualTheme === 'dark' ? '#63b3ed' : '#3182ce',
+                                                        "&:hover": { color: actualTheme === 'dark' ? '#90cdf4' : '#2c5aa0' },
                                                         lineHeight: 1.3
                                                     }}
                                                 >
@@ -373,8 +437,12 @@ const DiscussionHub = () => {
                                                             icon={<EditNote />}
                                                             label="Edited"
                                                             size="small"
-                                                            color="secondary"
-                                                            sx={{ ml: 1, fontSize: "0.7rem" }}
+                                                            sx={{
+                                                                ml: 1,
+                                                                fontSize: "0.7rem",
+                                                                backgroundColor: actualTheme === 'dark' ? '#4a5568' : '#e2e8f0',
+                                                                color: actualTheme === 'dark' ? '#e2e8f0' : '#1a202c'
+                                                            }}
                                                         />
                                                     )}
                                                 </Typography>
@@ -382,8 +450,8 @@ const DiscussionHub = () => {
                                                 {/* Content Preview */}
                                                 <Typography
                                                     variant="body2"
-                                                    color="text.secondary"
                                                     sx={{
+                                                        color: actualTheme === 'dark' ? '#a0aec0' : '#718096',
                                                         display: "-webkit-box",
                                                         WebkitLineClamp: 2,
                                                         WebkitBoxOrient: "vertical",
@@ -398,20 +466,20 @@ const DiscussionHub = () => {
                                                 <Box>
                                                     <Stack direction="row" spacing={1} sx={{ mb: 1 }} flexWrap="wrap">
                                                         {/* Sample tags - these would come from the discussion data */}
-                                                        {(discussion.tags || ['general', 'study']).map((tag) => (
+                                                        {(discussion.tags || ['general', 'study']).map((tag: string) => (
                                                             <Chip
                                                                 key={tag}
                                                                 label={tag}
                                                                 size="small"
                                                                 variant="outlined"
                                                                 sx={{
-                                                                    backgroundColor: "#e8f4fd",
-                                                                    borderColor: "#39739d",
-                                                                    color: "#39739d",
+                                                                    backgroundColor: actualTheme === 'dark' ? "#1e2a3a" : "#e8f4fd",
+                                                                    borderColor: actualTheme === 'dark' ? "#3182ce" : "#39739d",
+                                                                    color: actualTheme === 'dark' ? "#63b3ed" : "#39739d",
                                                                     fontSize: "0.75rem",
                                                                     height: 24,
                                                                     "&:hover": {
-                                                                        backgroundColor: "#d4e9f7"
+                                                                        backgroundColor: actualTheme === 'dark' ? "#2a4055" : "#d4e9f7"
                                                                     }
                                                                 }}
                                                             />
@@ -421,11 +489,11 @@ const DiscussionHub = () => {
                                                     {/* Author and Date */}
                                                     <Stack direction="row" spacing={2} justifyContent="flex-end">
                                                         <Box sx={{ textAlign: "right" }}>
-                                                            <Typography variant="caption" color="text.secondary">
+                                                            <Typography variant="caption" sx={{ color: actualTheme === 'dark' ? '#a0aec0' : '#718096' }}>
                                                                 asked {formatDate(discussion.createdAt)}
                                                             </Typography>
                                                             <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
-                                                                <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                                                                <Typography variant="body2" sx={{ fontWeight: 500, color: actualTheme === 'dark' ? '#e2e8f0' : '#1a202c' }}>
                                                                     {discussion.authorName}
                                                                 </Typography>
                                                             </Stack>
