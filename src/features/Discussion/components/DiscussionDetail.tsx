@@ -33,7 +33,6 @@ import {
     Edit,
     Delete,
     EditNote,
-    Visibility,
 } from "@mui/icons-material";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useThemeMode } from "../../../contexts/ThemeContext";
@@ -416,7 +415,7 @@ const DiscussionDetail = () => {
                     overflow: "hidden",
                 }}
             >
-                <CardContent sx={{ p: 3 }}>
+                <CardContent sx={{ p: 4 }}>
                     <Stack direction="row" spacing={3}>
                         <Box
                             sx={{
@@ -487,10 +486,10 @@ const DiscussionDetail = () => {
                                         direction="row"
                                         justifyContent="space-between"
                                         alignItems="flex-start"
-                                        sx={{ mb: 2 }}
+                                        sx={{ mb: 3 }}
                                     >
                                         <Typography
-                                            variant="h4"
+                                            variant="h3"
                                             component="h1"
                                             sx={{
                                                 fontWeight: 400,
@@ -498,6 +497,7 @@ const DiscussionDetail = () => {
                                                 flex: 1,
                                                 mr: 2,
                                                 color: "text.primary",
+                                                fontSize: "1.75rem",
                                             }}
                                         >
                                             {discussion.title}
@@ -527,12 +527,35 @@ const DiscussionDetail = () => {
                                         )}
                                     </Stack>
 
+                                    {/* Question metadata bar */}
+                                    <Stack 
+                                        direction="row" 
+                                        spacing={2} 
+                                        sx={{ 
+                                            mb: 3,
+                                            pb: 2,
+                                            borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+                                        }}
+                                    >
+                                        <Typography variant="body2" color="text.secondary">
+                                            Asked {formatDate(discussion.createdAt)}
+                                        </Typography>
+                                        {discussion.isEdited && discussion.updatedAt && (
+                                            <Typography variant="body2" color="text.secondary">
+                                                Modified {formatDate(discussion.updatedAt)}
+                                            </Typography>
+                                        )}
+                                        <Typography variant="body2" color="text.secondary">
+                                            Viewed {discussion.views} time{discussion.views !== 1 ? 's' : ''}
+                                        </Typography>
+                                    </Stack>
+
                                     <Typography
                                         variant="body1"
                                         sx={{
-                                            mb: 3,
+                                            mb: 4,
                                             lineHeight: 1.6,
-                                            fontSize: "0.875rem",
+                                            fontSize: "1rem",
                                             color: "text.primary",
                                         }}
                                     >
@@ -550,11 +573,16 @@ const DiscussionDetail = () => {
                                     >
                                         <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
                                             <Chip
-                                                icon={<Visibility />}
-                                                label={`${discussion.views} view${discussion.views !== 1 ? 's' : ''}`}
+                                                label="general"
                                                 size="small"
                                                 variant="outlined"
-                                                sx={{ fontSize: "0.7rem" }}
+                                                sx={{ fontSize: "0.75rem" }}
+                                            />
+                                            <Chip
+                                                label="study"
+                                                size="small"
+                                                variant="outlined"
+                                                sx={{ fontSize: "0.75rem" }}
                                             />
                                         </Stack>
 
@@ -573,7 +601,7 @@ const DiscussionDetail = () => {
                                             <Typography
                                                 variant="body2"
                                                 color="text.secondary"
-                                                sx={{ fontSize: "0.7rem", mb: 0.5 }}
+                                                sx={{ fontSize: "0.75rem", mb: 0.5 }}
                                             >
                                                 {discussion.isEdited && discussion.updatedAt
                                                     ? `edited ${formatDate(discussion.updatedAt)}`
@@ -597,7 +625,7 @@ const DiscussionDetail = () => {
                                                     variant="body2"
                                                     sx={{
                                                         fontWeight: 500,
-                                                        fontSize: "0.75rem",
+                                                        fontSize: "0.8rem",
                                                         color: "primary.main",
                                                     }}
                                                 >
@@ -643,13 +671,17 @@ const DiscussionDetail = () => {
                     direction="row"
                     justifyContent="space-between"
                     alignItems="center"
-                    sx={{ mb: 3 }}
+                    sx={{ 
+                        mb: 3,
+                        pb: 2,
+                        borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+                    }}
                 >
                     <Typography
-                        variant="h5"
+                        variant="h4"
                         sx={{
                             fontWeight: 400,
-                            fontSize: "1.25rem",
+                            fontSize: "1.5rem",
                             color: "text.primary",
                         }}
                     >
@@ -683,9 +715,15 @@ const DiscussionDetail = () => {
                             backgroundColor: (theme) =>
                                 theme.palette.mode === "dark" ? "rgba(33, 150, 243, 0.08)" : "rgba(33, 150, 243, 0.04)",
                             border: (theme) => `1px solid ${theme.palette.divider}`,
+                            borderRadius: 2,
                         }}
                     >
-                        Be the first to answer this question!
+                        <Typography variant="body1" sx={{ fontWeight: 500, mb: 0.5 }}>
+                            Share your knowledge
+                        </Typography>
+                        <Typography variant="body2">
+                            Be the first to answer this question! Your insights could help others facing similar challenges.
+                        </Typography>
                     </Alert>
                 ) : (
                     <>
@@ -706,7 +744,7 @@ const DiscussionDetail = () => {
                                                 : "transparent",
                                     }}
                                 >
-                                    <CardContent sx={{ p: 3 }}>
+                                    <CardContent sx={{ p: 4 }}>
                                         <Stack direction="row" spacing={3}>
                                             <Box
                                                 sx={{
@@ -771,7 +809,7 @@ const DiscussionDetail = () => {
                                                             direction="row"
                                                             justifyContent="space-between"
                                                             alignItems="flex-start"
-                                                            sx={{ mb: 2 }}
+                                                            sx={{ mb: 3 }}
                                                         >
                                                             <Typography
                                                                 variant="body1"
@@ -779,7 +817,7 @@ const DiscussionDetail = () => {
                                                                     lineHeight: 1.6,
                                                                     flex: 1,
                                                                     mr: 2,
-                                                                    fontSize: "0.875rem",
+                                                                    fontSize: "1rem",
                                                                     color: "text.primary",
                                                                 }}
                                                             >
@@ -814,6 +852,7 @@ const DiscussionDetail = () => {
                                                             sx={{
                                                                 display: "flex",
                                                                 justifyContent: "flex-end",
+                                                                mt: 2,
                                                             }}
                                                         >
                                                             <Box
@@ -831,7 +870,7 @@ const DiscussionDetail = () => {
                                                                 <Typography
                                                                     variant="body2"
                                                                     color="text.secondary"
-                                                                    sx={{ fontSize: "0.7rem", mb: 0.5 }}
+                                                                    sx={{ fontSize: "0.75rem", mb: 0.5 }}
                                                                 >
                                                                     {answer.isEdited && answer.updatedAt
                                                                         ? `edited ${formatDate(answer.updatedAt)}`
@@ -855,7 +894,7 @@ const DiscussionDetail = () => {
                                                                         variant="body2"
                                                                         sx={{
                                                                             fontWeight: 500,
-                                                                            fontSize: "0.75rem",
+                                                                            fontSize: "0.8rem",
                                                                             color: "primary.main",
                                                                         }}
                                                                     >
@@ -918,93 +957,163 @@ const DiscussionDetail = () => {
 
             {/* Answer form */}
             {isAuthenticated ? (
-                <Paper
-                    elevation={0}
-                    sx={{
-                        border: (theme) => `1px solid ${theme.palette.divider}`,
-                        borderRadius: 2,
-                    }}
-                >
-                    <CardContent sx={{ p: 3 }}>
-                        <Typography
-                            variant="h6"
-                            sx={{
-                                mb: 2,
-                                fontWeight: 400,
-                                fontSize: "1.125rem",
-                                color: "text.primary",
-                            }}
-                        >
-                            Your Answer
-                        </Typography>
-
-                        <TextField
-                            fullWidth
-                            multiline
-                            rows={6}
-                            placeholder="Write your answer here... (minimum 10 characters, 3 words)"
-                            value={answerContent}
-                            onChange={handleAnswerContentChange}
-                            error={Boolean(answerError)}
-                            helperText={
-                                answerError ||
-                                `${answerCharCount}/2000 characters`
-                            }
-                            sx={{
-                                mb: 2,
-                                "& .MuiOutlinedInput-root": {
-                                    fontSize: "0.875rem",
-                                    lineHeight: 1.6,
-                                },
-                            }}
-                        />
-
-                        {answerError && (
-                            <Alert
-                                severity="error"
+                <Box sx={{ mt: 4 }}>
+                    <Paper
+                        elevation={0}
+                        sx={{
+                            border: (theme) => `1px solid ${theme.palette.divider}`,
+                            borderRadius: 2,
+                        }}
+                    >
+                        <CardContent sx={{ p: 4 }}>
+                            <Typography
+                                variant="h5"
                                 sx={{
-                                    mb: 2,
+                                    mb: 1,
+                                    fontWeight: 400,
+                                    fontSize: "1.375rem",
+                                    color: "text.primary",
+                                }}
+                            >
+                                Your Answer
+                            </Typography>
+                            
+                            <Typography 
+                                variant="body2" 
+                                color="text.secondary" 
+                                sx={{ mb: 3 }}
+                            >
+                                Thanks for contributing an answer! Please be sure the answer is correct and provides helpful information.
+                            </Typography>
+
+                            <TextField
+                                fullWidth
+                                multiline
+                                rows={8}
+                                placeholder="Write your answer here... Include relevant details, examples, and explanations. Minimum 10 characters."
+                                value={answerContent}
+                                onChange={handleAnswerContentChange}
+                                error={Boolean(answerError)}
+                                helperText={
+                                    answerError ||
+                                    `${answerCharCount}/2000 characters`
+                                }
+                                sx={{
+                                    mb: 3,
+                                    "& .MuiOutlinedInput-root": {
+                                        fontSize: "0.9rem",
+                                        lineHeight: 1.6,
+                                        "&:hover fieldset": {
+                                            borderColor: "primary.main",
+                                        },
+                                        "&.Mui-focused fieldset": {
+                                            borderWidth: "2px",
+                                        },
+                                    },
+                                }}
+                            />
+
+                            {answerError && (
+                                <Alert
+                                    severity="error"
+                                    sx={{
+                                        mb: 3,
+                                        borderRadius: 1,
+                                        border: (theme) => `1px solid ${theme.palette.error.main}`,
+                                    }}
+                                >
+                                    {answerError}
+                                </Alert>
+                            )}
+
+                            {/* Writing tips */}
+                            <Paper
+                                elevation={0}
+                                sx={{
+                                    p: 2,
+                                    mb: 3,
                                     backgroundColor: (theme) =>
                                         theme.palette.mode === "dark"
-                                            ? "rgba(211, 56, 61, 0.08)"
-                                            : "rgba(211, 56, 61, 0.04)",
-                                    border: (theme) => `1px solid ${theme.palette.error.main}`,
+                                            ? "rgba(33, 150, 243, 0.08)"
+                                            : "rgba(33, 150, 243, 0.04)",
+                                    border: (theme) => `1px solid ${theme.palette.divider}`,
+                                    borderRadius: 1,
                                 }}
                             >
-                                {answerError}
-                            </Alert>
-                        )}
+                                <Typography 
+                                    variant="subtitle2" 
+                                    sx={{ 
+                                        fontWeight: 600, 
+                                        mb: 1,
+                                        fontSize: "0.875rem",
+                                        color: "primary.main"
+                                    }}
+                                >
+                                    💡 Tips for a great answer
+                                </Typography>
+                                <Typography 
+                                    variant="body2" 
+                                    sx={{ 
+                                        fontSize: "0.8rem",
+                                        color: "text.secondary",
+                                        lineHeight: 1.5
+                                    }}
+                                >
+                                    • Be specific and provide concrete examples<br/>
+                                    • Explain your reasoning and show your work<br/>
+                                    • Include relevant code, links, or resources when helpful<br/>
+                                    • Stay focused on answering the question asked
+                                </Typography>
+                            </Paper>
 
-                        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                            <Button
-                                variant="contained"
-                                startIcon={<Send />}
-                                onClick={handleSubmitAnswer}
-                                disabled={submitting || Boolean(answerError)}
-                                sx={{
-                                    px: 3,
-                                    py: 1,
-                                    fontSize: "0.875rem",
-                                    fontWeight: 500,
-                                }}
-                            >
-                                {submitting ? "Posting..." : "Post Your Answer"}
-                            </Button>
-                        </Box>
-                    </CardContent>
-                </Paper>
+                            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                <Button
+                                    variant="contained"
+                                    size="large"
+                                    startIcon={<Send />}
+                                    onClick={handleSubmitAnswer}
+                                    disabled={submitting || Boolean(answerError)}
+                                    sx={{
+                                        px: 3,
+                                        py: 1.5,
+                                        fontSize: "0.95rem",
+                                        fontWeight: 500,
+                                        borderRadius: 1,
+                                    }}
+                                >
+                                    {submitting ? "Publishing..." : "Post Your Answer"}
+                                </Button>
+                                
+                                <Typography 
+                                    variant="body2" 
+                                    color="text.secondary"
+                                    sx={{ fontSize: "0.8rem" }}
+                                >
+                                    By posting your answer, you agree to our terms of service
+                                </Typography>
+                            </Box>
+                        </CardContent>
+                    </Paper>
+                </Box>
             ) : (
                 <Alert
-                    severity="warning"
+                    severity="info"
                     sx={{
+                        mt: 4,
                         backgroundColor: (theme) =>
                             theme.palette.mode === "dark"
-                                ? "rgba(245, 130, 37, 0.08)"
-                                : "rgba(245, 130, 37, 0.04)",
-                        border: (theme) => `1px solid ${theme.palette.warning.main}`,
+                                ? "rgba(33, 150, 243, 0.08)"
+                                : "rgba(33, 150, 243, 0.04)",
+                        border: (theme) => `1px solid ${theme.palette.primary.main}`,
+                        borderRadius: 1,
                     }}
                 >
-                    You need to log in to answer questions.
+                    <Typography variant="body1" sx={{ fontWeight: 500, mb: 0.5 }}>
+                        Want to improve this post? Add your answer!
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                        Please <strong>log in</strong> to post an answer to this question.
+                    </Typography>
                 </Alert>
             )}
 
