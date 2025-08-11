@@ -8,75 +8,87 @@ export default function UserEdit() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user: currentUser } = useAuth();
-
-  // controlled inputs
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
   const [role, setRole] = useState("2");
   const [status, setStatus] = useState(true);
   const [loading, setLoading] = useState(true);
   const [alert, setAlert] = useState<{ type: "success" | "info" | "warning"; message: string } | null>(null);
   const [targetUser, setTargetUser] = useState<any>(null);
-
   useEffect(() => {
     const loadUser = async () => {
       if (!id || !currentUser) {
         navigate("/admin/users");
         return;
       }
-
-      try {
-        const { user } = await fetchUserWithFlashcardSets(id);
-
-        // extra safety: ensure returned user's id matches param
-        if (!user || String(user.id) !== String(id)) {
-          navigate("/not-found");
-          return;
-        }
-
-        const isSuperAdmin = currentUser.role === "0";
-        const isAdmin = currentUser.role === "1";
-        const isEditingSelf = currentUser.id === user.id;
-        if (isAdmin && isEditingSelf) {
-          navigate("/admin/users");
-          return;
-        }
-        if (isSuperAdmin) {
-          setTargetUser(user);
-        } else if (isAdmin && user.role === "2") {
-          setTargetUser(user);
-        } else {
-          navigate("/admin/users");
-          return;
-        }
-
-        // set controlled input values (works because inputs will render with these values)
-        setUsername(user.username ?? "");
-        setPassword(user.password ?? "");
-        setRole(user.role ?? "2");
-        setStatus(Boolean(user.status));
-      } catch (err) {
-        console.error(err);
+      const { user } = await fetchUserWithFlashcardSets(id);
+      if (!user) {
         navigate("/not-found");
-      } finally {
-        setLoading(false);
+        return;
       }
+      const isSuperAdmin = currentUser.role === "0";
+      const isAdmin = currentUser.role === "1";
+      const isEditingSelf = currentUser.id === user.id;
+
+      if (isAdmin && isEditingSelf) {
+        navigate("/admin/users");
+        return;
+      }
+      if (isSuperAdmin) {
+        setTargetUser(user);
+      } else if (isAdmin && user.role === "2") {
+        setTargetUser(user);
+      } else {
+        navigate("/admin/users");
+        return;
+      }
+
+      setUsername(user.username || "");
+      setPassword(user.password || "");
+      setRole(user.role);
+      setStatus(user.status);
+      setLoading(false);
     };
     loadUser();
   }, [id, currentUser, navigate]);
 
+  const isGoogleAccount = !!targetUser?.email && !targetUser?.password;
+
   const handleUpdate = async () => {
-    if (!username.trim() || !password.trim()) {
-      setAlert({ type: "warning", message: "Username và Password không được để trống." });
+    if (!username.trim()) {
+      setAlert({ type: "warning", message: "Username không được để trống." });
       return;
     }
 
-    const result = await updateUser({ id: id!, username: username.trim(), password: password.trim(), role, status });
+    if (!isGoogleAccount && !password.trim()) {
+      setAlert({ type: "warning", message: "Password không được để trống." });
+      return;
+    }
+
+    const updatedData: any = {
+      id: id!,
+      username: username.trim(),
+      role,
+      status
+    };
+
+    if (!isGoogleAccount) {
+      updatedData.password = password.trim();
+    }
+
+    if (targetUser?.email) {
+      updatedData.email = targetUser.email;
+    }
+
+    const result = await updateUser(updatedData);
+
     if (result.success) {
       localStorage.setItem(
         "user_update_alert",
-        JSON.stringify({ type: "success", message: "User updated successfully!" })
+        JSON.stringify({
+          type: "success",
+          message: "User updated successfully!",
+        })
       );
       window.location.href = "/admin/users";
     } else {
@@ -91,9 +103,16 @@ export default function UserEdit() {
 
   return (
     <div className="max-w-md mx-auto mt-10 bg-white rounded shadow">
-      {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />}
-
-      <div className="bg-purple-600 text-white text-lg font-semibold p-4 rounded-t">Update User</div>
+      {alert && (
+        <Alert
+          type={alert.type}
+          message={alert.message}
+          onClose={() => setAlert(null)}
+        />
+      )}
+      <div className="bg-purple-600 text-white text-lg font-semibold p-4 rounded-t">
+        Update User
+      </div>
       <div className="p-6 space-y-4">
         <div>
           <label className="block mb-1 font-medium">Username:</label>
@@ -106,18 +125,19 @@ export default function UserEdit() {
           />
         </div>
 
-        <div>
-          <label className="block mb-1 font-medium">Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full border px-3 py-2 rounded bg-blue-50"
-            autoComplete="off"
-          />
-        </div>
+        {!isGoogleAccount && (
+          <div>
+            <label className="block mb-1 font-medium">Password:</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full border px-3 py-2 rounded bg-blue-50"
+              autoComplete="off"
+            />
+          </div>
+        )}
 
-        {/* rest unchanged... (role select, status radios, buttons) */}
         <div>
           <label className="block mb-1 font-medium">Role:</label>
           <select
@@ -126,34 +146,57 @@ export default function UserEdit() {
             className="w-full border px-3 py-2 rounded"
             disabled={isSuperAdminEditingSelf || currentUser?.role === "1" || targetUser?.role === "0"}
           >
-            {targetUser?.role === "0" && <option value="0">Super Admin</option>}
-            {currentUser?.role === "0" && targetUser?.role !== "0" && (
+            {targetUser?.role === "0" && (
+              <option value="0">Super Admin</option>
+            )}
+            {(currentUser?.role === "0" && targetUser?.role !== "0") && (
               <>
                 <option value="1">Admin</option>
                 <option value="2">User</option>
               </>
             )}
-            {currentUser?.role === "1" && <option value="2">User</option>}
+            {currentUser?.role === "1" && (
+              <option value="2">User</option>
+            )}
           </select>
         </div>
 
         <div className="flex items-center gap-4">
           <label className="flex items-center gap-2">
-            <input type="radio" name="status" value="true" checked={status === true} onChange={() => setStatus(true)} className="w-4 h-4" />
+            <input
+              type="radio"
+              name="status"
+              value="true"
+              checked={status === true}
+              onChange={() => setStatus(true)}
+              className="w-4 h-4"
+            />
             <span className="font-medium">Active</span>
           </label>
-
           <label className="flex items-center gap-2">
-            <input type="radio" name="status" value="false" checked={status === false} onChange={() => setStatus(false)} className="w-4 h-4" />
+            <input
+              type="radio"
+              name="status"
+              value="false"
+              checked={status === false}
+              onChange={() => setStatus(false)}
+              className="w-4 h-4"
+            />
             <span className="font-medium">Inactive</span>
           </label>
         </div>
 
         <div className="flex justify-end gap-3 pt-4">
-          <button onClick={() => navigate("/admin/users")} className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded">
+          <button
+            onClick={() => navigate("/admin/users")}
+            className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
+          >
             Cancel
           </button>
-          <button onClick={handleUpdate} className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded">
+          <button
+            onClick={handleUpdate}
+            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
+          >
             Update User
           </button>
         </div>

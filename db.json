@@ -302,7 +302,7 @@
       "password": "123456",
       "role": "0",
       "status": true,
-      "lastTokenIat": 1754836276
+      "lastTokenIat": 1754880359
     },
     {
       "id": "2",
@@ -415,6 +415,14 @@
       "role": "2",
       "status": true,
       "lastTokenIat": 1754723621
+    },
+    {
+      "id": "MA9zIKD7eDdVTJqGLIfN7PThajx1",
+      "username": "Phong Nguyễn",
+      "role": "1",
+      "status": true,
+      "email": "phongvg04@gmail.com",
+      "lastTokenIat": 1754880384
     }
   ],
   "role": [
