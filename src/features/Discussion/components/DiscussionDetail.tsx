@@ -27,7 +27,6 @@ import {
 } from "@mui/material";
 import {
     ArrowBack,
-    Person,
     AccessTime,
     Send,
     MoreVert,
