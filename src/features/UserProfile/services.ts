@@ -1,4 +1,4 @@
-import { UserProfileData, UserActivityData } from './types';
+import type { UserProfileData, UserActivityData } from './types';
 
 const API_BASE = 'http://localhost:9000';
 
@@ -36,9 +36,55 @@ export const fetchUserProfile = async (userId: string): Promise<UserProfileData>
       flashcardSetsCount: userFlashcardSets.length,
       discussionsCount: userDiscussions.length,
       booksCount: userBooks.length,
+      bio: user.bio,
+      avatar: user.avatar,
+      email: user.email,
+      socialLinks: user.socialLinks,
+      preferences: user.preferences,
+      stats: user.stats,
+      joinedDate: user.joinedDate,
     };
   } catch (error) {
     console.error('Error fetching user profile:', error);
+    throw error;
+  }
+};
+
+export const updateUserProfile = async (userId: string, profileData: Partial<UserProfileData>): Promise<UserProfileData> => {
+  try {
+    // First get the current user data
+    const userResponse = await fetch(`${API_BASE}/account`);
+    const users = await userResponse.json();
+    const currentUser = users.find((u: any) => u.id === userId);
+    
+    if (!currentUser) {
+      throw new Error('User not found');
+    }
+
+    // Merge the current user data with the new profile data
+    const updatedUser = {
+      ...currentUser,
+      ...profileData,
+      id: userId, // Ensure ID is preserved
+    };
+
+    // Update the user in the database
+    const updateResponse = await fetch(`${API_BASE}/account/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedUser),
+    });
+
+    if (!updateResponse.ok) {
+      throw new Error('Failed to update profile');
+    }
+
+    // Return the updated profile
+    return await fetchUserProfile(userId);
+  } catch (error) {
+    console.error('Error updating user profile:', error);
     throw error;
   }
 };

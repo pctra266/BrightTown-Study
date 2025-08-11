@@ -17,7 +17,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useAuth } from "../../../contexts/AuthContext";
 
 const SignUp = () => {
-    const { loginWithGoogle } = useAuth();
+    const { SignUpWithGoogle } = useAuth();
     const [formData, setFormData] = useState({
         username: "",
         password: "",
@@ -79,7 +79,7 @@ const SignUp = () => {
         return null;
     };
     const handleGoogleLogin = async () => {
-        const result = await loginWithGoogle();
+        const result = await SignUpWithGoogle();
         if (result.success) {
             setSuccess("Sign Up successfully");
         } else {

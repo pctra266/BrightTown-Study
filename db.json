@@ -427,7 +427,7 @@
       "password": "2@Stunning",
       "role": "2",
       "status": true,
-      "lastTokenIat": 1754904020
+      "lastTokenIat": 1754723621
     },
     {
       "id": "MA9zIKD7eDdVTJqGLIfN7PThajx1",
@@ -503,7 +503,8 @@
         "The Call to Adventure": "The hero leaves home to explore new lands and face unforeseen challenges.",
         "Return Home": "The journey ends with wisdom gained and a new perspective on life."
       },
-      "userId": "14"
+      "userId": "14",
+      "status": "approved"
     },
     {
       "id": "7dd2",
@@ -519,23 +520,8 @@
       "content": {
         "a": "b"
       },
-      "userId": "1"
-    },
-    {
-      "id": "9600",
-      "isbn": "978-3-16-148410-3",
-      "title": "Advanced Programming",
-      "author": "Jane Doe",
-      "copies": 8,
-      "chapters": [
-        {
-          "name": "hyyh"
-        }
-      ],
-      "content": {
-        "hyyh": "tgt"
-      },
-      "userId": "14"
+      "userId": "1",
+      "status": "pending"
     }
   ],
   "discussions": [
@@ -848,7 +834,7 @@
     {
       "id": "b800",
       "date": "2025-08-11",
-      "visits": 1,
+      "visits": 0,
       "flashcardsStudied": 3
     }
   ]

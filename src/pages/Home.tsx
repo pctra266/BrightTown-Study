@@ -3,6 +3,7 @@ import BackGround from "../components/Background/BackGround";
 import Tower from "../components/Tower/Tower";
 import { useAuth } from '../contexts/AuthContext';
 import { useThemeMode } from '../contexts/ThemeContext'; 
+import DiscussionRealTime from "../features/Discussion/components/DiscussionRealTime";
 
 const Home = () => {
   const { user } = useAuth();
@@ -13,8 +14,9 @@ const Home = () => {
 
 
   return (
+    
     <div className={`relative min-h-screen ${backgroundClasses} overflow-hidden p-2 sm:p-4 flex flex-col gap-2 sm:gap-4 justify-center`}>
-  
+     <DiscussionRealTime></DiscussionRealTime>
   <BackGround/>
   <div className="relative z-10 w-full max-w-6xl mx-auto">
     <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 lg:gap-16 mb-4 sm:mb-8">
