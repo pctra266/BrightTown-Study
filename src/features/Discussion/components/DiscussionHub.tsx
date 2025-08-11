@@ -210,11 +210,6 @@ const DiscussionHub = () => {
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 size="small"
-                                sx={{
-                                    "& .MuiOutlinedInput-root": {
-                                        backgroundColor: "white"
-                                    }
-                                }}
                             />
                         </Box>
                         <Box sx={{ minWidth: { xs: "100%", md: "200px" } }}>
@@ -224,7 +219,6 @@ const DiscussionHub = () => {
                                     value={sortBy}
                                     label="Sort by"
                                     onChange={(e) => setSortBy(e.target.value)}
-                                    sx={{ backgroundColor: "white" }}
                                 >
                                     <MenuItem value="newest">Newest</MenuItem>
                                     <MenuItem value="oldest">Oldest</MenuItem>
@@ -252,7 +246,6 @@ const DiscussionHub = () => {
                                 variant="outlined"
                                 clickable
                                 sx={{
-                                    backgroundColor: "white",
                                     borderColor: "primary.200",
                                     "&:hover": {
                                         backgroundColor: "primary.50",
