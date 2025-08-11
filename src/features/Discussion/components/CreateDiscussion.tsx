@@ -17,26 +17,30 @@ import {
     ListItemIcon,
     ListItemText,
 } from "@mui/material";
-import { 
-    ArrowBack, 
-    Send, 
-    HelpOutline, 
+import {
+    ArrowBack,
+    Send,
+    HelpOutline,
     CheckCircleOutline,
     LightbulbOutlined,
     FormatQuoteOutlined,
-    CodeOutlined 
+    CodeOutlined
 } from "@mui/icons-material";
 import { useAuth } from "../../../contexts/AuthContext";
 import { discussionService } from "../services/DiscussionService";
+import TagSelector from "./TagSelector";
+import { MAX_TAGS_PER_DISCUSSION } from "../constants/tags";
 const CreateDiscussion = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
+    const [tags, setTags] = useState<string[]>([]);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState("");
     const [titleError, setTitleError] = useState("");
     const [contentError, setContentError] = useState("");
+    const [tagsError, setTagsError] = useState("");
     const [titleCharCount, setTitleCharCount] = useState(0);
     const [contentCharCount, setContentCharCount] = useState(0);
 
@@ -101,6 +105,18 @@ const CreateDiscussion = () => {
         return "";
     };
 
+    const validateTags = (tagList: string[]): string => {
+        if (tagList.length === 0) {
+            return "Please select at least one tag to help categorize your question.";
+        }
+
+        if (tagList.length > MAX_TAGS_PER_DISCUSSION) {
+            return `You can select a maximum of ${MAX_TAGS_PER_DISCUSSION} tags.`;
+        }
+
+        return "";
+    };
+
 
     const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newTitle = event.target.value;
@@ -140,15 +156,30 @@ const CreateDiscussion = () => {
         }
     };
 
+    const handleTagsChange = (newTags: string[]) => {
+        setTags(newTags);
+
+        // Validate tags
+        const validationError = validateTags(newTags);
+        setTagsError(validationError);
+
+        // Clear general error if any
+        if (error) {
+            setError("");
+        }
+    };
+
     const handleSubmit = async () => {
 
         setError("");
         setTitleError("");
         setContentError("");
+        setTagsError("");
 
 
         const titleValidationError = validateTitle(title);
         const contentValidationError = validateContent(content);
+        const tagsValidationError = validateTags(tags);
 
         if (titleValidationError) {
             setTitleError(titleValidationError);
@@ -158,8 +189,12 @@ const CreateDiscussion = () => {
             setContentError(contentValidationError);
         }
 
+        if (tagsValidationError) {
+            setTagsError(tagsValidationError);
+        }
 
-        if (titleValidationError || contentValidationError) {
+
+        if (titleValidationError || contentValidationError || tagsValidationError) {
             return;
         }
 
@@ -182,6 +217,7 @@ const CreateDiscussion = () => {
                 content: content.trim(),
                 authorId: user.id,
                 authorName: user.username,
+                tags: tags,
             });
 
             navigate(`/talk/${newDiscussion.id}`);
@@ -214,28 +250,28 @@ const CreateDiscussion = () => {
                             <Typography
                                 variant="h4"
                                 component="h1"
-                                sx={{ 
-                                    mb: 1, 
+                                sx={{
+                                    mb: 1,
                                     fontWeight: 400,
                                     fontSize: "1.75rem",
-                                    color: "text.primary" 
+                                    color: "text.primary"
                                 }}
                             >
                                 Ask a public question
                             </Typography>
-                            
-                            <Typography 
-                                variant="body2" 
-                                color="text.secondary" 
+
+                            <Typography
+                                variant="body2"
+                                color="text.secondary"
                                 sx={{ mb: 4 }}
                             >
                                 Get help from the community by asking a clear, detailed question.
                             </Typography>
 
                             {error && (
-                                <Alert 
-                                    severity="error" 
-                                    sx={{ 
+                                <Alert
+                                    severity="error"
+                                    sx={{
                                         mb: 3,
                                         borderRadius: 1,
                                         border: 1,
@@ -249,19 +285,19 @@ const CreateDiscussion = () => {
                             <Stack spacing={4}>
                                 {/* Title Section */}
                                 <Box>
-                                    <Typography 
-                                        variant="h6" 
-                                        sx={{ 
-                                            mb: 1, 
+                                    <Typography
+                                        variant="h6"
+                                        sx={{
+                                            mb: 1,
                                             fontWeight: 600,
                                             fontSize: "1.125rem"
                                         }}
                                     >
                                         Title
                                     </Typography>
-                                    <Typography 
-                                        variant="body2" 
-                                        color="text.secondary" 
+                                    <Typography
+                                        variant="body2"
+                                        color="text.secondary"
                                         sx={{ mb: 2 }}
                                     >
                                         Be specific and imagine you're asking a question to another person.
@@ -290,9 +326,9 @@ const CreateDiscussion = () => {
                                         }}
                                     />
                                     {titleError && (
-                                        <Alert 
-                                            severity="error" 
-                                            sx={{ 
+                                        <Alert
+                                            severity="error"
+                                            sx={{
                                                 mt: 1,
                                                 borderRadius: 1,
                                                 fontSize: "0.875rem"
@@ -305,22 +341,22 @@ const CreateDiscussion = () => {
 
                                 {/* Content Section */}
                                 <Box>
-                                    <Typography 
-                                        variant="h6" 
-                                        sx={{ 
-                                            mb: 1, 
+                                    <Typography
+                                        variant="h6"
+                                        sx={{
+                                            mb: 1,
                                             fontWeight: 600,
                                             fontSize: "1.125rem"
                                         }}
                                     >
                                         What are the details of your problem?
                                     </Typography>
-                                    <Typography 
-                                        variant="body2" 
-                                        color="text.secondary" 
+                                    <Typography
+                                        variant="body2"
+                                        color="text.secondary"
                                         sx={{ mb: 2 }}
                                     >
-                                        Introduce the problem and expand on what you put in the title. 
+                                        Introduce the problem and expand on what you put in the title.
                                         Minimum 20 characters.
                                     </Typography>
                                     <TextField
@@ -350,9 +386,9 @@ const CreateDiscussion = () => {
                                         }}
                                     />
                                     {contentError && (
-                                        <Alert 
-                                            severity="error" 
-                                            sx={{ 
+                                        <Alert
+                                            severity="error"
+                                            sx={{
                                                 mt: 1,
                                                 borderRadius: 1,
                                                 fontSize: "0.875rem"
@@ -363,6 +399,15 @@ const CreateDiscussion = () => {
                                     )}
                                 </Box>
 
+                                {/* Tags Section */}
+                                <Box>
+                                    <TagSelector
+                                        selectedTags={tags}
+                                        onTagsChange={handleTagsChange}
+                                        error={tagsError}
+                                    />
+                                </Box>
+
                                 <Divider />
 
                                 <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-start" }}>
@@ -371,7 +416,7 @@ const CreateDiscussion = () => {
                                         size="large"
                                         startIcon={<Send />}
                                         onClick={handleSubmit}
-                                        disabled={submitting || Boolean(titleError) || Boolean(contentError)}
+                                        disabled={submitting || Boolean(titleError) || Boolean(contentError) || Boolean(tagsError)}
                                         sx={{
                                             px: 3,
                                             py: 1.5,
@@ -404,15 +449,15 @@ const CreateDiscussion = () => {
 
                 {/* Sidebar with tips */}
                 <Box sx={{ width: { xs: "100%", md: "300px" } }}>
-                    <Paper 
-                        elevation={0} 
-                        sx={{ 
-                            p: 3, 
-                            border: 1, 
+                    <Paper
+                        elevation={0}
+                        sx={{
+                            p: 3,
+                            border: 1,
                             borderColor: "divider",
-                            backgroundColor: (theme) => 
-                                theme.palette.mode === "dark" 
-                                    ? "rgba(255, 255, 255, 0.02)" 
+                            backgroundColor: (theme) =>
+                                theme.palette.mode === "dark"
+                                    ? "rgba(255, 255, 255, 0.02)"
                                     : "rgba(0, 116, 204, 0.02)",
                             borderRadius: 2,
                         }}
@@ -423,7 +468,7 @@ const CreateDiscussion = () => {
                                 Writing a good question
                             </Typography>
                         </Box>
-                        
+
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                             You're ready to ask a programming-related question and this form will help guide you through the process.
                         </Typography>
@@ -437,7 +482,7 @@ const CreateDiscussion = () => {
                                 <ListItemIcon sx={{ minWidth: 28 }}>
                                     <CheckCircleOutline sx={{ fontSize: 16, color: "success.main" }} />
                                 </ListItemIcon>
-                                <ListItemText 
+                                <ListItemText
                                     primary="Summarize your problem in a one-line title"
                                     primaryTypographyProps={{ fontSize: "0.8rem" }}
                                 />
@@ -446,7 +491,7 @@ const CreateDiscussion = () => {
                                 <ListItemIcon sx={{ minWidth: 28 }}>
                                     <CheckCircleOutline sx={{ fontSize: 16, color: "success.main" }} />
                                 </ListItemIcon>
-                                <ListItemText 
+                                <ListItemText
                                     primary="Describe your problem in more detail"
                                     primaryTypographyProps={{ fontSize: "0.8rem" }}
                                 />
@@ -455,7 +500,7 @@ const CreateDiscussion = () => {
                                 <ListItemIcon sx={{ minWidth: 28 }}>
                                     <CheckCircleOutline sx={{ fontSize: 16, color: "success.main" }} />
                                 </ListItemIcon>
-                                <ListItemText 
+                                <ListItemText
                                     primary="Describe what you tried and what you expected to happen"
                                     primaryTypographyProps={{ fontSize: "0.8rem" }}
                                 />
@@ -464,7 +509,7 @@ const CreateDiscussion = () => {
                                 <ListItemIcon sx={{ minWidth: 28 }}>
                                     <CheckCircleOutline sx={{ fontSize: 16, color: "success.main" }} />
                                 </ListItemIcon>
-                                <ListItemText 
+                                <ListItemText
                                     primary="Add relevant tags to help others find your question"
                                     primaryTypographyProps={{ fontSize: "0.8rem" }}
                                 />
@@ -472,16 +517,16 @@ const CreateDiscussion = () => {
                         </List>
                     </Paper>
 
-                    <Paper 
-                        elevation={0} 
-                        sx={{ 
-                            p: 3, 
+                    <Paper
+                        elevation={0}
+                        sx={{
+                            p: 3,
                             mt: 3,
-                            border: 1, 
+                            border: 1,
                             borderColor: "divider",
-                            backgroundColor: (theme) => 
-                                theme.palette.mode === "dark" 
-                                    ? "rgba(255, 193, 7, 0.08)" 
+                            backgroundColor: (theme) =>
+                                theme.palette.mode === "dark"
+                                    ? "rgba(255, 193, 7, 0.08)"
                                     : "rgba(255, 193, 7, 0.08)",
                             borderRadius: 2,
                         }}
@@ -498,7 +543,7 @@ const CreateDiscussion = () => {
                                 <ListItemIcon sx={{ minWidth: 28, mt: 0.5 }}>
                                     <FormatQuoteOutlined sx={{ fontSize: 16, color: "warning.main" }} />
                                 </ListItemIcon>
-                                <ListItemText 
+                                <ListItemText
                                     primary="Make your title specific and describe the problem clearly"
                                     primaryTypographyProps={{ fontSize: "0.8rem" }}
                                 />
@@ -507,7 +552,7 @@ const CreateDiscussion = () => {
                                 <ListItemIcon sx={{ minWidth: 28, mt: 0.5 }}>
                                     <CodeOutlined sx={{ fontSize: 16, color: "warning.main" }} />
                                 </ListItemIcon>
-                                <ListItemText 
+                                <ListItemText
                                     primary="Include relevant code, configuration, or examples"
                                     primaryTypographyProps={{ fontSize: "0.8rem" }}
                                 />
@@ -516,7 +561,7 @@ const CreateDiscussion = () => {
                                 <ListItemIcon sx={{ minWidth: 28, mt: 0.5 }}>
                                     <HelpOutline sx={{ fontSize: 16, color: "warning.main" }} />
                                 </ListItemIcon>
-                                <ListItemText 
+                                <ListItemText
                                     primary="Explain what you've already tried and what didn't work"
                                     primaryTypographyProps={{ fontSize: "0.8rem" }}
                                 />

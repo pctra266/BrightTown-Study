@@ -19,10 +19,11 @@ import {
     Add as AddIcon,
     EditNote,
 } from "@mui/icons-material";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useThemeMode } from "../../../contexts/ThemeContext";
 import { discussionService } from "../services/DiscussionService";
+import { PREDEFINED_TAGS } from "../constants/tags";
 
 interface Discussion {
     id: string;
@@ -55,6 +56,7 @@ const DiscussionHub = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [sortBy, setSortBy] = useState("newest");
+    const [selectedTagFilter, setSelectedTagFilter] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const discussionsPerPage = 5;
 
@@ -82,11 +84,17 @@ const DiscussionHub = () => {
     };
 
     const filterAndSortDiscussions = useCallback(() => {
-        let filtered = discussions.filter(
-            (discussion) =>
-                discussion.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                discussion.content.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+        let filtered = discussions.filter((discussion) => {
+            // Text search filter
+            const matchesSearch = discussion.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                discussion.content.toLowerCase().includes(searchTerm.toLowerCase());
+
+            // Tag filter
+            const matchesTag = !selectedTagFilter ||
+                (discussion.tags && discussion.tags.includes(selectedTagFilter));
+
+            return matchesSearch && matchesTag;
+        });
 
         switch (sortBy) {
             case "newest":
@@ -119,7 +127,7 @@ const DiscussionHub = () => {
 
         setFilteredDiscussions(filtered);
         setCurrentPage(1);
-    }, [discussions, searchTerm, sortBy]);
+    }, [discussions, searchTerm, sortBy, selectedTagFilter]);
 
     useEffect(() => {
         filterAndSortDiscussions();
@@ -141,6 +149,16 @@ const DiscussionHub = () => {
 
     const handleCreateQuestion = () => {
         navigate("/talk/new");
+    };
+
+    const handleTagFilter = (tag: string) => {
+        if (selectedTagFilter === tag) {
+            // If same tag is clicked, remove filter
+            setSelectedTagFilter(null);
+        } else {
+            // Set new tag filter
+            setSelectedTagFilter(tag);
+        }
     };
 
 
@@ -303,19 +321,48 @@ const DiscussionHub = () => {
                         <Typography variant="body2" color="text.secondary" sx={{ mr: 1, lineHeight: 2.5 }}>
                             Filter by tags:
                         </Typography>
-                        {['general', 'study', 'flashcards', 'learning', 'tips'].map((tag) => (
+                        <Chip
+                            label="All"
+                            size="small"
+                            variant={selectedTagFilter === null ? "filled" : "outlined"}
+                            clickable
+                            onClick={() => setSelectedTagFilter(null)}
+                            sx={{
+                                backgroundColor: selectedTagFilter === null
+                                    ? (actualTheme === 'dark' ? '#3182ce' : '#39739d')
+                                    : (actualTheme === 'dark' ? '#2d3748' : '#ffffff'),
+                                borderColor: actualTheme === 'dark' ? '#4a5568' : '#e2e8f0',
+                                color: selectedTagFilter === null
+                                    ? '#ffffff'
+                                    : (actualTheme === 'dark' ? '#e2e8f0' : '#1a202c'),
+                                "&:hover": {
+                                    backgroundColor: selectedTagFilter === null
+                                        ? (actualTheme === 'dark' ? '#2c5aa0' : '#2d5aa0')
+                                        : (actualTheme === 'dark' ? '#4a5568' : '#edf2f7'),
+                                    borderColor: actualTheme === 'dark' ? '#63b3ed' : '#3182ce'
+                                }
+                            }}
+                        />
+                        {PREDEFINED_TAGS.slice(0, 8).map((tag) => (
                             <Chip
                                 key={tag}
                                 label={tag}
                                 size="small"
-                                variant="outlined"
+                                variant={selectedTagFilter === tag ? "filled" : "outlined"}
                                 clickable
+                                onClick={() => handleTagFilter(tag)}
                                 sx={{
-                                    backgroundColor: actualTheme === 'dark' ? '#2d3748' : '#ffffff',
+                                    backgroundColor: selectedTagFilter === tag
+                                        ? (actualTheme === 'dark' ? '#3182ce' : '#39739d')
+                                        : (actualTheme === 'dark' ? '#2d3748' : '#ffffff'),
                                     borderColor: actualTheme === 'dark' ? '#4a5568' : '#e2e8f0',
-                                    color: actualTheme === 'dark' ? '#e2e8f0' : '#1a202c',
+                                    color: selectedTagFilter === tag
+                                        ? '#ffffff'
+                                        : (actualTheme === 'dark' ? '#e2e8f0' : '#1a202c'),
                                     "&:hover": {
-                                        backgroundColor: actualTheme === 'dark' ? '#4a5568' : '#edf2f7',
+                                        backgroundColor: selectedTagFilter === tag
+                                            ? (actualTheme === 'dark' ? '#2c5aa0' : '#2d5aa0')
+                                            : (actualTheme === 'dark' ? '#4a5568' : '#edf2f7'),
                                         borderColor: actualTheme === 'dark' ? '#63b3ed' : '#3182ce'
                                     }
                                 }}
@@ -440,8 +487,10 @@ const DiscussionHub = () => {
                                                             sx={{
                                                                 ml: 1,
                                                                 fontSize: "0.7rem",
-                                                                backgroundColor: actualTheme === 'dark' ? '#4a5568' : '#e2e8f0',
-                                                                color: actualTheme === 'dark' ? '#e2e8f0' : '#1a202c'
+                                                                backgroundColor: actualTheme === 'dark' ? '#fd8500' : '#fb8500',
+                                                                color: '#ffffff',
+                                                                border: 'none',
+                                                                fontWeight: 'bold'
                                                             }}
                                                         />
                                                     )}
@@ -493,9 +542,26 @@ const DiscussionHub = () => {
                                                                 asked {formatDate(discussion.createdAt)}
                                                             </Typography>
                                                             <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
-                                                                <Typography variant="body2" sx={{ fontWeight: 500, color: actualTheme === 'dark' ? '#e2e8f0' : '#1a202c' }}>
-                                                                    {discussion.authorName}
-                                                                </Typography>
+                                                                <Link
+                                                                    to={`/user/${discussion.authorId}`}
+                                                                    style={{ textDecoration: 'none' }}
+                                                                    onClick={(e) => e.stopPropagation()}
+                                                                >
+                                                                    <Typography
+                                                                        variant="body2"
+                                                                        sx={{
+                                                                            fontWeight: 500,
+                                                                            color: actualTheme === 'dark' ? '#63b3ed' : '#3182ce',
+                                                                            '&:hover': {
+                                                                                color: actualTheme === 'dark' ? '#90cdf4' : '#2c5aa0',
+                                                                                textDecoration: 'underline'
+                                                                            },
+                                                                            cursor: 'pointer'
+                                                                        }}
+                                                                    >
+                                                                        {discussion.authorName}
+                                                                    </Typography>
+                                                                </Link>
                                                             </Stack>
                                                         </Box>
                                                     </Stack>

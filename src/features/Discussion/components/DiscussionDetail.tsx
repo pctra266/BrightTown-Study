@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import {
     Container,
     Typography,
@@ -78,18 +78,6 @@ const DiscussionDetail = () => {
         null
     );
 
-    useEffect(() => {
-        if (id) {
-            loadDiscussion();
-        }
-    }, [id]);
-
-    useEffect(() => {
-        if (discussion) {
-            filterAndSortAnswers();
-        }
-    }, [discussion, answerSortBy]);
-
     const loadDiscussion = useCallback(async () => {
         try {
             const data = await discussionService.getDiscussionById(id!);
@@ -141,6 +129,18 @@ const DiscussionDetail = () => {
         setFilteredAnswers(sorted);
         setCurrentAnswerPage(1);
     }, [discussion, answerSortBy]);
+
+    useEffect(() => {
+        if (id) {
+            loadDiscussion();
+        }
+    }, [id, loadDiscussion]);
+
+    useEffect(() => {
+        if (discussion) {
+            filterAndSortAnswers();
+        }
+    }, [discussion, answerSortBy, filterAndSortAnswers]);
 
 
     const validateAnswer = (content: string): string => {
@@ -506,9 +506,14 @@ const DiscussionDetail = () => {
                                                     icon={<EditNote />}
                                                     label="edited"
                                                     size="small"
-                                                    color="secondary"
-                                                    variant="outlined"
-                                                    sx={{ ml: 2, fontSize: "0.7rem" }}
+                                                    sx={{
+                                                        ml: 2,
+                                                        fontSize: "0.7rem",
+                                                        backgroundColor: actualTheme === 'dark' ? '#fd8500' : '#fb8500',
+                                                        color: '#ffffff',
+                                                        border: 'none',
+                                                        fontWeight: 'bold'
+                                                    }}
                                                 />
                                             )}
                                         </Typography>
@@ -528,10 +533,10 @@ const DiscussionDetail = () => {
                                     </Stack>
 
                                     {/* Question metadata bar */}
-                                    <Stack 
-                                        direction="row" 
-                                        spacing={2} 
-                                        sx={{ 
+                                    <Stack
+                                        direction="row"
+                                        spacing={2}
+                                        sx={{
                                             mb: 3,
                                             pb: 2,
                                             borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
@@ -621,16 +626,24 @@ const DiscussionDetail = () => {
                                                 >
                                                     <Person sx={{ fontSize: 12, color: "white" }} />
                                                 </Box>
-                                                <Typography
-                                                    variant="body2"
-                                                    sx={{
-                                                        fontWeight: 500,
-                                                        fontSize: "0.8rem",
-                                                        color: "primary.main",
-                                                    }}
+                                                <Link
+                                                    to={`/user/${discussion.authorId}`}
+                                                    style={{ textDecoration: 'none' }}
                                                 >
-                                                    {discussion.authorName}
-                                                </Typography>
+                                                    <Typography
+                                                        variant="body2"
+                                                        sx={{
+                                                            fontWeight: 500,
+                                                            fontSize: "0.8rem",
+                                                            color: "primary.main",
+                                                            '&:hover': {
+                                                                textDecoration: 'underline'
+                                                            }
+                                                        }}
+                                                    >
+                                                        {discussion.authorName}
+                                                    </Typography>
+                                                </Link>
                                             </Stack>
                                         </Box>
                                     </Box>
@@ -671,7 +684,7 @@ const DiscussionDetail = () => {
                     direction="row"
                     justifyContent="space-between"
                     alignItems="center"
-                    sx={{ 
+                    sx={{
                         mb: 3,
                         pb: 2,
                         borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
@@ -827,9 +840,14 @@ const DiscussionDetail = () => {
                                                                         icon={<EditNote />}
                                                                         label="edited"
                                                                         size="small"
-                                                                        color="secondary"
-                                                                        variant="outlined"
-                                                                        sx={{ ml: 1, fontSize: "0.65rem" }}
+                                                                        sx={{
+                                                                            ml: 1,
+                                                                            fontSize: "0.65rem",
+                                                                            backgroundColor: actualTheme === 'dark' ? '#fd8500' : '#fb8500',
+                                                                            color: '#ffffff',
+                                                                            border: 'none',
+                                                                            fontWeight: 'bold'
+                                                                        }}
                                                                     />
                                                                 )}
                                                             </Typography>
@@ -890,16 +908,24 @@ const DiscussionDetail = () => {
                                                                     >
                                                                         <Person sx={{ fontSize: 12, color: "white" }} />
                                                                     </Box>
-                                                                    <Typography
-                                                                        variant="body2"
-                                                                        sx={{
-                                                                            fontWeight: 500,
-                                                                            fontSize: "0.8rem",
-                                                                            color: "primary.main",
-                                                                        }}
+                                                                    <Link
+                                                                        to={`/user/${answer.authorId}`}
+                                                                        style={{ textDecoration: 'none' }}
                                                                     >
-                                                                        {answer.authorName}
-                                                                    </Typography>
+                                                                        <Typography
+                                                                            variant="body2"
+                                                                            sx={{
+                                                                                fontWeight: 500,
+                                                                                fontSize: "0.8rem",
+                                                                                color: "primary.main",
+                                                                                '&:hover': {
+                                                                                    textDecoration: 'underline'
+                                                                                }
+                                                                            }}
+                                                                        >
+                                                                            {answer.authorName}
+                                                                        </Typography>
+                                                                    </Link>
                                                                 </Stack>
                                                             </Box>
                                                         </Box>
@@ -977,10 +1003,10 @@ const DiscussionDetail = () => {
                             >
                                 Your Answer
                             </Typography>
-                            
-                            <Typography 
-                                variant="body2" 
-                                color="text.secondary" 
+
+                            <Typography
+                                variant="body2"
+                                color="text.secondary"
                                 sx={{ mb: 3 }}
                             >
                                 Thanks for contributing an answer! Please be sure the answer is correct and provides helpful information.
@@ -1040,10 +1066,10 @@ const DiscussionDetail = () => {
                                     borderRadius: 1,
                                 }}
                             >
-                                <Typography 
-                                    variant="subtitle2" 
-                                    sx={{ 
-                                        fontWeight: 600, 
+                                <Typography
+                                    variant="subtitle2"
+                                    sx={{
+                                        fontWeight: 600,
                                         mb: 1,
                                         fontSize: "0.875rem",
                                         color: "primary.main"
@@ -1051,17 +1077,17 @@ const DiscussionDetail = () => {
                                 >
                                     💡 Tips for a great answer
                                 </Typography>
-                                <Typography 
-                                    variant="body2" 
-                                    sx={{ 
+                                <Typography
+                                    variant="body2"
+                                    sx={{
                                         fontSize: "0.8rem",
                                         color: "text.secondary",
                                         lineHeight: 1.5
                                     }}
                                 >
-                                    • Be specific and provide concrete examples<br/>
-                                    • Explain your reasoning and show your work<br/>
-                                    • Include relevant code, links, or resources when helpful<br/>
+                                    • Be specific and provide concrete examples<br />
+                                    • Explain your reasoning and show your work<br />
+                                    • Include relevant code, links, or resources when helpful<br />
                                     • Stay focused on answering the question asked
                                 </Typography>
                             </Paper>
@@ -1083,9 +1109,9 @@ const DiscussionDetail = () => {
                                 >
                                     {submitting ? "Publishing..." : "Post Your Answer"}
                                 </Button>
-                                
-                                <Typography 
-                                    variant="body2" 
+
+                                <Typography
+                                    variant="body2"
                                     color="text.secondary"
                                     sx={{ fontSize: "0.8rem" }}
                                 >
