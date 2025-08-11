@@ -1,146 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext';
-
-interface UserProfileData {
-  id: string;
-  username: string;
-  role: string;
-  status: boolean;
-  flashcardSetsCount: number;
-  discussionsCount: number;
-  booksCount: number;
-}
-
-interface UserActivityData {
-  flashcardSets: Array<{
-    id: string;
-    name: string;
-    description: string;
-    flashcards: Array<{
-      id: string;
-      question: string;
-      answer: string;
-    }>;
-  }>;
-  discussions: Array<{
-    id: string;
-    title: string;
-    content: string;
-    createdAt: string;
-    upvotes: number;
-    downvotes: number;
-    views: number;
-  }>;
-  books: Array<{
-    id: string;
-    title: string;
-    author: string;
-    status: string;
-  }>;
-}
-
-const API_BASE = 'http://localhost:9000';
-
-const getRoleDisplayName = (role: string): string => {
-  switch (role) {
-    case '0':
-      return 'Super Admin';
-    case '1':
-      return 'Admin';
-    case '2':
-      return 'User';
-    default:
-      return role;
-  }
-};
-
-const fetchUserProfile = async (userId: string): Promise<UserProfileData> => {
-  try {
-    // Fetch user data
-    const userResponse = await fetch(`${API_BASE}/account`);
-    const users = await userResponse.json();
-    const user = users.find((u: any) => u.id === userId);
-    
-    if (!user) {
-      throw new Error('User not found');
-    }
-
-    // Count user's flashcard sets
-    const flashcardResponse = await fetch(`${API_BASE}/flashcardSets`);
-    const flashcardSets = await flashcardResponse.json();
-    const userFlashcardSets = flashcardSets.filter((set: any) => set.userId === userId);
-
-    // Count user's discussions
-    const discussionResponse = await fetch(`${API_BASE}/discussions`);
-    const discussions = await discussionResponse.json();
-    const userDiscussions = discussions.filter((d: any) => d.authorId === userId);
-
-    // Count user's books
-    const booksResponse = await fetch(`${API_BASE}/books`);
-    const books = await booksResponse.json();
-    const userBooks = books.filter((b: any) => b.userId === userId);
-
-    return {
-      id: user.id,
-      username: user.username,
-      role: user.role,
-      status: user.status,
-      flashcardSetsCount: userFlashcardSets.length,
-      discussionsCount: userDiscussions.length,
-      booksCount: userBooks.length,
-    };
-  } catch (error) {
-    console.error('Error fetching user profile:', error);
-    throw error;
-  }
-};
-
-const fetchUserActivity = async (userId: string): Promise<UserActivityData> => {
-  try {
-    // Fetch user's flashcard sets
-    const flashcardResponse = await fetch(`${API_BASE}/flashcardSets`);
-    const allFlashcardSets = await flashcardResponse.json();
-    const flashcardSets = allFlashcardSets.filter((set: any) => set.userId === userId);
-
-    // Fetch user's discussions
-    const discussionResponse = await fetch(`${API_BASE}/discussions`);
-    const allDiscussions = await discussionResponse.json();
-    const discussions = allDiscussions.filter((d: any) => d.authorId === userId);
-
-    // Fetch user's books
-    const booksResponse = await fetch(`${API_BASE}/books`);
-    const allBooks = await booksResponse.json();
-    const books = allBooks.filter((b: any) => b.userId === userId);
-
-    return {
-      flashcardSets: flashcardSets.map((set: any) => ({
-        id: set.id,
-        name: set.name,
-        description: set.description,
-        flashcards: set.flashcards || [],
-      })),
-      discussions: discussions.map((d: any) => ({
-        id: d.id,
-        title: d.title,
-        content: d.content,
-        createdAt: d.createdAt,
-        upvotes: d.upvotes || 0,
-        downvotes: d.downvotes || 0,
-        views: d.views || 0,
-      })),
-      books: books.map((b: any) => ({
-        id: b.id,
-        title: b.title,
-        author: b.author,
-        status: b.status,
-      })),
-    };
-  } catch (error) {
-    console.error('Error fetching user activity:', error);
-    throw error;
-  }
-};
+import type { UserProfileData, UserActivityData } from '../types';
+import { fetchUserProfile, fetchUserActivity, updateUserProfile, getRoleDisplayName } from '../services';
+import ProfileEditForm from './ProfileEditForm';
+import ActivityChart from './ActivityChart';
 
 const UserProfile: React.FC = () => {
   const { user } = useAuth();
@@ -148,6 +12,8 @@ const UserProfile: React.FC = () => {
   const [activity, setActivity] = useState<UserActivityData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -175,6 +41,112 @@ const UserProfile: React.FC = () => {
 
     loadUserData();
   }, [user?.id]);
+
+  const handleSaveProfile = async (updatedProfile: Partial<UserProfileData>) => {
+    if (!user?.id || !profile) return;
+
+    try {
+      setSaveLoading(true);
+      const updatedProfileData = await updateUserProfile(user.id, updatedProfile);
+      setProfile(updatedProfileData);
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      setError('Failed to save profile changes');
+    } finally {
+      setSaveLoading(false);
+    }
+  };
+
+  const renderSocialLinks = () => {
+    if (!profile?.socialLinks) return null;
+
+    const links = [
+      { key: 'website', icon: '🌐', url: profile.socialLinks.website },
+      { key: 'linkedin', icon: '💼', url: profile.socialLinks.linkedin },
+      { key: 'github', icon: '💻', url: profile.socialLinks.github },
+      { key: 'twitter', icon: '🐦', url: profile.socialLinks.twitter },
+    ].filter(link => link.url);
+
+    if (links.length === 0) return null;
+
+    return (
+      <div className="mt-4">
+        <h4 className="text-sm font-medium text-gray-700 mb-2">Connect with me</h4>
+        <div className="flex space-x-3">
+          {links.map(link => (
+            <a
+              key={link.key}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors"
+            >
+              <span className="mr-1">{link.icon}</span>
+              <span className="capitalize">{link.key}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const renderQuickActions = () => (
+    <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+      <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+        <svg className="w-6 h-6 text-purple-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+        Quick Actions
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Link
+          to="/library/flashcard/new"
+          className="flex items-center p-3 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors group"
+        >
+          <div className="w-10 h-10 bg-purple-100 group-hover:bg-purple-200 rounded-lg flex items-center justify-center mr-3">
+            <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+          </div>
+          <div>
+            <h3 className="font-medium text-gray-900">Create Flashcards</h3>
+            <p className="text-sm text-gray-600">Build new study sets</p>
+          </div>
+        </Link>
+
+        <Link
+          to="/talk/new"
+          className="flex items-center p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors group"
+        >
+          <div className="w-10 h-10 bg-blue-100 group-hover:bg-blue-200 rounded-lg flex items-center justify-center mr-3">
+            <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+          </div>
+          <div>
+            <h3 className="font-medium text-gray-900">Start Discussion</h3>
+            <p className="text-sm text-gray-600">Share your thoughts</p>
+          </div>
+        </Link>
+
+        <Link
+          to="/manage-book"
+          className="flex items-center p-3 bg-green-50 hover:bg-green-100 rounded-lg transition-colors group"
+        >
+          <div className="w-10 h-10 bg-green-100 group-hover:bg-green-200 rounded-lg flex items-center justify-center mr-3">
+            <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.747 0-3.332.477-4.5 1.253" />
+            </svg>
+          </div>
+          <div>
+            <h3 className="font-medium text-gray-900">Add Book</h3>
+            <p className="text-sm text-gray-600">Expand your library</p>
+          </div>
+        </Link>
+      </div>
+    </div>
+  );
 
   if (loading) {
     return (
@@ -206,34 +178,77 @@ const UserProfile: React.FC = () => {
     );
   }
 
+  if (isEditing) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
+          <ProfileEditForm
+            profile={profile}
+            onSave={handleSaveProfile}
+            onCancel={() => setIsEditing(false)}
+            isLoading={saveLoading}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         {/* Profile Header */}
         <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
           <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-8">
-            <div className="flex items-center space-x-4">
-              <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
-                <svg className="w-12 h-12 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </div>
-              <div className="text-white">
-                <h1 className="text-3xl font-bold">{profile.username}</h1>
-                <p className="text-purple-100">{getRoleDisplayName(profile.role)}</p>
-                <div className="flex items-center space-x-2 mt-2">
-                  <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
-                    profile.status
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-red-100 text-red-800'
-                  }`}>
-                    {profile.status ? 'Active' : 'Inactive'}
-                  </span>
+            <div className="flex items-start justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
+                  {profile.avatar ? (
+                    <img src={profile.avatar} alt={profile.username} className="w-full h-full rounded-full object-cover" />
+                  ) : (
+                    <svg className="w-12 h-12 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  )}
+                </div>
+                <div className="text-white">
+                  <h1 className="text-3xl font-bold">{profile.username}</h1>
+                  <p className="text-purple-100">{getRoleDisplayName(profile.role)}</p>
+                  {profile.email && (
+                    <p className="text-purple-100 text-sm">{profile.email}</p>
+                  )}
+                  <div className="flex items-center space-x-2 mt-2">
+                    <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
+                      profile.status
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}>
+                      {profile.status ? 'Active' : 'Inactive'}
+                    </span>
+                  </div>
                 </div>
               </div>
+              <button
+                onClick={() => setIsEditing(true)}
+                className="inline-flex items-center px-4 py-2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-medium rounded-md transition-colors"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                Edit Profile
+              </button>
             </div>
           </div>
           
+          {/* Bio and Social Links */}
+          {(profile.bio || profile.socialLinks) && (
+            <div className="px-6 py-4 bg-gray-50 border-b">
+              {profile.bio && (
+                <p className="text-gray-700 mb-3">{profile.bio}</p>
+              )}
+              {renderSocialLinks()}
+            </div>
+          )}
+
           {/* Activity Stats */}
           <div className="px-6 py-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -252,6 +267,16 @@ const UserProfile: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* Quick Actions */}
+        {renderQuickActions()}
+
+        {/* Activity Chart */}
+        <ActivityChart
+          flashcardSetsCount={profile.flashcardSetsCount}
+          discussionsCount={profile.discussionsCount}
+          booksCount={profile.booksCount}
+        />
 
         {/* Activity Sections */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

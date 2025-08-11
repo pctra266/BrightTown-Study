@@ -318,7 +318,19 @@
       "password": "pctra266",
       "role": "2",
       "status": true,
-      "lastTokenIat": 1754875255
+      "lastTokenIat": 1754875255,
+      "bio": "I'm a passionate learner who loves technology, programming, and sharing knowledge with others. Always excited to explore new ideas and connect with fellow learners!",
+      "email": "pctra266@example.com",
+      "socialLinks": {
+        "website": "https://pctra266.dev",
+        "linkedin": "",
+        "github": "https://github.com/pctra266",
+        "twitter": ""
+      },
+      "preferences": {
+        "publicProfile": true,
+        "notifications": true
+      }
     },
     {
       "id": "5",
