@@ -36,7 +36,7 @@ export const authService = {
         };
       }
 
-      if (account.status === false) {
+      if (!account.status) {
         return {
           success: false,
           error: "Your account has been locked. Please contact administrator.",
@@ -97,7 +97,7 @@ export const authService = {
       let newAccount: Account | null = null;
 
       if (account) {
-        if (account.status === false) {
+        if (!account.status) {
           return {
             success: false,
             error:
