@@ -30,6 +30,7 @@ export interface Discussion {
   views: number;
   viewedBy: string[];
   answers: Answer[];
+  tags?: string[];
 }
 
 export interface CreateDiscussionData {
