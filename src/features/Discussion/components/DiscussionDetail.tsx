@@ -35,6 +35,7 @@ import {
     EditNote,
 } from "@mui/icons-material";
 import { useAuth } from "../../../contexts/AuthContext";
+import { useThemeMode } from "../../../contexts/ThemeContext";
 import {
     discussionService,
     type Discussion,
@@ -47,6 +48,7 @@ const DiscussionDetail = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const { isAuthenticated, user } = useAuth();
+    const { actualTheme } = useThemeMode();
     const [discussion, setDiscussion] = useState<Discussion | null>(null);
     const [loading, setLoading] = useState(true);
     const [answerContent, setAnswerContent] = useState("");
@@ -684,7 +686,7 @@ const DiscussionDetail = () => {
                         }}
                     >
                         {discussion.answers.length === 0
-                            ? "Know someone who can answer?"
+                            ? "No Answer"
                             : `${discussion.answers.length} Answer${discussion.answers.length !== 1 ? 's' : ''}`}
                     </Typography>
 
