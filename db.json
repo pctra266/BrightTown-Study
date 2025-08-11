@@ -310,7 +310,7 @@
       "password": "123456",
       "role": "1",
       "status": true,
-      "lastTokenIat": 1754620079
+      "lastTokenIat": 1754877107
     },
     {
       "id": "4",
@@ -318,7 +318,19 @@
       "password": "pctra266",
       "role": "2",
       "status": true,
-      "lastTokenIat": 1754556360
+      "lastTokenIat": 1754875255,
+      "bio": "I'm a passionate learner who loves technology, programming, and sharing knowledge with others. Always excited to explore new ideas and connect with fellow learners!",
+      "email": "pctra266@example.com",
+      "socialLinks": {
+        "website": "https://pctra266.dev",
+        "linkedin": "",
+        "github": "https://github.com/pctra266",
+        "twitter": ""
+      },
+      "preferences": {
+        "publicProfile": true,
+        "notifications": true
+      }
     },
     {
       "id": "5",
@@ -809,6 +821,12 @@
       "date": "2025-08-10",
       "visits": 7,
       "flashcardsStudied": 1
+    },
+    {
+      "id": "827f",
+      "date": "2025-08-11",
+      "visits": 2,
+      "flashcardsStudied": 0
     }
   ]
 }
