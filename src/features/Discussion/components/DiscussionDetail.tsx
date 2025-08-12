@@ -32,7 +32,7 @@ import {
     MoreVert,
     Edit,
     Delete,
-    EditNote,
+    CheckCircle,
 } from "@mui/icons-material";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useThemeMode } from "../../../contexts/ThemeContext";
@@ -43,6 +43,7 @@ import {
 } from "../services/DiscussionService";
 import VoteButtons from "./VoteButton";
 import TagSelector from "./TagSelector";
+import CommentSection from "./CommentSection";
 
 
 const DiscussionDetail = () => {
@@ -108,26 +109,26 @@ const DiscussionDetail = () => {
 
         const sorted = [...discussion.answers];
 
-        switch (answerSortBy) {
-            case "newest":
-                sorted.sort(
-                    (a, b) =>
-                        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-                );
-                break;
-            case "oldest":
-                sorted.sort(
-                    (a, b) =>
-                        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-                );
-                break;
-            case "highestScore":
-                sorted.sort((a, b) => b.score - a.score);
-                break;
-            case "lowestScore":
-                sorted.sort((a, b) => a.score - b.score);
-                break;
-        }
+        // Always sort accepted answer first
+        sorted.sort((a, b) => {
+            // If one is accepted and the other isn't, accepted comes first
+            if (a.isAccepted && !b.isAccepted) return -1;
+            if (!a.isAccepted && b.isAccepted) return 1;
+
+            // If both or neither are accepted, apply the selected sort
+            switch (answerSortBy) {
+                case "newest":
+                    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+                case "oldest":
+                    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+                case "highestScore":
+                    return b.score - a.score;
+                case "lowestScore":
+                    return a.score - b.score;
+                default:
+                    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+            }
+        });
 
         setFilteredAnswers(sorted);
         setCurrentAnswerPage(1);
@@ -214,9 +215,13 @@ const DiscussionDetail = () => {
     const handleSubmitAnswer = async () => {
         if (!user || !id || !discussion) return;
 
+        // Check if user can answer (not question author)
+        if (!canUserAnswer) {
+            setAnswerError("You cannot answer your own question.");
+            return;
+        }
 
         setAnswerError("");
-
 
         const validationError = validateAnswer(answerContent);
         if (validationError) {
@@ -382,6 +387,154 @@ const DiscussionDetail = () => {
         setAnswerMenuAnchor((prev) => ({ ...prev, [answerId]: null }));
     };
 
+    // Comment handlers for answers
+    const handleAddComment = async (answerId: string, content: string) => {
+        if (!id || !user) return;
+
+        try {
+            const updatedDiscussion = await discussionService.addComment({
+                content,
+                authorId: user.id,
+                authorName: user.username,
+                discussionId: id,
+                answerId,
+            });
+            setDiscussion(updatedDiscussion);
+        } catch (error) {
+            console.error("Error adding comment:", error);
+        }
+    };
+
+    // Comment handlers for questions
+    const handleAddQuestionComment = async (content: string) => {
+        if (!id || !user) return;
+
+        try {
+            const updatedDiscussion = await discussionService.addComment({
+                content,
+                authorId: user.id,
+                authorName: user.username,
+                discussionId: id,
+                // No answerId - this is a question comment
+            });
+            setDiscussion(updatedDiscussion);
+        } catch (error) {
+            console.error("Error adding question comment:", error);
+        }
+    };
+
+    const handleUpdateComment = async (answerId: string, commentId: string, content: string) => {
+        if (!id) return;
+
+        try {
+            const updatedDiscussion = await discussionService.updateComment(
+                id,
+                answerId,
+                commentId,
+                { content }
+            );
+            setDiscussion(updatedDiscussion);
+        } catch (error) {
+            console.error("Error updating comment:", error);
+        }
+    };
+
+    const handleUpdateQuestionComment = async (commentId: string, content: string) => {
+        if (!id) return;
+
+        try {
+            const updatedDiscussion = await discussionService.updateComment(
+                id,
+                undefined, // No answerId - this is a question comment
+                commentId,
+                { content }
+            );
+            setDiscussion(updatedDiscussion);
+        } catch (error) {
+            console.error("Error updating question comment:", error);
+        }
+    };
+
+    const handleDeleteComment = async (answerId: string, commentId: string) => {
+        if (!id) return;
+
+        try {
+            const updatedDiscussion = await discussionService.deleteComment(
+                id,
+                answerId,
+                commentId
+            );
+            setDiscussion(updatedDiscussion);
+        } catch (error) {
+            console.error("Error deleting comment:", error);
+        }
+    };
+
+    const handleDeleteQuestionComment = async (commentId: string) => {
+        if (!id) return;
+
+        try {
+            const updatedDiscussion = await discussionService.deleteComment(
+                id,
+                undefined, // No answerId - this is a question comment
+                commentId
+            );
+            setDiscussion(updatedDiscussion);
+        } catch (error) {
+            console.error("Error deleting question comment:", error);
+        }
+    };
+
+    const handleVoteComment = async (answerId: string, commentId: string, voteType: "upvote" | "downvote") => {
+        if (!id || !user) return;
+
+        try {
+            const updatedDiscussion = await discussionService.voteOnComment(
+                id,
+                answerId,
+                commentId,
+                { userId: user.id, voteType }
+            );
+            setDiscussion(updatedDiscussion);
+        } catch (error) {
+            console.error("Error voting on comment:", error);
+        }
+    };
+
+    const handleVoteQuestionComment = async (commentId: string, voteType: "upvote" | "downvote") => {
+        if (!id || !user) return;
+
+        try {
+            const updatedDiscussion = await discussionService.voteOnComment(
+                id,
+                undefined, // No answerId - this is a question comment
+                commentId,
+                { userId: user.id, voteType }
+            );
+            setDiscussion(updatedDiscussion);
+        } catch (error) {
+            console.error("Error voting on question comment:", error);
+        }
+    };
+
+    // Accept answer handler
+    const handleAcceptAnswer = async (answerId: string) => {
+        if (!id || !user || !discussion) return;
+
+        try {
+            const updatedDiscussion = await discussionService.acceptAnswer(id, {
+                answerId,
+                questionAuthorId: user.id,
+            });
+            setDiscussion(updatedDiscussion);
+        } catch (error) {
+            console.error("Error accepting answer:", error);
+        }
+    };
+
+    // Permission checks
+    const canUserAnswer = discussion ? discussionService.canUserAnswer(discussion, user?.id || "") : false;
+
     if (loading) {
         return (
             <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -400,14 +553,39 @@ const DiscussionDetail = () => {
 
     return (
         <Container maxWidth="lg" sx={{ py: 4 }}>
-            {/* Back button */}
-            <Button
-                startIcon={<ArrowBack />}
-                onClick={() => navigate("/talk")}
-                sx={{ mb: 3 }}
-            >
-                Back to list
-            </Button>
+            {/* Header with Back button and Ask Question button */}
+            <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
+                <Button
+                    startIcon={<ArrowBack />}
+                    onClick={() => navigate("/talk")}
+                >
+                    Back to list
+                </Button>
+
+                {isAuthenticated && (
+                    <Button
+                        variant="contained"
+                        onClick={() => navigate("/talk/new")}
+                        sx={{
+                            backgroundColor: "#0a95ff",
+                            color: "#ffffff",
+                            fontWeight: 700,
+                            textTransform: "none",
+                            borderRadius: "3px",
+                            px: 2,
+                            py: 1,
+                            fontSize: "0.875rem",
+                            boxShadow: "none",
+                            "&:hover": {
+                                boxShadow: "none",
+                                backgroundColor: "#0074cc"
+                            }
+                        }}
+                    >
+                        Ask Question
+                    </Button>
+                )}
+            </Stack>
 
             {/* Question */}
             <Paper
@@ -500,8 +678,9 @@ const DiscussionDetail = () => {
                                         <Typography
                                             variant="h3"
                                             component="h1"
+                                            className="discussion-title"
                                             sx={{
-                                                fontWeight: 400,
+                                                fontWeight: 700,
                                                 lineHeight: 1.35,
                                                 flex: 1,
                                                 mr: 2,
@@ -510,21 +689,6 @@ const DiscussionDetail = () => {
                                             }}
                                         >
                                             {discussion.title}
-                                            {discussion.isEdited && (
-                                                <Chip
-                                                    icon={<EditNote />}
-                                                    label="edited"
-                                                    size="small"
-                                                    sx={{
-                                                        ml: 2,
-                                                        fontSize: "0.7rem",
-                                                        backgroundColor: actualTheme === 'dark' ? '#fd8500' : '#fb8500',
-                                                        color: '#ffffff',
-                                                        border: 'none',
-                                                        fontWeight: 'bold'
-                                                    }}
-                                                />
-                                            )}
                                         </Typography>
 
                                         {canEditDelete(discussion.authorId) && (
@@ -548,7 +712,7 @@ const DiscussionDetail = () => {
                                         sx={{
                                             mb: 3,
                                             pb: 2,
-                                            borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+                                            borderBottom: "1px solid white",
                                         }}
                                     >
                                         <Typography variant="body2" color="text.secondary">
@@ -566,25 +730,20 @@ const DiscussionDetail = () => {
 
                                     <Typography
                                         variant="body1"
+                                        className="discussion-content"
                                         sx={{
-                                            mb: 4,
+                                            mb: 3,
                                             lineHeight: 1.6,
                                             fontSize: "1rem",
+                                            fontWeight: 600,
                                             color: "text.primary",
                                         }}
                                     >
                                         {discussion.content}
                                     </Typography>
 
-                                    <Box
-                                        sx={{
-                                            display: "flex",
-                                            justifyContent: "space-between",
-                                            alignItems: "flex-end",
-                                            flexWrap: "wrap",
-                                            gap: 2,
-                                        }}
-                                    >
+                                    {/* Tags section - moved below content */}
+                                    <Box sx={{ mb: 3 }}>
                                         <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
                                             {discussion.tags && discussion.tags.length > 0 ? (
                                                 discussion.tags.map((tag: string) => (
@@ -614,6 +773,18 @@ const DiscussionDetail = () => {
                                                     }}
                                                 />
                                             )}
+                                        </Stack>
+                                    </Box>
+
+                                    {/* Author info and metadata - same as Answer layout */}
+                                    <Stack
+                                        direction="row"
+                                        justifyContent="space-between"
+                                        alignItems="flex-start"
+                                        sx={{ mt: 2, mb: 2 }}
+                                    >
+                                        <Stack direction="row" spacing={1} alignItems="center">
+                                            {/* Empty space to match Answer layout */}
                                         </Stack>
 
                                         <Box
@@ -671,7 +842,16 @@ const DiscussionDetail = () => {
                                                 </Link>
                                             </Stack>
                                         </Box>
-                                    </Box>
+                                    </Stack>
+
+                                    {/* Comments Section - same as Answer */}
+                                    <CommentSection
+                                        comments={discussion.comments || []}
+                                        onAddComment={handleAddQuestionComment}
+                                        onUpdateComment={handleUpdateQuestionComment}
+                                        onDeleteComment={handleDeleteQuestionComment}
+                                        onVoteComment={handleVoteQuestionComment}
+                                    />
                                 </Box>
                             )}
                         </Box>
@@ -712,13 +892,14 @@ const DiscussionDetail = () => {
                     sx={{
                         mb: 3,
                         pb: 2,
-                        borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+                        borderBottom: "1px solid white",
                     }}
                 >
                     <Typography
                         variant="h4"
+                        className="discussion-header"
                         sx={{
-                            fontWeight: 400,
+                            fontWeight: 700,
                             fontSize: "1.5rem",
                             color: "text.primary",
                         }}
@@ -766,7 +947,7 @@ const DiscussionDetail = () => {
                 ) : (
                     <>
                         <Stack spacing={2} sx={{ mb: 4 }}>
-                            {currentAnswers.map((answer: Answer, index: number) => (
+                            {currentAnswers.map((answer: Answer) => (
                                 <Paper
                                     key={answer.id}
                                     elevation={0}
@@ -774,12 +955,7 @@ const DiscussionDetail = () => {
                                         border: (theme) => `1px solid ${theme.palette.divider}`,
                                         borderRadius: 2,
                                         overflow: "hidden",
-                                        backgroundColor: (theme) =>
-                                            index === 0 && answer.score > 0
-                                                ? theme.palette.mode === "dark"
-                                                    ? "rgba(94, 186, 125, 0.03)"
-                                                    : "rgba(94, 186, 125, 0.02)"
-                                                : "transparent",
+                                        backgroundColor: "transparent",
                                     }}
                                 >
                                     <CardContent sx={{ p: 4 }}>
@@ -805,6 +981,7 @@ const DiscussionDetail = () => {
                                                         handleVoteOnAnswer(answer.id, "downvote")
                                                     }
                                                     disabled={!canVote(answer.authorId)}
+                                                    isAccepted={answer.isAccepted}
                                                 />
                                             </Box>
                                             <Box sx={{ flex: 1 }}>
@@ -851,30 +1028,17 @@ const DiscussionDetail = () => {
                                                         >
                                                             <Typography
                                                                 variant="body1"
+                                                                className="discussion-content"
                                                                 sx={{
                                                                     lineHeight: 1.6,
                                                                     flex: 1,
                                                                     mr: 2,
                                                                     fontSize: "1rem",
+                                                                    fontWeight: 600,
                                                                     color: "text.primary",
                                                                 }}
                                                             >
                                                                 {answer.content}
-                                                                {answer.isEdited && (
-                                                                    <Chip
-                                                                        icon={<EditNote />}
-                                                                        label="edited"
-                                                                        size="small"
-                                                                        sx={{
-                                                                            ml: 1,
-                                                                            fontSize: "0.65rem",
-                                                                            backgroundColor: actualTheme === 'dark' ? '#fd8500' : '#fb8500',
-                                                                            color: '#ffffff',
-                                                                            border: 'none',
-                                                                            fontWeight: 'bold'
-                                                                        }}
-                                                                    />
-                                                                )}
                                                             </Typography>
 
                                                             {canEditDelete(answer.authorId) && (
@@ -891,13 +1055,36 @@ const DiscussionDetail = () => {
                                                             )}
                                                         </Stack>
 
-                                                        <Box
-                                                            sx={{
-                                                                display: "flex",
-                                                                justifyContent: "flex-end",
-                                                                mt: 2,
-                                                            }}
+                                                        {/* Accept Answer Button and Answer Actions */}
+                                                        <Stack
+                                                            direction="row"
+                                                            justifyContent="space-between"
+                                                            alignItems="flex-start"
+                                                            sx={{ mt: 2, mb: 2 }}
                                                         >
+                                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                                {/* Accept Answer Button (only for question author) */}
+                                                                {user?.id === discussion.authorId && !answer.isAccepted && (
+                                                                    <Button
+                                                                        size="small"
+                                                                        variant="outlined"
+                                                                        color="success"
+                                                                        startIcon={<CheckCircle />}
+                                                                        onClick={() => handleAcceptAnswer(answer.id)}
+                                                                        sx={{
+                                                                            borderColor: 'success.main',
+                                                                            color: 'success.main',
+                                                                            '&:hover': {
+                                                                                backgroundColor: 'success.main',
+                                                                                color: 'white',
+                                                                            }
+                                                                        }}
+                                                                    >
+                                                                        Accept Answer
+                                                                    </Button>
+                                                                )}
+                                                            </Stack>
+
                                                             <Box
                                                                 sx={{
                                                                     p: 2,
@@ -953,7 +1140,16 @@ const DiscussionDetail = () => {
                                                                     </Link>
                                                                 </Stack>
                                                             </Box>
-                                                        </Box>
+                                                        </Stack>
+
+                                                        {/* Comments Section */}
+                                                        <CommentSection
+                                                            comments={answer.comments || []}
+                                                            onAddComment={(content) => handleAddComment(answer.id, content)}
+                                                            onUpdateComment={(commentId, content) => handleUpdateComment(answer.id, commentId, content)}
+                                                            onDeleteComment={(commentId) => handleDeleteComment(answer.id, commentId)}
+                                                            onVoteComment={(commentId, voteType) => handleVoteComment(answer.id, commentId, voteType)}
+                                                        />
                                                     </Box>
                                                 )}
 
@@ -1007,7 +1203,7 @@ const DiscussionDetail = () => {
             <Divider sx={{ my: 4 }} />
 
             {/* Answer form */}
-            {isAuthenticated ? (
+            {isAuthenticated && canUserAnswer ? (
                 <Box sx={{ mt: 4 }}>
                     <Paper
                         elevation={0}
@@ -1146,6 +1342,26 @@ const DiscussionDetail = () => {
                         </CardContent>
                     </Paper>
                 </Box>
+            ) : isAuthenticated && !canUserAnswer ? (
+                <Alert
+                    severity="info"
+                    sx={{
+                        mt: 4,
+                        backgroundColor: (theme) =>
+                            theme.palette.mode === "dark"
+                                ? "rgba(255, 193, 7, 0.08)"
+                                : "rgba(255, 193, 7, 0.04)",
+                        border: (theme) => `1px solid ${theme.palette.warning.main}`,
+                        borderRadius: 1,
+                    }}
+                >
+                    <Typography variant="body1" sx={{ fontWeight: 500, mb: 0.5 }}>
+                        You cannot answer your own question
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                        As the author of this question, you cannot provide an answer. You can edit your question to add more details or accept answers from other users.
+                    </Typography>
+                </Alert>
             ) : (
                 <Alert
                     severity="info"

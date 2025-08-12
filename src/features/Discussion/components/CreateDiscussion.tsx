@@ -250,9 +250,10 @@ const CreateDiscussion = () => {
                             <Typography
                                 variant="h4"
                                 component="h1"
+                                className="discussion-header"
                                 sx={{
                                     mb: 1,
-                                    fontWeight: 400,
+                                    fontWeight: 700,
                                     fontSize: "1.75rem",
                                     color: "text.primary"
                                 }}
@@ -262,8 +263,9 @@ const CreateDiscussion = () => {
 
                             <Typography
                                 variant="body2"
+                                className="discussion-text"
                                 color="text.secondary"
-                                sx={{ mb: 4 }}
+                                sx={{ mb: 4, fontWeight: 500 }}
                             >
                                 Get help from the community by asking a clear, detailed question.
                             </Typography>
@@ -287,9 +289,10 @@ const CreateDiscussion = () => {
                                 <Box>
                                     <Typography
                                         variant="h6"
+                                        className="discussion-header"
                                         sx={{
                                             mb: 1,
-                                            fontWeight: 600,
+                                            fontWeight: 700,
                                             fontSize: "1.125rem"
                                         }}
                                     >
@@ -343,9 +346,10 @@ const CreateDiscussion = () => {
                                 <Box>
                                     <Typography
                                         variant="h6"
+                                        className="discussion-header"
                                         sx={{
                                             mb: 1,
-                                            fontWeight: 600,
+                                            fontWeight: 700,
                                             fontSize: "1.125rem"
                                         }}
                                     >
@@ -353,8 +357,9 @@ const CreateDiscussion = () => {
                                     </Typography>
                                     <Typography
                                         variant="body2"
+                                        className="discussion-text"
                                         color="text.secondary"
-                                        sx={{ mb: 2 }}
+                                        sx={{ mb: 2, fontWeight: 500 }}
                                     >
                                         Introduce the problem and expand on what you put in the title.
                                         Minimum 20 characters.
@@ -464,7 +469,7 @@ const CreateDiscussion = () => {
                     >
                         <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
                             <HelpOutline sx={{ mr: 1, color: "primary.main" }} />
-                            <Typography variant="h6" sx={{ fontWeight: 600, fontSize: "1rem" }}>
+                            <Typography variant="h6" className="discussion-header" sx={{ fontWeight: 700, fontSize: "1rem" }}>
                                 Writing a good question
                             </Typography>
                         </Box>
@@ -533,7 +538,7 @@ const CreateDiscussion = () => {
                     >
                         <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
                             <LightbulbOutlined sx={{ mr: 1, color: "warning.main" }} />
-                            <Typography variant="h6" sx={{ fontWeight: 600, fontSize: "1rem" }}>
+                            <Typography variant="h6" className="discussion-header" sx={{ fontWeight: 700, fontSize: "1rem" }}>
                                 Tips for success
                             </Typography>
                         </Box>

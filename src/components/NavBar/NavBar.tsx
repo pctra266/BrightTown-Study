@@ -48,8 +48,8 @@ const PAGES: readonly NavPage[] = [
 const BRAND_NAME = "Bright Town Study";
 
 const COMMON_TYPOGRAPHY_STYLES = {
-    fontFamily: "monospace",
-    fontWeight: 700,
+    fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    fontWeight: 800,
     letterSpacing: ".0.5rem",
     textDecoration: "none",
 } as const;
@@ -61,8 +61,8 @@ const useNavbarStyles = (theme: any) =>
             tabStyles: {
                 "& .MuiTab-root": {
                     color: `${theme.palette.mode === "light" ? "rgba(255, 255, 255, 0.7)" : "rgba(33, 150, 243, 0.7)"} `,
-                    fontWeight: 400,
-                    fontSize: "0.9rem",
+                    fontWeight: 600,
+                    fontSize: "0.95rem",
                     textTransform: "none",
                     minHeight: "48px",
                     borderRadius: "8px 8px 0 0",
@@ -82,7 +82,7 @@ const useNavbarStyles = (theme: any) =>
                         color: `${theme.palette.mode === "light" ? "#fff" : "#2196f3"} `,
                         backgroundColor: `${theme.palette.mode === "light" ? "rgba(255, 255, 255, 0.08)" : "rgba(33, 150, 243, 0.08)"} `,
                         transform: "scale(1.02)",
-                        fontWeight: 600,
+                        fontWeight: 700,
                     }
                 },
                 "& .MuiTabs-indicator": {
