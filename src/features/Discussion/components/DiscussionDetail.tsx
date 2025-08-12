@@ -42,6 +42,7 @@ import {
     type Answer,
 } from "../services/DiscussionService";
 import VoteButtons from "./VoteButton";
+import TagSelector from "./TagSelector";
 
 
 const DiscussionDetail = () => {
@@ -64,6 +65,7 @@ const DiscussionDetail = () => {
     const [editingQuestion, setEditingQuestion] = useState(false);
     const [editQuestionTitle, setEditQuestionTitle] = useState("");
     const [editQuestionContent, setEditQuestionContent] = useState("");
+    const [editQuestionTags, setEditQuestionTags] = useState<string[]>([]);
     const [editingAnswer, setEditingAnswer] = useState<string | null>(null);
     const [editAnswerContent, setEditAnswerContent] = useState("");
 
@@ -84,6 +86,7 @@ const DiscussionDetail = () => {
             setDiscussion(data);
             setEditQuestionTitle(data.title);
             setEditQuestionContent(data.content);
+            setEditQuestionTags(data.tags || []);
 
             if (user && user.id !== data.authorId) {
                 try {
@@ -269,6 +272,7 @@ const DiscussionDetail = () => {
             const updatedDiscussion = await discussionService.updateDiscussion(id, {
                 title: editQuestionTitle.trim(),
                 content: editQuestionContent.trim(),
+                tags: editQuestionTags,
             });
 
             setDiscussion(updatedDiscussion);
@@ -458,7 +462,11 @@ const DiscussionDetail = () => {
                                         onChange={(e) => setEditQuestionContent(e.target.value)}
                                         sx={{ mb: 2 }}
                                     />
-                                    <Stack direction="row" spacing={2}>
+                                    <TagSelector
+                                        selectedTags={editQuestionTags}
+                                        onTagsChange={setEditQuestionTags}
+                                    />
+                                    <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
                                         <Button
                                             variant="contained"
                                             onClick={handleUpdateQuestion}
@@ -474,6 +482,7 @@ const DiscussionDetail = () => {
                                                 setEditingQuestion(false);
                                                 setEditQuestionTitle(discussion.title);
                                                 setEditQuestionContent(discussion.content);
+                                                setEditQuestionTags(discussion.tags || []);
                                             }}
                                         >
                                             Cancel
@@ -577,18 +586,34 @@ const DiscussionDetail = () => {
                                         }}
                                     >
                                         <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
-                                            <Chip
-                                                label="general"
-                                                size="small"
-                                                variant="outlined"
-                                                sx={{ fontSize: "0.75rem" }}
-                                            />
-                                            <Chip
-                                                label="study"
-                                                size="small"
-                                                variant="outlined"
-                                                sx={{ fontSize: "0.75rem" }}
-                                            />
+                                            {discussion.tags && discussion.tags.length > 0 ? (
+                                                discussion.tags.map((tag: string) => (
+                                                    <Chip
+                                                        key={tag}
+                                                        label={tag}
+                                                        size="small"
+                                                        variant="outlined"
+                                                        sx={{
+                                                            fontSize: "0.75rem",
+                                                            backgroundColor: actualTheme === 'dark' ? "#1e2a3a" : "#e8f4fd",
+                                                            borderColor: actualTheme === 'dark' ? "#3182ce" : "#39739d",
+                                                            color: actualTheme === 'dark' ? "#63b3ed" : "#39739d",
+                                                        }}
+                                                    />
+                                                ))
+                                            ) : (
+                                                <Chip
+                                                    label="general"
+                                                    size="small"
+                                                    variant="outlined"
+                                                    sx={{
+                                                        fontSize: "0.75rem",
+                                                        backgroundColor: actualTheme === 'dark' ? "#1e2a3a" : "#e8f4fd",
+                                                        borderColor: actualTheme === 'dark' ? "#3182ce" : "#39739d",
+                                                        color: actualTheme === 'dark' ? "#63b3ed" : "#39739d",
+                                                    }}
+                                                />
+                                            )}
                                         </Stack>
 
                                         <Box

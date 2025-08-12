@@ -44,6 +44,7 @@ export interface CreateDiscussionData {
 export interface UpdateDiscussionData {
   title: string;
   content: string;
+  tags?: string[];
 }
 
 export interface CreateAnswerData {
@@ -160,6 +161,7 @@ export const discussionService = {
       ...discussion,
       title: data.title,
       content: data.content,
+      tags: data.tags !== undefined ? data.tags : discussion.tags,
       updatedAt: new Date().toISOString(),
       isEdited: true,
     };
