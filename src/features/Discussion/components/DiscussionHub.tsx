@@ -5,24 +5,21 @@ import {
     Box,
     Button,
     TextField,
-    Card,
-    CardContent,
     Chip,
     Stack,
     Pagination,
     Select,
     MenuItem,
     FormControl,
-    InputLabel,
 } from "@mui/material";
 import {
-    Add as AddIcon,
-    EditNote,
+    CheckCircle,
 } from "@mui/icons-material";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useThemeMode } from "../../../contexts/ThemeContext";
 import { discussionService } from "../services/DiscussionService";
+import type { Answer } from "../services/DiscussionService";
 import { PREDEFINED_TAGS } from "../constants/tags";
 
 interface Discussion {
@@ -40,7 +37,7 @@ interface Discussion {
     userVotes: { [userId: string]: "upvote" | "downvote" };
     views: number;
     viewedBy: string[];
-    answers: unknown[];
+    answers: Answer[];
     tags?: string[];
 }
 
@@ -56,7 +53,7 @@ const DiscussionHub = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [sortBy, setSortBy] = useState("newest");
-    const [selectedTagFilter, setSelectedTagFilter] = useState<string | null>(null);
+    const [selectedTagFilter, setSelectedTagFilter] = useState<string[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const discussionsPerPage = 5;
 
@@ -90,8 +87,8 @@ const DiscussionHub = () => {
                 discussion.content.toLowerCase().includes(searchTerm.toLowerCase());
 
             // Tag filter
-            const matchesTag = !selectedTagFilter ||
-                (discussion.tags && discussion.tags.includes(selectedTagFilter));
+            const matchesTag = selectedTagFilter.length === 0 ||
+                (discussion.tags && discussion.tags.some(tag => selectedTagFilter.includes(tag)));
 
             return matchesSearch && matchesTag;
         });
@@ -152,12 +149,12 @@ const DiscussionHub = () => {
     };
 
     const handleTagFilter = (tag: string) => {
-        if (selectedTagFilter === tag) {
-            // If same tag is clicked, remove filter
-            setSelectedTagFilter(null);
+        if (selectedTagFilter.includes(tag)) {
+            // Remove tag from filter
+            setSelectedTagFilter(selectedTagFilter.filter(t => t !== tag));
         } else {
-            // Set new tag filter
-            setSelectedTagFilter(tag);
+            // Add tag to filter
+            setSelectedTagFilter([...selectedTagFilter, tag]);
         }
     };
 
@@ -179,32 +176,58 @@ const DiscussionHub = () => {
 
     return (
         <Container maxWidth="lg" sx={{ py: 4 }}>
-            {/* Header */}
-            <Box sx={{ mb: 4 }}>
+            {/* Header - Stack Overflow Style */}
+            <Box sx={{ mb: 3 }}>
                 <Stack
                     direction="row"
                     justifyContent="space-between"
-                    alignItems="center"
-                    sx={{ mb: 3 }}
+                    alignItems="flex-start"
+                    sx={{ mb: 2 }}
                 >
                     <Box>
-                        <Typography variant="h4" component="h1" fontWeight="bold" sx={{ mb: 1 }}>
+                        <Typography
+                            variant="h4"
+                            component="h1"
+                            className="discussion-header"
+                            sx={{
+                                fontWeight: 700,
+                                fontSize: "1.75rem",
+                                color: actualTheme === 'dark' ? '#f8f9fa' : '#232629',
+                                mb: 0.5
+                            }}
+                        >
                             All Questions
                         </Typography>
-                        <Typography variant="h6" color="text.secondary">
-                            {filteredDiscussions.length} question{filteredDiscussions.length !== 1 ? 's' : ''}
+                        <Typography
+                            variant="body2"
+                            className="discussion-meta"
+                            sx={{
+                                color: actualTheme === 'dark' ? '#9199a1' : '#6a737c',
+                                fontSize: "0.875rem",
+                                fontWeight: 600
+                            }}
+                        >
+                            {filteredDiscussions.length.toLocaleString()} question{filteredDiscussions.length !== 1 ? 's' : ''}
                         </Typography>
                     </Box>
                     {isAuthenticated && (
                         <Button
                             variant="contained"
-                            startIcon={<AddIcon />}
                             onClick={handleCreateQuestion}
-                            size="large"
                             sx={{
-                                minWidth: "160px",
-                                backgroundColor: "#0074cc",
-                                "&:hover": { backgroundColor: "#0063c1" }
+                                backgroundColor: "#0a95ff",
+                                color: "#ffffff",
+                                fontWeight: 700,
+                                textTransform: "none",
+                                borderRadius: "3px",
+                                px: 2,
+                                py: 1,
+                                fontSize: "0.875rem",
+                                boxShadow: "none",
+                                "&:hover": {
+                                    boxShadow: "none",
+                                    backgroundColor: "#0074cc"
+                                }
                             }}
                         >
                             Ask Question
@@ -214,89 +237,114 @@ const DiscussionHub = () => {
 
                 {!isAuthenticated && (
                     <Box sx={{
-                        p: 2,
-                        bgcolor: actualTheme === 'dark' ? "#1e2a3a" : "#e8f4fd",
-                        borderRadius: 1,
+                        p: 3,
+                        bgcolor: actualTheme === 'dark' ? "#2d3139" : "#fdf7e2",
+                        borderRadius: "3px",
                         mb: 3,
-                        border: actualTheme === 'dark' ? "1px solid #3182ce" : "1px solid #39739d"
+                        border: actualTheme === 'dark' ? "1px solid #524c42" : "1px solid #e1cc85",
+                        borderLeft: `4px solid ${actualTheme === 'dark' ? "#f2cc60" : "#d69e2e"}`
                     }}>
-                        <Typography variant="body2" sx={{ color: actualTheme === 'dark' ? "#63b3ed" : "#39739d" }}>
-                            You need to log in to ask questions and answer questions.
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: actualTheme === 'dark' ? "#f2cc60" : "#744210",
+                                fontSize: "0.875rem",
+                                lineHeight: 1.4
+                            }}
+                        >
+                            You must be logged in to ask questions and provide answers.
                         </Typography>
                     </Box>
                 )}
 
-                {/* Enhanced Filter Section */}
-                <Box sx={{ mb: 3 }}>
-                    <Stack direction={{ xs: "column", md: "row" }} spacing={2} alignItems={{ md: "center" }}>
-                        <Box sx={{ flex: 1 }}>
+                {/* Filter and Sort Section - Stack Overflow Style */}
+                <Box sx={{
+                    mb: 2,
+                    borderBottom: `1px solid ${actualTheme === 'dark' ? '#3c4043' : '#e3e6e8'}`,
+                    pb: 2
+                }}>
+                    <Stack
+                        direction={{ xs: "column", md: "row" }}
+                        spacing={2}
+                        alignItems={{ md: "center" }}
+                        justifyContent="space-between"
+                    >
+                        <Box sx={{ flex: 1, maxWidth: { xs: "100%", md: "400px" } }}>
                             <TextField
                                 fullWidth
-                                placeholder="Search for questions, answers, and tags..."
+                                placeholder="Search questions..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 size="small"
                                 sx={{
                                     "& .MuiOutlinedInput-root": {
-                                        backgroundColor: actualTheme === 'dark' ? '#2d3748' : '#ffffff',
-                                        color: actualTheme === 'dark' ? '#e2e8f0' : '#1a202c',
-                                        "&:hover": {
-                                            backgroundColor: actualTheme === 'dark' ? '#4a5568' : '#f7fafc',
-                                        },
+                                        backgroundColor: actualTheme === 'dark' ? '#2d3139' : '#ffffff',
+                                        color: actualTheme === 'dark' ? '#f8f9fa' : '#232629',
+                                        fontSize: "0.875rem",
+                                        borderRadius: "3px",
                                         "& fieldset": {
-                                            borderColor: actualTheme === 'dark' ? '#4a5568' : '#e2e8f0',
+                                            borderColor: actualTheme === 'dark' ? '#3c4043' : '#babfc4',
                                         },
                                         "&:hover fieldset": {
-                                            borderColor: actualTheme === 'dark' ? '#718096' : '#cbd5e0',
+                                            borderColor: actualTheme === 'dark' ? '#525860' : '#0074cc',
                                         },
                                         "&.Mui-focused fieldset": {
-                                            borderColor: actualTheme === 'dark' ? '#63b3ed' : '#3182ce',
+                                            borderColor: actualTheme === 'dark' ? '#0a95ff' : '#0074cc',
+                                            borderWidth: "1px"
                                         }
                                     },
                                     "& .MuiInputBase-input": {
-                                        color: actualTheme === 'dark' ? '#e2e8f0' : '#1a202c',
+                                        color: actualTheme === 'dark' ? '#f8f9fa' : '#232629',
                                         "&::placeholder": {
-                                            color: actualTheme === 'dark' ? '#a0aec0' : '#718096',
+                                            color: actualTheme === 'dark' ? '#9199a1' : '#6a737c',
                                             opacity: 1
                                         }
                                     }
                                 }}
                             />
                         </Box>
-                        <Box sx={{ minWidth: { xs: "100%", md: "200px" } }}>
+                        <Box sx={{ minWidth: { xs: "100%", md: "180px" } }}>
                             <FormControl fullWidth size="small">
-                                <InputLabel sx={{ color: actualTheme === 'dark' ? '#a0aec0' : '#718096' }}>Sort by</InputLabel>
                                 <Select
                                     value={sortBy}
-                                    label="Sort by"
                                     onChange={(e) => setSortBy(e.target.value)}
+                                    displayEmpty
                                     sx={{
-                                        backgroundColor: actualTheme === 'dark' ? '#2d3748' : '#ffffff',
-                                        color: actualTheme === 'dark' ? '#e2e8f0' : '#1a202c',
-                                        "&:hover": {
-                                            backgroundColor: actualTheme === 'dark' ? '#4a5568' : '#f7fafc',
-                                        },
+                                        backgroundColor: actualTheme === 'dark' ? '#2d3139' : '#ffffff',
+                                        color: actualTheme === 'dark' ? '#f8f9fa' : '#232629',
+                                        fontSize: "0.875rem",
+                                        borderRadius: "3px",
                                         "& .MuiOutlinedInput-notchedOutline": {
-                                            borderColor: actualTheme === 'dark' ? '#4a5568' : '#e2e8f0',
+                                            borderColor: actualTheme === 'dark' ? '#3c4043' : '#babfc4',
                                         },
                                         "&:hover .MuiOutlinedInput-notchedOutline": {
-                                            borderColor: actualTheme === 'dark' ? '#718096' : '#cbd5e0',
+                                            borderColor: actualTheme === 'dark' ? '#525860' : '#0074cc',
                                         },
                                         "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                            borderColor: actualTheme === 'dark' ? '#63b3ed' : '#3182ce',
+                                            borderColor: actualTheme === 'dark' ? '#0a95ff' : '#0074cc',
+                                            borderWidth: "1px"
                                         },
                                         "& .MuiSelect-icon": {
-                                            color: actualTheme === 'dark' ? '#a0aec0' : '#718096',
+                                            color: actualTheme === 'dark' ? '#9199a1' : '#6a737c',
                                         }
                                     }}
                                     MenuProps={{
                                         PaperProps: {
                                             sx: {
-                                                backgroundColor: actualTheme === 'dark' ? '#2d3748' : '#ffffff',
+                                                backgroundColor: actualTheme === 'dark' ? '#2d3139' : '#ffffff',
+                                                border: `1px solid ${actualTheme === 'dark' ? '#3c4043' : '#babfc4'}`,
+                                                boxShadow: `0 8px 16px ${actualTheme === 'dark' ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.1)'}`,
                                                 "& .MuiMenuItem-root": {
-                                                    color: actualTheme === 'dark' ? '#e2e8f0' : '#1a202c',
+                                                    color: actualTheme === 'dark' ? '#f8f9fa' : '#232629',
+                                                    fontSize: "0.875rem",
                                                     "&:hover": {
-                                                        backgroundColor: actualTheme === 'dark' ? '#4a5568' : '#f7fafc',
+                                                        backgroundColor: actualTheme === 'dark' ? '#3c4043' : '#f1f2f3',
+                                                    },
+                                                    "&.Mui-selected": {
+                                                        backgroundColor: actualTheme === 'dark' ? '#0a95ff' : '#e3f2fd',
+                                                        "&:hover": {
+                                                            backgroundColor: actualTheme === 'dark' ? '#0074cc' : '#bbdefb',
+                                                        }
                                                     }
                                                 }
                                             }
@@ -315,31 +363,42 @@ const DiscussionHub = () => {
                     </Stack>
                 </Box>
 
-                {/* Filter Tags */}
+                {/* Tag Filter Section - Stack Overflow Style */}
                 <Box sx={{ mb: 3 }}>
-                    <Stack direction="row" spacing={1} flexWrap="wrap">
-                        <Typography variant="body2" color="text.secondary" sx={{ mr: 1, lineHeight: 2.5 }}>
-                            Filter by tags:
+                    <Stack direction="row" spacing={1} flexWrap="wrap" alignItems="center" sx={{ mb: 2 }}>
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                mr: 1,
+                                lineHeight: 2.5,
+                                color: actualTheme === 'dark' ? '#9199a1' : '#6a737c',
+                                fontSize: "0.875rem"
+                            }}
+                        >
+                            Tagged with:
                         </Typography>
                         <Chip
                             label="All"
                             size="small"
-                            variant={selectedTagFilter === null ? "filled" : "outlined"}
+                            variant={selectedTagFilter.length === 0 ? "filled" : "outlined"}
                             clickable
-                            onClick={() => setSelectedTagFilter(null)}
+                            onClick={() => setSelectedTagFilter([])}
                             sx={{
-                                backgroundColor: selectedTagFilter === null
-                                    ? (actualTheme === 'dark' ? '#3182ce' : '#39739d')
-                                    : (actualTheme === 'dark' ? '#2d3748' : '#ffffff'),
-                                borderColor: actualTheme === 'dark' ? '#4a5568' : '#e2e8f0',
-                                color: selectedTagFilter === null
+                                backgroundColor: selectedTagFilter.length === 0
+                                    ? (actualTheme === 'dark' ? '#0a95ff' : '#0074cc')
+                                    : 'transparent',
+                                borderColor: actualTheme === 'dark' ? '#3c4043' : '#babfc4',
+                                color: selectedTagFilter.length === 0
                                     ? '#ffffff'
-                                    : (actualTheme === 'dark' ? '#e2e8f0' : '#1a202c'),
+                                    : (actualTheme === 'dark' ? '#9199a1' : '#6a737c'),
+                                fontSize: "0.75rem",
+                                height: "24px",
+                                borderRadius: "3px",
                                 "&:hover": {
-                                    backgroundColor: selectedTagFilter === null
-                                        ? (actualTheme === 'dark' ? '#2c5aa0' : '#2d5aa0')
-                                        : (actualTheme === 'dark' ? '#4a5568' : '#edf2f7'),
-                                    borderColor: actualTheme === 'dark' ? '#63b3ed' : '#3182ce'
+                                    backgroundColor: selectedTagFilter.length === 0
+                                        ? (actualTheme === 'dark' ? '#0074cc' : '#005ba3')
+                                        : (actualTheme === 'dark' ? '#3c4043' : '#f1f2f3'),
+                                    borderColor: actualTheme === 'dark' ? '#0a95ff' : '#0074cc'
                                 }
                             }}
                         />
@@ -348,236 +407,336 @@ const DiscussionHub = () => {
                                 key={tag}
                                 label={tag}
                                 size="small"
-                                variant={selectedTagFilter === tag ? "filled" : "outlined"}
+                                variant={selectedTagFilter.includes(tag) ? "filled" : "outlined"}
                                 clickable
                                 onClick={() => handleTagFilter(tag)}
                                 sx={{
-                                    backgroundColor: selectedTagFilter === tag
-                                        ? (actualTheme === 'dark' ? '#3182ce' : '#39739d')
-                                        : (actualTheme === 'dark' ? '#2d3748' : '#ffffff'),
-                                    borderColor: actualTheme === 'dark' ? '#4a5568' : '#e2e8f0',
-                                    color: selectedTagFilter === tag
+                                    backgroundColor: selectedTagFilter.includes(tag)
+                                        ? (actualTheme === 'dark' ? '#0a95ff' : '#0074cc')
+                                        : 'transparent',
+                                    borderColor: actualTheme === 'dark' ? '#3c4043' : '#babfc4',
+                                    color: selectedTagFilter.includes(tag)
                                         ? '#ffffff'
-                                        : (actualTheme === 'dark' ? '#e2e8f0' : '#1a202c'),
+                                        : (actualTheme === 'dark' ? '#9199a1' : '#6a737c'),
+                                    fontSize: "0.75rem",
+                                    height: "24px",
+                                    borderRadius: "3px",
                                     "&:hover": {
-                                        backgroundColor: selectedTagFilter === tag
-                                            ? (actualTheme === 'dark' ? '#2c5aa0' : '#2d5aa0')
-                                            : (actualTheme === 'dark' ? '#4a5568' : '#edf2f7'),
-                                        borderColor: actualTheme === 'dark' ? '#63b3ed' : '#3182ce'
+                                        backgroundColor: selectedTagFilter.includes(tag)
+                                            ? (actualTheme === 'dark' ? '#0074cc' : '#005ba3')
+                                            : (actualTheme === 'dark' ? '#3c4043' : '#f1f2f3'),
+                                        borderColor: actualTheme === 'dark' ? '#0a95ff' : '#0074cc'
                                     }
                                 }}
                             />
                         ))}
+                        {selectedTagFilter.length > 0 && (
+                            <Button
+                                size="small"
+                                onClick={() => setSelectedTagFilter([])}
+                                sx={{
+                                    ml: 1,
+                                    fontSize: "0.75rem",
+                                    color: actualTheme === 'dark' ? '#0a95ff' : '#0074cc',
+                                    textTransform: "none",
+                                    "&:hover": {
+                                        backgroundColor: actualTheme === 'dark' ? '#3c4043' : '#f1f2f3'
+                                    }
+                                }}
+                            >
+                                clear all
+                            </Button>
+                        )}
                     </Stack>
                 </Box>
             </Box>
 
             {/* Questions List - Stack Overflow Style */}
-            <Box sx={{ mb: 4 }}>
+            <Box>
                 {currentDiscussions.length === 0 ? (
-                    <Typography
-                        variant="body1"
-                        sx={{
-                            color: actualTheme === 'dark' ? '#a0aec0' : '#718096',
-                            textAlign: "center",
-                            py: 4
-                        }}
-                    >
-                        No questions found.
-                    </Typography>
+                    <Box sx={{
+                        textAlign: "center",
+                        py: 8,
+                        color: actualTheme === 'dark' ? '#9199a1' : '#6a737c'
+                    }}>
+                        <Typography variant="h6" sx={{ mb: 1, fontWeight: 400 }}>
+                            No questions found
+                        </Typography>
+                        <Typography variant="body2">
+                            Try adjusting your search or filter criteria
+                        </Typography>
+                    </Box>
                 ) : (
-                    <Stack spacing={0}>
+                    <Box>
                         {currentDiscussions.map((discussion) => (
-                            <Card
+                            <Box
                                 key={discussion.id}
-                                variant="outlined"
                                 sx={{
+                                    borderBottom: `1px solid ${actualTheme === 'dark' ? '#3c4043' : '#e3e6e8'}`,
+                                    py: 3,
+                                    px: 2,
                                     cursor: "pointer",
                                     "&:hover": {
-                                        bgcolor: actualTheme === 'dark' ? '#2d3748' : '#f7fafc',
-                                        borderColor: actualTheme === 'dark' ? '#63b3ed' : '#3182ce'
+                                        backgroundColor: actualTheme === 'dark' ? '#2d3139' : '#f8f9fa'
                                     },
-                                    transition: "all 0.2s",
-                                    borderRadius: 0,
-                                    borderBottom: discussion.id === currentDiscussions[currentDiscussions.length - 1].id ? undefined : "none",
-                                    backgroundColor: actualTheme === 'dark' ? '#1a202c' : '#ffffff',
-                                    borderColor: actualTheme === 'dark' ? '#2d3748' : '#e2e8f0'
+                                    "&:last-child": {
+                                        borderBottom: "none"
+                                    }
                                 }}
                                 onClick={() => handleDiscussionClick(discussion.id)}
                             >
-                                <CardContent sx={{ p: 3 }}>
-                                    <Stack direction="row" spacing={3}>
-                                        {/* Stats Column - Stack Overflow Style */}
-                                        <Box sx={{
-                                            minWidth: { xs: "auto", sm: "120px" },
-                                            display: "flex",
-                                            flexDirection: { xs: "row", sm: "column" },
-                                            gap: { xs: 3, sm: 2 },
-                                            alignItems: "center",
-                                            justifyContent: { xs: "space-around", sm: "center" },
-                                            py: { xs: 1, sm: 2 }
-                                        }}>
-                                            {/* Votes */}
-                                            <Stack alignItems="center" spacing={0.5}>
-                                                <Typography
-                                                    variant="h6"
-                                                    sx={{
-                                                        fontWeight: "bold",
-                                                        color: discussion.score > 0 ? (actualTheme === 'dark' ? '#68d391' : '#38a169') :
-                                                            discussion.score < 0 ? (actualTheme === 'dark' ? '#fc8181' : '#e53e3e') : (actualTheme === 'dark' ? '#e2e8f0' : '#1a202c')
-                                                    }}
-                                                >
-                                                    {discussion.score}
-                                                </Typography>
-                                                <Typography variant="caption" sx={{ color: actualTheme === 'dark' ? '#a0aec0' : '#718096' }}>
-                                                    {Math.abs(discussion.score) === 1 ? "vote" : "votes"}
-                                                </Typography>
-                                            </Stack>
-
-                                            {/* Answers */}
-                                            <Stack alignItems="center" spacing={0.5}>
-                                                <Typography
-                                                    variant="h6"
-                                                    sx={{
-                                                        fontWeight: "bold",
-                                                        color: discussion.answers.length > 0 ? (actualTheme === 'dark' ? '#63b3ed' : '#3182ce') : (actualTheme === 'dark' ? '#e2e8f0' : '#1a202c'),
-                                                        backgroundColor: discussion.answers.length > 0 ? (actualTheme === 'dark' ? 'rgba(99, 179, 237, 0.1)' : 'rgba(49, 130, 206, 0.1)') : "transparent",
-                                                        px: discussion.answers.length > 0 ? 1 : 0,
-                                                        borderRadius: discussion.answers.length > 0 ? 1 : 0
-                                                    }}
-                                                >
-                                                    {discussion.answers.length}
-                                                </Typography>
-                                                <Typography variant="caption" sx={{ color: actualTheme === 'dark' ? '#a0aec0' : '#718096' }}>
-                                                    {discussion.answers.length === 1 ? "answer" : "answers"}
-                                                </Typography>
-                                            </Stack>
-
-                                            {/* Views */}
-                                            <Stack alignItems="center" spacing={0.5}>
-                                                <Typography variant="body2" sx={{ fontWeight: "bold", color: actualTheme === 'dark' ? '#e2e8f0' : '#1a202c' }}>
-                                                    {discussion.views}
-                                                </Typography>
-                                                <Typography variant="caption" sx={{ color: actualTheme === 'dark' ? '#a0aec0' : '#718096' }}>
-                                                    {discussion.views === 1 ? "view" : "views"}
-                                                </Typography>
-                                            </Stack>
+                                <Stack direction="row" spacing={3} alignItems="flex-start">
+                                    {/* Stats Column - Stack Overflow Style */}
+                                    <Box sx={{
+                                        minWidth: { xs: "auto", sm: "108px" },
+                                        display: "flex",
+                                        flexDirection: { xs: "column", sm: "column" },
+                                        gap: { xs: 1, sm: 1.5 },
+                                        alignItems: { xs: "flex-start", sm: "flex-end" },
+                                        textAlign: { xs: "left", sm: "right" },
+                                        fontSize: "0.875rem"
+                                    }}>
+                                        {/* Score */}
+                                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                                            <Typography
+                                                variant="body2"
+                                                sx={{
+                                                    fontWeight: discussion.score !== 0 ? 700 : 600,
+                                                    color: discussion.score > 0
+                                                        ? (actualTheme === 'dark' ? '#48bb78' : '#38a169')
+                                                        : discussion.score < 0
+                                                            ? (actualTheme === 'dark' ? '#f56565' : '#e53e3e')
+                                                            : (actualTheme === 'dark' ? '#9199a1' : '#6a737c'),
+                                                    fontSize: "0.875rem"
+                                                }}
+                                            >
+                                                {discussion.score}
+                                            </Typography>
+                                            <Typography
+                                                variant="caption"
+                                                sx={{ color: actualTheme === 'dark' ? '#9199a1' : '#6a737c' }}
+                                            >
+                                                vote{Math.abs(discussion.score) !== 1 ? 's' : ''}
+                                            </Typography>
                                         </Box>
 
-                                        {/* Question Content */}
-                                        <Box sx={{ flex: 1 }}>
-                                            <Stack spacing={2}>
-                                                {/* Title */}
-                                                <Typography
-                                                    variant="h6"
-                                                    component="h3"
+                                        {/* Answers */}
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: 0.5,
+                                                ...(discussion.answers.some(answer => answer.isAccepted) && {
+                                                    backgroundColor: actualTheme === 'dark' ? 'rgba(76, 175, 80, 0.1)' : 'rgba(76, 175, 80, 0.08)',
+                                                    borderRadius: '4px',
+                                                    px: 1,
+                                                    py: 0.5,
+                                                    border: `1px solid ${actualTheme === 'dark' ? 'rgba(76, 175, 80, 0.3)' : 'rgba(76, 175, 80, 0.2)'}`
+                                                })
+                                            }}
+                                        >
+                                            {discussion.answers.some(answer => answer.isAccepted) && (
+                                                <CheckCircle
                                                     sx={{
-                                                        fontWeight: 600,
-                                                        color: actualTheme === 'dark' ? '#63b3ed' : '#3182ce',
-                                                        "&:hover": { color: actualTheme === 'dark' ? '#90cdf4' : '#2c5aa0' },
-                                                        lineHeight: 1.3
+                                                        fontSize: 14,
+                                                        color: actualTheme === 'dark' ? '#4caf50' : '#388e3c',
+                                                        mr: 0.3
                                                     }}
-                                                >
-                                                    {discussion.title}
-                                                    {discussion.isEdited && (
+                                                />
+                                            )}
+                                            <Typography
+                                                variant="body2"
+                                                sx={{
+                                                    fontWeight: discussion.answers.length > 0 ? 700 : 600,
+                                                    color: discussion.answers.some(answer => answer.isAccepted)
+                                                        ? (actualTheme === 'dark' ? '#4caf50' : '#388e3c')
+                                                        : discussion.answers.length > 0
+                                                            ? (actualTheme === 'dark' ? '#0a95ff' : '#0074cc')
+                                                            : (actualTheme === 'dark' ? '#9199a1' : '#6a737c'),
+                                                    fontSize: "0.875rem"
+                                                }}
+                                            >
+                                                {discussion.answers.length}
+                                            </Typography>
+                                            <Typography
+                                                variant="caption"
+                                                sx={{
+                                                    color: discussion.answers.some(answer => answer.isAccepted)
+                                                        ? (actualTheme === 'dark' ? '#4caf50' : '#388e3c')
+                                                        : (actualTheme === 'dark' ? '#9199a1' : '#6a737c')
+                                                }}
+                                            >
+                                                answer{discussion.answers.length !== 1 ? 's' : ''}
+                                            </Typography>
+                                        </Box>
+
+                                        {/* Views */}
+                                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                                            <Typography
+                                                variant="body2"
+                                                sx={{
+                                                    color: actualTheme === 'dark' ? '#9199a1' : '#6a737c',
+                                                    fontSize: "0.875rem"
+                                                }}
+                                            >
+                                                {discussion.views}
+                                            </Typography>
+                                            <Typography
+                                                variant="caption"
+                                                sx={{ color: actualTheme === 'dark' ? '#9199a1' : '#6a737c' }}
+                                            >
+                                                view{discussion.views !== 1 ? 's' : ''}
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+
+                                    {/* Question Content */}
+                                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                                        {/* Title */}
+                                        <Typography
+                                            variant="h6"
+                                            component="h3"
+                                            className="discussion-title"
+                                            sx={{
+                                                fontWeight: 700,
+                                                fontSize: "1.0625rem",
+                                                lineHeight: 1.35,
+                                                color: actualTheme === 'dark' ? '#0a95ff' : '#0074cc',
+                                                mb: 1,
+                                                "&:hover": {
+                                                    color: actualTheme === 'dark' ? '#379fff' : '#005ba3'
+                                                },
+                                                cursor: "pointer",
+                                                wordBreak: "break-word"
+                                            }}
+                                        >
+                                            {discussion.title}
+                                        </Typography>
+
+                                        {/* Content Preview */}
+                                        <Typography
+                                            variant="body2"
+                                            className="discussion-text"
+                                            sx={{
+                                                color: actualTheme === 'dark' ? '#bdc3c7' : '#525960',
+                                                fontSize: "0.875rem",
+                                                fontWeight: 500,
+                                                lineHeight: 1.4,
+                                                display: "-webkit-box",
+                                                WebkitLineClamp: 2,
+                                                WebkitBoxOrient: "vertical",
+                                                overflow: "hidden",
+                                                mb: 1.5,
+                                                wordBreak: "break-word"
+                                            }}
+                                        >
+                                            {discussion.content}
+                                        </Typography>
+
+                                        {/* Bottom section: Tags and Author */}
+                                        <Stack
+                                            direction={{ xs: "column", sm: "row" }}
+                                            spacing={{ xs: 1, sm: 2 }}
+                                            justifyContent="space-between"
+                                            alignItems={{ xs: "flex-start", sm: "center" }}
+                                        >
+                                            {/* Tags */}
+                                            <Stack direction="row" spacing={0.5} flexWrap="wrap">
+                                                {discussion.tags && discussion.tags.length > 0 ? (
+                                                    discussion.tags.slice(0, 5).map((tag: string) => (
                                                         <Chip
-                                                            icon={<EditNote />}
-                                                            label="Edited"
+                                                            key={tag}
+                                                            label={tag}
                                                             size="small"
                                                             sx={{
-                                                                ml: 1,
-                                                                fontSize: "0.7rem",
-                                                                backgroundColor: actualTheme === 'dark' ? '#fd8500' : '#fb8500',
-                                                                color: '#ffffff',
+                                                                height: "20px",
+                                                                fontSize: "0.75rem",
+                                                                backgroundColor: actualTheme === 'dark' ? '#2d4a5c' : '#e1ecf4',
+                                                                color: actualTheme === 'dark' ? '#a5c9ea' : '#39739d',
                                                                 border: 'none',
-                                                                fontWeight: 'bold'
+                                                                borderRadius: "3px",
+                                                                fontWeight: 400,
+                                                                "&:hover": {
+                                                                    backgroundColor: actualTheme === 'dark' ? '#1e3a4b' : '#cee0ed'
+                                                                }
                                                             }}
                                                         />
-                                                    )}
-                                                </Typography>
-
-                                                {/* Content Preview */}
-                                                <Typography
-                                                    variant="body2"
-                                                    sx={{
-                                                        color: actualTheme === 'dark' ? '#a0aec0' : '#718096',
-                                                        display: "-webkit-box",
-                                                        WebkitLineClamp: 2,
-                                                        WebkitBoxOrient: "vertical",
-                                                        overflow: "hidden",
-                                                        lineHeight: 1.5
-                                                    }}
-                                                >
-                                                    {discussion.content}
-                                                </Typography>
-
-                                                {/* Tags and Metadata */}
-                                                <Box>
-                                                    <Stack direction="row" spacing={1} sx={{ mb: 1 }} flexWrap="wrap">
-                                                        {/* Sample tags - these would come from the discussion data */}
-                                                        {(discussion.tags || ['general', 'study']).map((tag: string) => (
-                                                            <Chip
-                                                                key={tag}
-                                                                label={tag}
-                                                                size="small"
-                                                                variant="outlined"
-                                                                sx={{
-                                                                    backgroundColor: actualTheme === 'dark' ? "#1e2a3a" : "#e8f4fd",
-                                                                    borderColor: actualTheme === 'dark' ? "#3182ce" : "#39739d",
-                                                                    color: actualTheme === 'dark' ? "#63b3ed" : "#39739d",
-                                                                    fontSize: "0.75rem",
-                                                                    height: 24,
-                                                                    "&:hover": {
-                                                                        backgroundColor: actualTheme === 'dark' ? "#2a4055" : "#d4e9f7"
-                                                                    }
-                                                                }}
-                                                            />
-                                                        ))}
-                                                    </Stack>
-
-                                                    {/* Author and Date */}
-                                                    <Stack direction="row" spacing={2} justifyContent="flex-end">
-                                                        <Box sx={{ textAlign: "right" }}>
-                                                            <Typography variant="caption" sx={{ color: actualTheme === 'dark' ? '#a0aec0' : '#718096' }}>
-                                                                asked {formatDate(discussion.createdAt)}
-                                                            </Typography>
-                                                            <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
-                                                                <Link
-                                                                    to={`/user/${discussion.authorId}`}
-                                                                    style={{ textDecoration: 'none' }}
-                                                                    onClick={(e) => e.stopPropagation()}
-                                                                >
-                                                                    <Typography
-                                                                        variant="body2"
-                                                                        sx={{
-                                                                            fontWeight: 500,
-                                                                            color: actualTheme === 'dark' ? '#63b3ed' : '#3182ce',
-                                                                            '&:hover': {
-                                                                                color: actualTheme === 'dark' ? '#90cdf4' : '#2c5aa0',
-                                                                                textDecoration: 'underline'
-                                                                            },
-                                                                            cursor: 'pointer'
-                                                                        }}
-                                                                    >
-                                                                        {discussion.authorName}
-                                                                    </Typography>
-                                                                </Link>
-                                                            </Stack>
-                                                        </Box>
-                                                    </Stack>
-                                                </Box>
+                                                    ))
+                                                ) : (
+                                                    <Chip
+                                                        label="general"
+                                                        size="small"
+                                                        sx={{
+                                                            height: "20px",
+                                                            fontSize: "0.75rem",
+                                                            backgroundColor: actualTheme === 'dark' ? '#2d4a5c' : '#e1ecf4',
+                                                            color: actualTheme === 'dark' ? '#a5c9ea' : '#39739d',
+                                                            border: 'none',
+                                                            borderRadius: "3px",
+                                                            fontWeight: 400
+                                                        }}
+                                                    />
+                                                )}
                                             </Stack>
-                                        </Box>
-                                    </Stack>
-                                </CardContent>
-                            </Card>
+
+                                            {/* Username and Date */}
+                                            <Box sx={{
+                                                textAlign: { xs: "left", sm: "right" },
+                                                minWidth: "fit-content"
+                                            }}>
+                                                <Stack direction="row" spacing={1} alignItems="center" justifyContent={{ xs: "flex-start", sm: "flex-end" }}>
+                                                    {/* Username */}
+                                                    <Link
+                                                        to={`/user/${discussion.authorId}`}
+                                                        style={{ textDecoration: 'none' }}
+                                                        onClick={(e) => e.stopPropagation()}
+                                                    >
+                                                        <Typography
+                                                            variant="caption"
+                                                            sx={{
+                                                                fontSize: "0.75rem",
+                                                                fontWeight: 400,
+                                                                color: actualTheme === 'dark' ? '#0a95ff' : '#0074cc',
+                                                                '&:hover': {
+                                                                    color: actualTheme === 'dark' ? '#379fff' : '#005ba3'
+                                                                },
+                                                                cursor: 'pointer'
+                                                            }}
+                                                        >
+                                                            {discussion.authorName}
+                                                        </Typography>
+                                                    </Link>
+
+                                                    {/* Date */}
+                                                    <Typography
+                                                        variant="caption"
+                                                        sx={{
+                                                            color: actualTheme === 'dark' ? '#9199a1' : '#6a737c',
+                                                            fontSize: "0.75rem"
+                                                        }}
+                                                    >
+                                                        asked {formatDate(discussion.createdAt)}
+                                                    </Typography>
+                                                </Stack>
+                                            </Box>
+                                        </Stack>
+                                    </Box>
+                                </Stack>
+                            </Box>
                         ))}
-                    </Stack>
+                    </Box>
                 )}
             </Box>
 
+            {/* Pagination */}
             {totalPages > 1 && (
-                <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+                <Box sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    mt: 4,
+                    pt: 3,
+                    borderTop: `1px solid ${actualTheme === 'dark' ? '#3c4043' : '#e3e6e8'}`
+                }}>
                     <Pagination
                         count={totalPages}
                         page={currentPage}
@@ -586,6 +745,22 @@ const DiscussionHub = () => {
                         size="large"
                         showFirstButton
                         showLastButton
+                        sx={{
+                            "& .MuiPaginationItem-root": {
+                                color: actualTheme === 'dark' ? '#9199a1' : '#6a737c',
+                                borderColor: actualTheme === 'dark' ? '#3c4043' : '#babfc4',
+                                "&:hover": {
+                                    backgroundColor: actualTheme === 'dark' ? '#3c4043' : '#f1f2f3'
+                                },
+                                "&.Mui-selected": {
+                                    backgroundColor: actualTheme === 'dark' ? '#0a95ff' : '#0074cc',
+                                    color: '#ffffff',
+                                    "&:hover": {
+                                        backgroundColor: actualTheme === 'dark' ? '#0074cc' : '#005ba3'
+                                    }
+                                }
+                            }
+                        }}
                     />
                 </Box>
             )}

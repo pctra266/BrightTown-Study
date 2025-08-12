@@ -137,7 +137,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
         },
         typography: {
             // Stack Overflow-inspired typography
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+            fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
             h1: {
                 fontSize: "1.75rem",
                 fontWeight: 400,
@@ -182,11 +182,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
             MuiCard: {
                 styleOverrides: {
                     root: {
-                        boxShadow: actualTheme === "dark" 
-                            ? "0 1px 3px rgba(0, 0, 0, 0.3)" 
+                        boxShadow: actualTheme === "dark"
+                            ? "0 1px 3px rgba(0, 0, 0, 0.3)"
                             : "0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)",
-                        border: actualTheme === "dark" 
-                            ? "1px solid #393939" 
+                        border: actualTheme === "dark"
+                            ? "1px solid #393939"
                             : "1px solid #e4e6ea",
                     },
                 },

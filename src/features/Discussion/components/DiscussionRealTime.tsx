@@ -89,7 +89,7 @@ export default function DiscussionRealTime() {
                         {messages.map((m) => (
                             <div
                                 key={m.id}
-                                className="bg-blue-100 text-blue-900 px-3 py-2 rounded-md"
+                                className="bg-blue-100 text-blue-900 px-3 py-2 rounded-lg w-fit"
                             >
                                 {m.text}
                             </div>

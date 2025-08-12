@@ -291,7 +291,7 @@
       "password": "123456",
       "role": "0",
       "status": true,
-      "lastTokenIat": 1754893850,
+      "lastTokenIat": 1754985599,
       "bio": "This is a test bio to verify the theme adaptation works correctly.",
       "email": "admin@example.com",
       "socialLinks": {
@@ -311,7 +311,7 @@
       "password": "123456",
       "role": "1",
       "status": true,
-      "lastTokenIat": 1754877107
+      "lastTokenIat": 1754991173
     },
     {
       "id": "4",
@@ -319,7 +319,7 @@
       "password": "pctra266",
       "role": "2",
       "status": true,
-      "lastTokenIat": 1754875255,
+      "lastTokenIat": 1754986429,
       "bio": "I'm a passionate learner who loves technology, programming, and sharing knowledge with others. Always excited to explore new ideas and connect with fellow learners!",
       "email": "pctra266@example.com",
       "socialLinks": {
@@ -411,7 +411,7 @@
       "email": "tqtolympia@gmail.com",
       "role": "2",
       "status": true,
-      "lastTokenIat": 1754641997
+      "lastTokenIat": 1754984951
     },
     {
       "id": "RcrQyKMJoMePqbkVTS8JF9l11Jg2",
@@ -427,7 +427,7 @@
       "password": "2@Stunning",
       "role": "2",
       "status": true,
-      "lastTokenIat": 1754723621
+      "lastTokenIat": 1754905042
     },
     {
       "id": "MA9zIKD7eDdVTJqGLIfN7PThajx1",
@@ -456,10 +456,9 @@
     {
       "id": "1795",
       "isbn": "978-3-16-148410-9",
-      "title": "Clean Code",
+      "title": "Clean Codeee",
       "author": "Robert C. Martin",
       "copies": 7,
-      "userId": "14",
       "chapters": [
         {
           "name": "Introduction"
@@ -472,56 +471,19 @@
         },
         {
           "name": "ferfr"
+        },
+        {
+          "name": "rr"
         }
       ],
       "content": {
         "Introduction": "Clean Code introduces the principles, patterns, and best practices for writing clean, readable, and maintainable code.",
         "Meaningful Names": "This chapter explains how to choose descriptive and unambiguous names for variables, functions, and classes.",
         "Functions": "Guidelines for writing small, well-structured, and reusable functions are provided here.",
-        "ferfr": "rffr"
-      }
-    },
-    {
-      "id": "e390",
-      "isbn": "978-3-16-148410-1",
-      "title": "The Great Journeyyyy",
-      "author": "Robert Martin",
-      "copies": 7,
-      "chapters": [
-        {
-          "name": "Prologue"
-        },
-        {
-          "name": "The Call to Adventure"
-        },
-        {
-          "name": "Return Home"
-        }
-      ],
-      "content": {
-        "Prologue": "An introduction to a young hero destined to embark on a life-changing journey.",
-        "The Call to Adventure": "The hero leaves home to explore new lands and face unforeseen challenges.",
-        "Return Home": "The journey ends with wisdom gained and a new perspective on life."
+        "ferfr": "rffr",
+        "rr": "rgrg"
       },
-      "userId": "14",
-      "status": "approved"
-    },
-    {
-      "id": "7dd2",
-      "isbn": "978-3-16-147410-9",
-      "title": "as",
-      "author": "dasdfa",
-      "copies": 1,
-      "chapters": [
-        {
-          "name": "a"
-        }
-      ],
-      "content": {
-        "a": "b"
-      },
-      "userId": "1",
-      "status": "pending"
+      "userId": "14"
     }
   ],
   "discussions": [
@@ -556,12 +518,45 @@
           "createdAt": "2024-01-15T14:20:00Z",
           "updatedAt": null,
           "isEdited": false,
-          "upvotes": 1,
+          "isAccepted": true,
+          "upvotes": 2,
           "downvotes": 0,
-          "score": 1,
+          "score": 2,
           "userVotes": {
+            "1": "upvote",
             "2": "upvote"
-          }
+          },
+          "comments": [
+            {
+              "id": "c1",
+              "content": "Great suggestion! I've been using this method and it works wonders. Hooray",
+              "authorId": "2",
+              "authorName": "truong",
+              "createdAt": "2024-01-15T15:00:00Z",
+              "updatedAt": "2025-08-12T06:31:51.061Z",
+              "isEdited": true,
+              "upvotes": 2,
+              "downvotes": 0,
+              "score": 2,
+              "userVotes": {
+                "3": "upvote",
+                "4": "upvote"
+              }
+            },
+            {
+              "id": "c2",
+              "content": "What app do you recommend for spaced repetition?",
+              "authorId": "4",
+              "authorName": "pctra266",
+              "createdAt": "2024-01-15T15:30:00Z",
+              "updatedAt": null,
+              "isEdited": false,
+              "upvotes": 0,
+              "downvotes": 0,
+              "score": 0,
+              "userVotes": {}
+            }
+          ]
         },
         {
           "id": "2",
@@ -571,13 +566,31 @@
           "createdAt": "2024-01-15T16:45:00Z",
           "updatedAt": "2025-06-10T07:44:12.113Z",
           "isEdited": true,
+          "isAccepted": false,
           "upvotes": 1,
           "downvotes": 1,
           "score": 0,
           "userVotes": {
             "2": "downvote",
             "3": "upvote"
-          }
+          },
+          "comments": []
+        }
+      ],
+      "hasAcceptedAnswer": true,
+      "comments": [
+        {
+          "id": "1",
+          "content": "Alo!",
+          "authorId": "2",
+          "authorName": "truong",
+          "createdAt": "2025-08-12T09:07:21.375Z",
+          "updatedAt": null,
+          "isEdited": false,
+          "upvotes": 0,
+          "downvotes": 0,
+          "score": 0,
+          "userVotes": {}
         }
       ]
     },
@@ -608,10 +621,12 @@
           "createdAt": "2024-01-14T09:30:00Z",
           "updatedAt": null,
           "isEdited": false,
+          "isAccepted": false,
           "upvotes": 0,
           "downvotes": 0,
           "score": 0,
-          "userVotes": {}
+          "userVotes": {},
+          "comments": []
         }
       ]
     },
@@ -642,10 +657,12 @@
           "createdAt": "2024-01-13T20:15:00Z",
           "updatedAt": null,
           "isEdited": false,
+          "isAccepted": false,
           "upvotes": 0,
           "downvotes": 0,
           "score": 0,
-          "userVotes": {}
+          "userVotes": {},
+          "comments": []
         }
       ]
     },
@@ -793,11 +810,14 @@
       "downvotes": 0,
       "score": 0,
       "userVotes": {},
-      "views": 1,
+      "views": 3,
       "viewedBy": [
-        "1"
+        "1",
+        "2",
+        "4"
       ],
-      "answers": []
+      "answers": [],
+      "hasAcceptedAnswer": false
     }
   ],
   "siteStats": [
@@ -834,8 +854,14 @@
     {
       "id": "b800",
       "date": "2025-08-11",
-      "visits": 0,
+      "visits": 1,
       "flashcardsStudied": 3
+    },
+    {
+      "id": "c568",
+      "date": "2025-08-12",
+      "visits": 5,
+      "flashcardsStudied": 0
     }
   ]
 }
