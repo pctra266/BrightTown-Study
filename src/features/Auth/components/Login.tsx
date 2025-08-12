@@ -121,7 +121,7 @@ const Login = () => {
     };
 
     const handleGoogleLogin = async () => {
-        
+
         const result = await loginWithGoogle();
         if (result.success) {
             navigate("/");
@@ -261,7 +261,7 @@ const Login = () => {
                             variant="outlined"
                             onClick={handleGoogleLogin}
                             sx={{ mt: 1, mb: 2 }}
-                            
+
                         >
                             Sign in with Google
                         </Button>

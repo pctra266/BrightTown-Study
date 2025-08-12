@@ -1,6 +1,6 @@
 import React from "react";
 import { IconButton, Typography, Box } from "@mui/material";
-import { KeyboardArrowUp, KeyboardArrowDown } from "@mui/icons-material";
+import { KeyboardArrowUp, KeyboardArrowDown, CheckCircle } from "@mui/icons-material";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useTheme } from "@mui/material/styles";
 
@@ -10,6 +10,7 @@ interface VoteButtonsProps {
     onUpvote: () => void;
     onDownvote: () => void;
     disabled?: boolean;
+    isAccepted?: boolean;
 }
 
 const VoteButtons: React.FC<VoteButtonsProps> = ({
@@ -18,6 +19,7 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({
     onUpvote,
     onDownvote,
     disabled = false,
+    isAccepted = false,
 }) => {
     const { isAuthenticated } = useAuth();
     const theme = useTheme();
@@ -75,11 +77,12 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({
 
             <Typography
                 variant="h6"
+                className="discussion-meta"
                 sx={{
                     minHeight: 24,
                     display: "flex",
                     alignItems: "center",
-                    fontWeight: 600,
+                    fontWeight: 700,
                     fontSize: "1rem",
                     color: getScoreColor(),
                     textShadow: score !== 0 ? "0 0 1px currentColor" : "none",
@@ -119,6 +122,26 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({
                     }}
                 />
             </IconButton>
+
+            {/* Accepted Answer Checkmark */}
+            {isAccepted && (
+                <Box
+                    sx={{
+                        mt: 1,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center"
+                    }}
+                >
+                    <CheckCircle
+                        sx={{
+                            fontSize: 24,
+                            color: theme.palette.success.main,
+                            filter: "drop-shadow(0 0 3px currentColor)",
+                        }}
+                    />
+                </Box>
+            )}
         </Box>
     );
 };

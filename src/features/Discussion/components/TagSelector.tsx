@@ -54,9 +54,10 @@ const TagSelector: React.FC<TagSelectorProps> = ({
         <Box>
             <Typography
                 variant="h6"
+                className="discussion-header"
                 sx={{
                     mb: 1,
-                    fontWeight: 600,
+                    fontWeight: 700,
                     fontSize: "1.125rem"
                 }}
             >
@@ -64,8 +65,9 @@ const TagSelector: React.FC<TagSelectorProps> = ({
             </Typography>
             <Typography
                 variant="body2"
+                className="discussion-text"
                 color="text.secondary"
-                sx={{ mb: 2 }}
+                sx={{ mb: 2, fontWeight: 500 }}
             >
                 Add up to {MAX_TAGS_PER_DISCUSSION} tags to describe what your question is about. Start typing to see suggestions.
             </Typography>
