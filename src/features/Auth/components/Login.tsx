@@ -10,6 +10,7 @@ import {
     IconButton,
     InputAdornment,
     Alert,
+    FormHelperText,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
@@ -25,6 +26,16 @@ const Login = () => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+
+    // Validation states
+    const [fieldErrors, setFieldErrors] = useState({
+        username: "",
+        password: "",
+    });
+    const [touched, setTouched] = useState({
+        username: false,
+        password: false,
+    });
 
     const { login, loginWithGoogle } = useAuth();
     const navigate = useNavigate();
@@ -53,11 +64,83 @@ const Login = () => {
         }
     }, []);
 
+    // Validation functions
+    const validateUsername = (username: string): string => {
+        if (!username.trim()) {
+            return "Username is required";
+        }
+        if (username.length < 3) {
+            return "Username must be at least 3 characters long";
+        }
+        if (username.length > 30) {
+            return "Username must be less than 30 characters";
+        }
+        const usernameRegex = /^[a-zA-Z0-9]+$/;
+        if (!usernameRegex.test(username)) {
+            return "Username can only contain letters and numbers";
+        }
+        return "";
+    };
+
+    const validatePassword = (password: string): string => {
+        if (!password) {
+            return "Password is required";
+        }
+        if (password.length < 6) {
+            return "Password must be at least 6 characters long";
+        }
+        return "";
+    };
+
+    const validateField = (fieldName: string, value: string): string => {
+        switch (fieldName) {
+            case "username":
+                return validateUsername(value);
+            case "password":
+                return validatePassword(value);
+            default:
+                return "";
+        }
+    };
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value,
+            [name]: value,
         });
+
+        // Real-time validation
+        if (touched[name as keyof typeof touched]) {
+            const errorMessage = validateField(name, value);
+            setFieldErrors(prev => ({
+                ...prev,
+                [name]: errorMessage
+            }));
+        }
+
+        // Clear general error when user starts typing
+        if (error) {
+            setError("");
+        }
+    };
+
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+
+        // Mark field as touched
+        setTouched(prev => ({
+            ...prev,
+            [name]: true
+        }));
+
+        // Validate on blur
+        const errorMessage = validateField(name, value);
+        setFieldErrors(prev => ({
+            ...prev,
+            [name]: errorMessage
+        }));
     };
 
     const handleClickShowPassword = () => {
@@ -81,6 +164,26 @@ const Login = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
+
+        // Validate all fields
+        const usernameError = validateUsername(formData.username);
+        const passwordError = validatePassword(formData.password);
+
+        const newFieldErrors = {
+            username: usernameError,
+            password: passwordError,
+        };
+
+        setFieldErrors(newFieldErrors);
+        setTouched({
+            username: true,
+            password: true,
+        });
+
+        // Stop submission if there are validation errors
+        if (usernameError || passwordError) {
+            return;
+        }
 
         // Check if Turnstile is enabled and token is required
         if (turnstileSiteKey && !turnstileToken) {
@@ -176,6 +279,9 @@ const Login = () => {
                             autoFocus
                             value={formData.username}
                             onChange={handleChange}
+                            onBlur={handleBlur}
+                            error={touched.username && !!fieldErrors.username}
+                            helperText={touched.username && fieldErrors.username ? fieldErrors.username : ""}
                         />
                         <TextField
                             margin="normal"
@@ -188,6 +294,9 @@ const Login = () => {
                             autoComplete="current-password"
                             value={formData.password}
                             onChange={handleChange}
+                            onBlur={handleBlur}
+                            error={touched.password && !!fieldErrors.password}
+                            helperText={touched.password && fieldErrors.password ? fieldErrors.password : ""}
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="end">
@@ -202,6 +311,15 @@ const Login = () => {
                                 ),
                             }}
                         />
+
+                        {/* Add helpful text for users */}
+                        {!touched.username && !touched.password && (
+                            <Box sx={{ mt: 1, mb: 1 }}>
+                                <FormHelperText sx={{ color: 'text.secondary', fontSize: '0.75rem', margin: 0 }}>
+                                    Enter your username and password to sign in to your account
+                                </FormHelperText>
+                            </Box>
+                        )}
 
                         {/* Cloudflare Turnstile Captcha */}
                         {turnstileSiteKey && (
@@ -251,7 +369,14 @@ const Login = () => {
                             type="submit"
                             fullWidth
                             variant="contained"
-                            disabled={loading || (turnstileSiteKey && !turnstileToken)}
+                            disabled={
+                                loading ||
+                                (turnstileSiteKey && !turnstileToken) ||
+                                (touched.username && !!fieldErrors.username) ||
+                                (touched.password && !!fieldErrors.password) ||
+                                !formData.username.trim() ||
+                                !formData.password.trim()
+                            }
                             sx={{ mt: 3, mb: 2 }}
                         >
                             {loading ? "Logging in..." : "Login"}
