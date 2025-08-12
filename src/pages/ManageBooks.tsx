@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -21,10 +21,6 @@ import Toast, { type ToastData } from "../features/library-book/components/Toast
 import CreateEditViewBook, { BookMode, type Book } from "../features/library-book/components/CreateEditViewBook";
 import api from "../api/api";
 import { useAuth } from "../contexts/AuthContext";
-
-interface Chapter {
-  name: string;
-}
 
 const ManageBooks = () => {
   const { user } = useAuth();
@@ -79,7 +75,6 @@ const ManageBooks = () => {
           style={{
             color: "#1976D2",
             textDecoration: "none",
-            "&:hover": { textDecoration: "underline" },
           }}
         >
           {params.value}
@@ -139,11 +134,7 @@ const ManageBooks = () => {
                 setOpenViewBook(true);
               }}
               sx={{
-                color: "#1976D2",
-                "&:hover": {
-                  color: "#1557a0",
-                  backgroundColor: "rgba(25, 118, 210, 0.1)",
-                },
+                color: "#1976D2"  
               }}
             >
               <VisibilityIcon />
@@ -158,11 +149,7 @@ const ManageBooks = () => {
                     setOpenEditBook(true);
                   }}
                   sx={{
-                    color: "#1976D2",
-                    "&:hover": {
-                      color: "#1557a0",
-                      backgroundColor: "rgba(25, 118, 210, 0.1)",
-                    },
+                    color: "#1976D2"
                   }}
                 >
                   <EditIcon />
@@ -172,11 +159,7 @@ const ManageBooks = () => {
                 <IconButton
                   onClick={() => handleDelete(params.row.id)}
                   sx={{
-                    color: "#d32f2f",
-                    "&:hover": {
-                      color: "#b71c1c",
-                      backgroundColor: "rgba(211, 47, 47, 0.1)",
-                    },
+                    color: "#d32f2f"
                   }}
                 >
                   <DeleteIcon />
@@ -360,7 +343,6 @@ const ManageBooks = () => {
 
   return (
     <Box
-      bgcolor="linear-gradient(135deg, #1976D2, #42A5F5)"
       minHeight="100vh"
       display="flex"
       flexDirection="column"
@@ -374,7 +356,7 @@ const ManageBooks = () => {
         <Grid container justifyContent="center" alignItems="center">
           <Grid item display="flex" alignItems="center">
             <AutoStoriesOutlinedIcon
-              sx={{ color: "white", fontSize: "3rem", mr: 2 }}
+              sx={{fontSize: "3rem", mr: 2 }}
             />
           </Grid>
         </Grid>
@@ -424,8 +406,6 @@ const ManageBooks = () => {
                   height: "35px",
                   fontWeight: "bold",
                   width: { xs: "100%", sm: "auto" },
-                  background: "linear-gradient(135deg, #1976D2, #42A5F5)",
-                  "&:hover": { background: "linear-gradient(135deg, #1557a0, #42A5F5)" },
                 }}
                 onClick={() => {
                   setSelectedBook({
@@ -459,14 +439,13 @@ const ManageBooks = () => {
         }}
       >
         <Box
-          border="2px solid white"
+          border="2px solid"
           borderRadius="6px"
           sx={{
             flex: 1,
             display: "flex",
             flexDirection: "column",
             minHeight: 0,
-            backgroundColor: "white",
             height: "100%",
           }}
         >
@@ -491,17 +470,11 @@ const ManageBooks = () => {
                 backgroundColor: "transparent",
                 fontSize: "1rem",
               },
-              "& .MuiDataGrid-row": {
-                height: "70px",
-                "&:nth-of-type(odd)": { backgroundColor: "#fafafa" },
-                "&:hover": { backgroundColor: "#f0f0f0" },
-              },
               "& .MuiDataGrid-virtualScroller": {
                 minHeight: "200px",
               },
               "& .author-header": {
                 backgroundColor: "#1976D2",
-                color: "white",
               },
             }}
           />
@@ -512,7 +485,6 @@ const ManageBooks = () => {
         <Box
           width={{ xs: "100vw", sm: 400 }}
           height="100vh"
-          bgcolor="linear-gradient(135deg, #1976D2, #42A5F5)"
         >
           <CreateEditViewBook
             book={selectedBook}
@@ -530,7 +502,6 @@ const ManageBooks = () => {
         <Box
           width={{ xs: "100vw", sm: 400 }}
           height="100vh"
-          bgcolor="linear-gradient(135deg, #1976D2, #42A5F5)"
         >
           <CreateEditViewBook
             book={selectedBook}
@@ -548,8 +519,7 @@ const ManageBooks = () => {
         <Box
           width={{ xs: "100vw", sm: 400 }}
           height="100vh"
-          bgcolor="linear-gradient(135deg, #1976D2, #42A5F5)"
-        >
+       >
           <CreateEditViewBook
             book={selectedBook}
             mode={BookMode.EDIT}

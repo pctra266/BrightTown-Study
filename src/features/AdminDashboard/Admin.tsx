@@ -55,7 +55,7 @@ const Admin = () => {
           <div className="stat-card">
             <FaBook className="stat-icon blue mx-auto" />
             <p style={{ fontSize: '50px', color: 'black' }}>{stats.books}</p>
-            <p>SÁCH</p>
+            <p>BOOK</p>
           </div>
           <div className="stat-card">
             <FaComments className="stat-icon orange mx-auto" />
@@ -104,7 +104,7 @@ const Admin = () => {
                 strokeWidth={2}
                 dot={{ r: 4, strokeWidth: 2, fill: '#fff', stroke: '#8884d8' }}
                 activeDot={{ r: 6 }}
-                name="Lượt truy cập"
+                name="Total Visits"
               />
               <Line
                 type="monotone"
@@ -113,7 +113,7 @@ const Admin = () => {
                 strokeWidth={2}
                 dot={{ r: 4, strokeWidth: 2, fill: '#fff', stroke: '#82ca9d' }}
                 activeDot={{ r: 6 }}
-                name="Lượt học flashcard"
+                name="Flashcard learning"
               />
             </LineChart>
           </ResponsiveContainer>
