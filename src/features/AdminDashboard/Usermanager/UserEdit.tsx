@@ -1,55 +1,91 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { fetchUserWithFlashcardSets, updateUser } from "./userService";
 import Alert from "../Alert";
 import { useAuth } from "../../../contexts/AuthContext";
+import {
+  Box,
+  Button,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Typography,
+  Paper,
+} from "@mui/material";
 
 export default function UserEdit() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user: currentUser } = useAuth();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("2");
+  const [role, setRole] = useState("");
   const [status, setStatus] = useState(true);
+  const [roles, setRoles] = useState<{ id: string; role: string }[]>([]);
   const [loading, setLoading] = useState(true);
-  const [alert, setAlert] = useState<{ type: "success" | "info" | "warning"; message: string } | null>(null);
+  const [alert, setAlert] = useState<{
+    type: "success" | "info" | "warning";
+    message: string;
+  } | null>(null);
   const [targetUser, setTargetUser] = useState<any>(null);
+
   useEffect(() => {
-    const loadUser = async () => {
+    const loadData = async () => {
       if (!id || !currentUser) {
         navigate("/admin/users");
         return;
       }
-      const { user } = await fetchUserWithFlashcardSets(id);
-      if (!user) {
-        navigate("/not-found");
-        return;
-      }
-      const isSuperAdmin = currentUser.role === "0";
-      const isAdmin = currentUser.role === "1";
-      const isEditingSelf = currentUser.id === user.id;
 
-      if (isAdmin && isEditingSelf) {
-        navigate("/admin/users");
-        return;
-      }
-      if (isSuperAdmin) {
-        setTargetUser(user);
-      } else if (isAdmin && user.role === "2") {
-        setTargetUser(user);
-      } else {
-        navigate("/admin/users");
-        return;
-      }
+      try {
+        // Fetch roles
+        const rolesRes = await fetch("http://localhost:9000/role");
+        const allRoles = await rolesRes.json();
+        let filteredRoles = [];
+        if (currentUser.role === "0") {
+          filteredRoles = allRoles.filter((r: any) => r.id !== "0");
+        } else if (currentUser.role === "1") {
+          filteredRoles = allRoles.filter((r: any) => r.id === "2");
+        }
+        setRoles(filteredRoles);
 
-      setUsername(user.username || "");
-      setPassword(user.password || "");
-      setRole(user.role);
-      setStatus(user.status);
-      setLoading(false);
+        // Fetch target user
+        const { user } = await fetchUserWithFlashcardSets(id);
+        if (!user) {
+          navigate("/not-found");
+          return;
+        }
+
+        const isSuperAdmin = currentUser.role === "0";
+        const isAdmin = currentUser.role === "1";
+        const isEditingSelf = currentUser.id === user.id;
+
+        if (isAdmin && isEditingSelf) {
+          navigate("/admin/users");
+          return;
+        }
+        if (isSuperAdmin || (isAdmin && user.role === "2")) {
+          setTargetUser(user);
+        } else {
+          navigate("/admin/users");
+          return;
+        }
+
+        setUsername(user.username || "");
+        setPassword(user.password || "");
+        setRole(user.role || (filteredRoles.length ? filteredRoles[0].id : ""));
+        setStatus(user.status);
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+      }
     };
-    loadUser();
+    loadData();
   }, [id, currentUser, navigate]);
 
   const isGoogleAccount = !!targetUser?.email && !targetUser?.password;
@@ -69,13 +105,12 @@ export default function UserEdit() {
       id: id!,
       username: username.trim(),
       role,
-      status
+      status,
     };
 
     if (!isGoogleAccount) {
       updatedData.password = password.trim();
     }
-
     if (targetUser?.email) {
       updatedData.email = targetUser.email;
     }
@@ -92,17 +127,23 @@ export default function UserEdit() {
       );
       window.location.href = "/admin/users";
     } else {
-      setAlert({ type: "warning", message: result.message || "Cập nhật thất bại." });
+      setAlert({
+        type: "warning",
+        message: result.message || "Cập nhật thất bại.",
+      });
     }
   };
 
-  if (loading) return <div className="p-6">Loading...</div>;
-
-  const isEditingSelf = currentUser?.id === targetUser?.id;
-  const isSuperAdminEditingSelf = isEditingSelf && currentUser?.role === "0";
+  if (loading) return <Box p={3}>Loading...</Box>;
 
   return (
-    <div className="max-w-md mx-auto mt-10 bg-white rounded shadow">
+    <Box
+      sx={{
+        minHeight: "100vh",
+        bgcolor: (theme) => theme.palette.background.default,
+        p: 3,
+      }}
+    >
       {alert && (
         <Alert
           type={alert.type}
@@ -110,97 +151,85 @@ export default function UserEdit() {
           onClose={() => setAlert(null)}
         />
       )}
-      <div className="bg-purple-600 text-white text-lg font-semibold p-4 rounded-t">
-        Update User
-      </div>
-      <div className="p-6 space-y-4">
-        <div>
-          <label className="block mb-1 font-medium">Username:</label>
-          <input
-            type="text"
+      <Box sx={{ maxWidth: 500, mx: "auto" }}>
+        <Box
+          sx={{
+            bgcolor: "primary.main",
+            color: "primary.contrastText",
+            borderTopLeftRadius: 2,
+            borderTopRightRadius: 2,
+            p: 2,
+            boxShadow: 2,
+          }}
+        >
+          <Typography variant="h6" fontWeight="bold">
+            Update User
+          </Typography>
+        </Box>
+        <Paper
+          sx={{
+            borderBottomLeftRadius: 2,
+            borderBottomRightRadius: 2,
+            p: 3,
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+          }}
+        >
+          <TextField
+            label="Username"
+            variant="outlined"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full border px-3 py-2 rounded bg-blue-50"
-            autoComplete="off"
+            fullWidth
           />
-        </div>
-
-        {!isGoogleAccount && (
-          <div>
-            <label className="block mb-1 font-medium">Password:</label>
-            <input
+          {!isGoogleAccount && (
+            <TextField
+              label="Password"
               type="password"
+              variant="outlined"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border px-3 py-2 rounded bg-blue-50"
-              autoComplete="off"
+              fullWidth
             />
-          </div>
-        )}
+          )}
+          <FormControl fullWidth>
+            <FormLabel>Role</FormLabel>
+            <Select
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              disabled={currentUser?.role === "1" || targetUser?.role === "0"}
+            >
+              {roles.map((r) => (
+                <MenuItem key={r.id} value={r.id}>
+                  {r.role}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
-        <div>
-          <label className="block mb-1 font-medium">Role:</label>
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="w-full border px-3 py-2 rounded"
-            disabled={isSuperAdminEditingSelf || currentUser?.role === "1" || targetUser?.role === "0"}
-          >
-            {targetUser?.role === "0" && (
-              <option value="0">Super Admin</option>
-            )}
-            {(currentUser?.role === "0" && targetUser?.role !== "0") && (
-              <>
-                <option value="1">Admin</option>
-                <option value="2">User</option>
-              </>
-            )}
-            {currentUser?.role === "1" && (
-              <option value="2">User</option>
-            )}
-          </select>
-        </div>
+          <FormControl>
+            <FormLabel>Status</FormLabel>
+            <RadioGroup
+              row
+              value={status ? "true" : "false"}
+              onChange={(e) => setStatus(e.target.value === "true")}
+            >
+              <FormControlLabel value="true" control={<Radio />} label="Active" />
+              <FormControlLabel value="false" control={<Radio />} label="Inactive" />
+            </RadioGroup>
+          </FormControl>
 
-        <div className="flex items-center gap-4">
-          <label className="flex items-center gap-2">
-            <input
-              type="radio"
-              name="status"
-              value="true"
-              checked={status === true}
-              onChange={() => setStatus(true)}
-              className="w-4 h-4"
-            />
-            <span className="font-medium">Active</span>
-          </label>
-          <label className="flex items-center gap-2">
-            <input
-              type="radio"
-              name="status"
-              value="false"
-              checked={status === false}
-              onChange={() => setStatus(false)}
-              className="w-4 h-4"
-            />
-            <span className="font-medium">Inactive</span>
-          </label>
-        </div>
-
-        <div className="flex justify-end gap-3 pt-4">
-          <button
-            onClick={() => navigate("/admin/users")}
-            className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleUpdate}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
-          >
-            Update User
-          </button>
-        </div>
-      </div>
-    </div>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 2 }}>
+            <Button component={Link} to="/admin/users" variant="outlined" color="inherit">
+              Cancel
+            </Button>
+            <Button variant="contained" color="primary" onClick={handleUpdate}>
+              Update User
+            </Button>
+          </Box>
+        </Paper>
+      </Box>
+    </Box>
   );
 }
