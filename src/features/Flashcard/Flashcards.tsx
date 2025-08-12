@@ -50,8 +50,7 @@ const Flashcards = () => {
         console.error("Lỗi cập nhật flashcardsStudied:", err);
       }
     }
-    const flashcardData = await fetch(`http://localhost:9000/flashcardSets/${id}`).then(r => r.json());
-    navigate(`/library/flashcard/${id}/play`, { state: { flashcardData } });
+    navigate(`/library/flashcard/${id}/play`);
   };
   return (
     <FlashcardSets
