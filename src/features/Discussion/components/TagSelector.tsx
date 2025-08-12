@@ -31,7 +31,8 @@ const TagSelector: React.FC<TagSelectorProps> = ({
             onTagsChange(selectedTags.filter((t) => t !== tag));
         } else {
             // Add tag if under limit and not already selected
-            if (selectedTags.length < MAX_TAGS_PER_DISCUSSION && !selectedTags.includes(tag)) {
+            // Add tag if under limit
+            if (selectedTags.length < MAX_TAGS_PER_DISCUSSION) {
                 onTagsChange([...selectedTags, tag]);
             }
         }
