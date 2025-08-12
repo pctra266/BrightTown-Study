@@ -27,11 +27,11 @@ const TagSelector: React.FC<TagSelectorProps> = ({
 
     const handleTagToggle = (tag: string) => {
         if (selectedTags.includes(tag)) {
-            // Remove tag
+            // Remove tag - this won't happen from Popular tags since they're disabled when selected
             onTagsChange(selectedTags.filter((t) => t !== tag));
         } else {
-            // Add tag if under limit
-            if (selectedTags.length < MAX_TAGS_PER_DISCUSSION) {
+            // Add tag if under limit and not already selected
+            if (selectedTags.length < MAX_TAGS_PER_DISCUSSION && !selectedTags.includes(tag)) {
                 onTagsChange([...selectedTags, tag]);
             }
         }
@@ -39,9 +39,15 @@ const TagSelector: React.FC<TagSelectorProps> = ({
     };
 
     const handleAutocompleteChange = (_: React.SyntheticEvent, newValue: string[]) => {
-        if (newValue.length <= MAX_TAGS_PER_DISCUSSION) {
+        // Always allow removing tags, only restrict adding new ones when at limit
+        if (newValue.length < selectedTags.length) {
+            // Tag was removed, always allow
+            onTagsChange(newValue);
+        } else if (newValue.length <= MAX_TAGS_PER_DISCUSSION) {
+            // Tag was added and we're under limit
             onTagsChange(newValue);
         }
+        // If trying to add a tag when at limit, do nothing (silently ignore)
     };
 
     return (
@@ -75,6 +81,10 @@ const TagSelector: React.FC<TagSelectorProps> = ({
                 onInputChange={(_, newInputValue) => {
                     setInputValue(newInputValue);
                 }}
+                getOptionDisabled={(option) => {
+                    // Only disable if not already selected AND we're at max capacity
+                    return !selectedTags.includes(option) && selectedTags.length >= MAX_TAGS_PER_DISCUSSION;
+                }}
                 filterSelectedOptions
                 renderTags={(value, getTagProps) =>
                     value.map((option, index) => (
@@ -89,6 +99,12 @@ const TagSelector: React.FC<TagSelectorProps> = ({
                                 color: actualTheme === 'dark' ? "#63b3ed" : "#39739d",
                                 "&:hover": {
                                     backgroundColor: actualTheme === 'dark' ? "#2a4055" : "#d4e9f7"
+                                },
+                                "& .MuiChip-deleteIcon": {
+                                    color: actualTheme === 'dark' ? "#63b3ed" : "#39739d",
+                                    "&:hover": {
+                                        color: actualTheme === 'dark' ? "#fc8181" : "#e53e3e"
+                                    }
                                 }
                             }}
                         />
@@ -97,7 +113,9 @@ const TagSelector: React.FC<TagSelectorProps> = ({
                 renderInput={(params) => (
                     <TextField
                         {...params}
-                        placeholder={selectedTags.length === 0 ? "Type to search for tags..." : ""}
+                        placeholder={selectedTags.length === 0 ? "Type to search for tags..." :
+                            selectedTags.length >= MAX_TAGS_PER_DISCUSSION ? "Remove a tag to add more..." :
+                                "Add more tags..."}
                         error={Boolean(error)}
                         helperText={error || `${selectedTags.length}/${MAX_TAGS_PER_DISCUSSION} tags selected`}
                         sx={{
@@ -125,21 +143,31 @@ const TagSelector: React.FC<TagSelectorProps> = ({
                         }}
                     />
                 )}
-                renderOption={(props, option) => (
-                    <Box
-                        component="li"
-                        {...props}
-                        sx={{
-                            backgroundColor: actualTheme === 'dark' ? '#2d3748' : '#ffffff',
-                            color: actualTheme === 'dark' ? '#e2e8f0' : '#1a202c',
-                            "&:hover": {
-                                backgroundColor: actualTheme === 'dark' ? '#4a5568' : '#f7fafc',
-                            }
-                        }}
-                    >
-                        {option}
-                    </Box>
-                )}
+                renderOption={(props, option) => {
+                    const isSelected = selectedTags.includes(option);
+                    const canAdd = selectedTags.length < MAX_TAGS_PER_DISCUSSION;
+                    const isDisabled = !isSelected && !canAdd;
+
+                    return (
+                        <Box
+                            component="li"
+                            {...props}
+                            sx={{
+                                backgroundColor: actualTheme === 'dark' ? '#2d3748' : '#ffffff',
+                                color: isDisabled
+                                    ? (actualTheme === 'dark' ? '#4a5568' : '#a0aec0')
+                                    : (actualTheme === 'dark' ? '#e2e8f0' : '#1a202c'),
+                                "&:hover": {
+                                    backgroundColor: !isDisabled ? (actualTheme === 'dark' ? '#4a5568' : '#f7fafc') : undefined,
+                                },
+                                opacity: isDisabled ? 0.6 : 1,
+                                cursor: isDisabled ? 'not-allowed' : 'pointer'
+                            }}
+                        >
+                            {option} {isSelected && "✓"}
+                        </Box>
+                    );
+                }}
                 slotProps={{
                     paper: {
                         sx: {
@@ -148,50 +176,56 @@ const TagSelector: React.FC<TagSelectorProps> = ({
                         }
                     }
                 }}
-                disabled={selectedTags.length >= MAX_TAGS_PER_DISCUSSION && inputValue === ''}
             />
 
             {/* Quick selection chips */}
-            {selectedTags.length < MAX_TAGS_PER_DISCUSSION && (
-                <Box sx={{ mt: 2 }}>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                        Popular tags:
-                    </Typography>
-                    <Stack direction="row" spacing={1} flexWrap="wrap">
-                        {['general', 'study', 'flashcards', 'learning', 'tips'].map((tag) => (
+            <Box sx={{ mt: 2 }}>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                    Popular tags:
+                </Typography>
+                <Stack direction="row" spacing={1} flexWrap="wrap">
+                    {['general', 'study', 'flashcards', 'learning', 'tips'].map((tag) => {
+                        const isSelected = selectedTags.includes(tag);
+                        const isDisabled = isSelected; // Disable if tag is already selected
+
+                        return (
                             <Chip
                                 key={tag}
                                 label={tag}
                                 size="small"
                                 variant="outlined"
-                                clickable
-                                disabled={selectedTags.includes(tag)}
-                                onClick={() => handleTagToggle(tag)}
+                                clickable={!isDisabled}
+                                disabled={isDisabled}
+                                onClick={() => !isDisabled && handleTagToggle(tag)}
                                 sx={{
-                                    backgroundColor: selectedTags.includes(tag)
+                                    backgroundColor: isSelected
                                         ? (actualTheme === 'dark' ? "#1e2a3a" : "#e8f4fd")
                                         : (actualTheme === 'dark' ? '#2d3748' : '#ffffff'),
-                                    borderColor: selectedTags.includes(tag)
+                                    borderColor: isSelected
                                         ? (actualTheme === 'dark' ? "#3182ce" : "#39739d")
                                         : (actualTheme === 'dark' ? '#4a5568' : '#e2e8f0'),
-                                    color: selectedTags.includes(tag)
+                                    color: isSelected
                                         ? (actualTheme === 'dark' ? "#63b3ed" : "#39739d")
-                                        : (actualTheme === 'dark' ? '#e2e8f0' : '#1a202c'),
-                                    "&:hover": {
+                                        : isDisabled
+                                            ? (actualTheme === 'dark' ? '#4a5568' : '#a0aec0')
+                                            : (actualTheme === 'dark' ? '#e2e8f0' : '#1a202c'),
+                                    "&:hover": !isDisabled ? {
                                         backgroundColor: actualTheme === 'dark' ? '#4a5568' : '#edf2f7',
                                         borderColor: actualTheme === 'dark' ? '#63b3ed' : '#3182ce'
-                                    },
-                                    mb: 1
+                                    } : {},
+                                    mb: 1,
+                                    opacity: isDisabled ? 0.5 : 1,
+                                    cursor: isDisabled ? 'not-allowed' : 'pointer'
                                 }}
                             />
-                        ))}
-                    </Stack>
-                </Box>
-            )}
+                        );
+                    })}
+                </Stack>
+            </Box>
 
             {selectedTags.length >= MAX_TAGS_PER_DISCUSSION && (
                 <Alert severity="info" sx={{ mt: 2, fontSize: "0.875rem" }}>
-                    You've reached the maximum of {MAX_TAGS_PER_DISCUSSION} tags. Remove a tag to add a new one.
+                    You've reached the maximum of {MAX_TAGS_PER_DISCUSSION} tags. Click the X on any tag above or remove tags from the input field to add different ones.
                 </Alert>
             )}
 

@@ -56,7 +56,7 @@ const DiscussionHub = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [sortBy, setSortBy] = useState("newest");
-    const [selectedTagFilter, setSelectedTagFilter] = useState<string | null>(null);
+    const [selectedTagFilter, setSelectedTagFilter] = useState<string[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const discussionsPerPage = 5;
 
@@ -90,8 +90,8 @@ const DiscussionHub = () => {
                 discussion.content.toLowerCase().includes(searchTerm.toLowerCase());
 
             // Tag filter
-            const matchesTag = !selectedTagFilter ||
-                (discussion.tags && discussion.tags.includes(selectedTagFilter));
+            const matchesTag = selectedTagFilter.length === 0 ||
+                (discussion.tags && discussion.tags.some(tag => selectedTagFilter.includes(tag)));
 
             return matchesSearch && matchesTag;
         });
@@ -152,12 +152,12 @@ const DiscussionHub = () => {
     };
 
     const handleTagFilter = (tag: string) => {
-        if (selectedTagFilter === tag) {
-            // If same tag is clicked, remove filter
-            setSelectedTagFilter(null);
+        if (selectedTagFilter.includes(tag)) {
+            // Remove tag from filter
+            setSelectedTagFilter(selectedTagFilter.filter(t => t !== tag));
         } else {
-            // Set new tag filter
-            setSelectedTagFilter(tag);
+            // Add tag to filter
+            setSelectedTagFilter([...selectedTagFilter, tag]);
         }
     };
 
@@ -317,26 +317,26 @@ const DiscussionHub = () => {
 
                 {/* Filter Tags */}
                 <Box sx={{ mb: 3 }}>
-                    <Stack direction="row" spacing={1} flexWrap="wrap">
+                    <Stack direction="row" spacing={1} flexWrap="wrap" alignItems="center">
                         <Typography variant="body2" color="text.secondary" sx={{ mr: 1, lineHeight: 2.5 }}>
-                            Filter by tags:
+                            Filter by tags: {selectedTagFilter.length > 0 && `(${selectedTagFilter.length} selected)`}
                         </Typography>
                         <Chip
                             label="All"
                             size="small"
-                            variant={selectedTagFilter === null ? "filled" : "outlined"}
+                            variant={selectedTagFilter.length === 0 ? "filled" : "outlined"}
                             clickable
-                            onClick={() => setSelectedTagFilter(null)}
+                            onClick={() => setSelectedTagFilter([])}
                             sx={{
-                                backgroundColor: selectedTagFilter === null
+                                backgroundColor: selectedTagFilter.length === 0
                                     ? (actualTheme === 'dark' ? '#3182ce' : '#39739d')
                                     : (actualTheme === 'dark' ? '#2d3748' : '#ffffff'),
                                 borderColor: actualTheme === 'dark' ? '#4a5568' : '#e2e8f0',
-                                color: selectedTagFilter === null
+                                color: selectedTagFilter.length === 0
                                     ? '#ffffff'
                                     : (actualTheme === 'dark' ? '#e2e8f0' : '#1a202c'),
                                 "&:hover": {
-                                    backgroundColor: selectedTagFilter === null
+                                    backgroundColor: selectedTagFilter.length === 0
                                         ? (actualTheme === 'dark' ? '#2c5aa0' : '#2d5aa0')
                                         : (actualTheme === 'dark' ? '#4a5568' : '#edf2f7'),
                                     borderColor: actualTheme === 'dark' ? '#63b3ed' : '#3182ce'
@@ -348,19 +348,19 @@ const DiscussionHub = () => {
                                 key={tag}
                                 label={tag}
                                 size="small"
-                                variant={selectedTagFilter === tag ? "filled" : "outlined"}
+                                variant={selectedTagFilter.includes(tag) ? "filled" : "outlined"}
                                 clickable
                                 onClick={() => handleTagFilter(tag)}
                                 sx={{
-                                    backgroundColor: selectedTagFilter === tag
+                                    backgroundColor: selectedTagFilter.includes(tag)
                                         ? (actualTheme === 'dark' ? '#3182ce' : '#39739d')
                                         : (actualTheme === 'dark' ? '#2d3748' : '#ffffff'),
                                     borderColor: actualTheme === 'dark' ? '#4a5568' : '#e2e8f0',
-                                    color: selectedTagFilter === tag
+                                    color: selectedTagFilter.includes(tag)
                                         ? '#ffffff'
                                         : (actualTheme === 'dark' ? '#e2e8f0' : '#1a202c'),
                                     "&:hover": {
-                                        backgroundColor: selectedTagFilter === tag
+                                        backgroundColor: selectedTagFilter.includes(tag)
                                             ? (actualTheme === 'dark' ? '#2c5aa0' : '#2d5aa0')
                                             : (actualTheme === 'dark' ? '#4a5568' : '#edf2f7'),
                                         borderColor: actualTheme === 'dark' ? '#63b3ed' : '#3182ce'
@@ -368,6 +368,19 @@ const DiscussionHub = () => {
                                 }}
                             />
                         ))}
+                        {selectedTagFilter.length > 0 && (
+                            <Button
+                                size="small"
+                                onClick={() => setSelectedTagFilter([])}
+                                sx={{
+                                    ml: 1,
+                                    fontSize: "0.75rem",
+                                    color: actualTheme === 'dark' ? '#63b3ed' : '#3182ce'
+                                }}
+                            >
+                                Clear All
+                            </Button>
+                        )}
                     </Stack>
                 </Box>
             </Box>
@@ -514,11 +527,28 @@ const DiscussionHub = () => {
                                                 {/* Tags and Metadata */}
                                                 <Box>
                                                     <Stack direction="row" spacing={1} sx={{ mb: 1 }} flexWrap="wrap">
-                                                        {/* Sample tags - these would come from the discussion data */}
-                                                        {(discussion.tags || ['general', 'study']).map((tag: string) => (
+                                                        {discussion.tags && discussion.tags.length > 0 ? (
+                                                            discussion.tags.map((tag: string) => (
+                                                                <Chip
+                                                                    key={tag}
+                                                                    label={tag}
+                                                                    size="small"
+                                                                    variant="outlined"
+                                                                    sx={{
+                                                                        backgroundColor: actualTheme === 'dark' ? "#1e2a3a" : "#e8f4fd",
+                                                                        borderColor: actualTheme === 'dark' ? "#3182ce" : "#39739d",
+                                                                        color: actualTheme === 'dark' ? "#63b3ed" : "#39739d",
+                                                                        fontSize: "0.75rem",
+                                                                        height: 24,
+                                                                        "&:hover": {
+                                                                            backgroundColor: actualTheme === 'dark' ? "#2a4055" : "#d4e9f7"
+                                                                        }
+                                                                    }}
+                                                                />
+                                                            ))
+                                                        ) : (
                                                             <Chip
-                                                                key={tag}
-                                                                label={tag}
+                                                                label="general"
                                                                 size="small"
                                                                 variant="outlined"
                                                                 sx={{
@@ -532,7 +562,7 @@ const DiscussionHub = () => {
                                                                     }
                                                                 }}
                                                             />
-                                                        ))}
+                                                        )}
                                                     </Stack>
 
                                                     {/* Author and Date */}
