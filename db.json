@@ -263,24 +263,24 @@
       "status": true
     },
     {
-      "name": "OSG",
-      "description": "fe",
+      "id": "72b8",
+      "name": "New game",
+      "description": "A collection of flashcards about important historical events.A collection of flashcards about important historical events.A collection of flashcards about important historical events.A collection of flashcards about important historical events.",
+      "userId": "1",
       "flashcards": [
         {
-          "id": "4f9d3504-a4be-4b44-9f60-a7ec668bbdb9",
-          "question": "c",
-          "answer": "c",
+          "id": "44dbd4bb-e4e4-4a8a-8609-414bc7c076f0",
+          "question": "a",
+          "answer": "a",
           "image": null
         },
         {
-          "id": "b0906234-a805-4d59-bda6-cd9b62b8edc9",
+          "id": "bd6a831a-6d41-4f83-aaa8-5827406209d7",
           "question": "b",
           "answer": "b",
           "image": null
         }
       ],
-      "userId": "1",
-      "id": "8468",
       "status": true
     }
   ],
@@ -291,7 +291,7 @@
       "password": "123456",
       "role": "0",
       "status": true,
-      "lastTokenIat": 1754985599,
+      "lastTokenIat": 1755018825,
       "bio": "This is a test bio to verify the theme adaptation works correctly.",
       "email": "admin@example.com",
       "socialLinks": {
@@ -384,10 +384,9 @@
     {
       "id": "11",
       "username": "bill1010",
-      "password": "123456",
       "role": "2",
       "status": true,
-      "lastTokenIat": 0
+      "password": "123456"
     },
     {
       "id": "12",
@@ -418,7 +417,7 @@
       "username": "Trà Phạm",
       "email": "phamtra001@gmail.com",
       "role": "2",
-      "status": null,
+      "status": true,
       "lastTokenIat": 1754630369
     },
     {
@@ -860,8 +859,8 @@
     {
       "id": "c568",
       "date": "2025-08-12",
-      "visits": 5,
-      "flashcardsStudied": 0
+      "visits": 8,
+      "flashcardsStudied": 1
     }
   ]
 }

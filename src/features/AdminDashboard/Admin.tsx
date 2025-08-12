@@ -1,20 +1,12 @@
 import React, { useEffect, useState } from "react";
-import LeftMenu from "./LeftMenu";
-import "./Admin.css";
+import { Box, Paper, Typography } from "@mui/material";
 import { FaBook, FaComments, FaUsers, FaBookOpen } from "react-icons/fa";
+import LeftMenu from "./LeftMenu";
 import { getFlashcardSets, getAccounts, getBooks, getDiscussions, getSiteStats } from "./adminservice";
-import {
-  LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer
-} from "recharts";
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 const Admin = () => {
-  const [stats, setStats] = useState({
-    books: 0,
-    comments: 0,
-    users: 0,
-    flashcards: 0
-  });
-
+  const [stats, setStats] = useState({ books: 0, comments: 0, users: 0, flashcards: 0 });
   const [trafficData, setTrafficData] = useState([]);
 
   useEffect(() => {
@@ -25,14 +17,14 @@ const Admin = () => {
           getDiscussions(),
           getAccounts(),
           getFlashcardSets(),
-          getSiteStats()
+          getSiteStats(),
         ]);
 
         setStats({
           books: booksRes.data.length,
           comments: discussionsRes.data.length,
           users: accountsRes.data.length,
-          flashcards: flashcardRes.data.length
+          flashcards: flashcardRes.data.length,
         });
 
         setTrafficData(siteStatsRes.data);
@@ -44,83 +36,74 @@ const Admin = () => {
     fetchData();
   }, []);
 
-  
+  const statCards = [
+    { icon: <FaBook style={{ fontSize: 25, color: "#2196f3",margin:'auto' }} />, value: stats.books, label: "BOOK" },
+    { icon: <FaComments style={{ fontSize: 25, color: "#ff9800",margin:'auto' }} />, value: stats.comments, label: "DISCUSSIONS" },
+    { icon: <FaUsers style={{ fontSize: 25, color: "#4caf50",margin:'auto' }} />, value: stats.users, label: "USERS" },
+    { icon: <FaBookOpen style={{ fontSize: 25, color: "#f44336",margin:'auto' }} />, value: stats.flashcards, label: "FLASHCARD SETS" },
+  ];
 
   return (
-    <div className="admin-container">
+    <Box sx={{ display: "flex" }}>
       <LeftMenu />
-      <div className="main-content">
-        <h2>Dashboard</h2>
-        <div className="stats">
-          <div className="stat-card">
-            <FaBook className="stat-icon blue mx-auto" />
-            <p style={{ fontSize: '50px', color: 'black' }}>{stats.books}</p>
-            <p>BOOK</p>
-          </div>
-          <div className="stat-card">
-            <FaComments className="stat-icon orange mx-auto" />
-            <p style={{ fontSize: '50px', color: 'black' }}>{stats.comments}</p>
-            <p>DISCUSSIONS</p>
-          </div>
-          <div className="stat-card">
-            <FaUsers className="stat-icon green mx-auto" />
-            <p style={{ fontSize: '50px', color: 'black' }}>{stats.users}</p>
-            <p>USERS</p>
-          </div>
-          <div className="stat-card">
-            <FaBookOpen className="stat-icon red mx-auto" />
-            <p style={{ fontSize: '50px', color: 'black' }}>{stats.flashcards}</p>
-            <p>FLASHCARD SETS</p>
-          </div>
-        </div>
+      <Box
+        sx={{
+          ml: "220px",
+          p: 3,
+          width: "calc(100% - 220px)",
+          backgroundColor: (theme) => theme.palette.background.default,
+          color: (theme) => theme.palette.text.primary,
+          minHeight: "100vh",
+        }}
+      >
+        <Typography variant="h4" sx={{ mb: 4 }}>Dashboard</Typography>
 
-        <h4>Site Traffic Overview</h4>
-        <div style={{ width: "100%", height: 450 }}>
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mb: 4 }}>
+          {statCards.map((card, i) => (
+            <Paper
+              key={i}
+              sx={{
+                flex: "1 1 200px",
+                p: 3,
+                textAlign: "center",
+                borderRadius: 2,
+                boxShadow: 2,
+              }}
+            >
+              {card.icon}
+              <Typography variant="h3" sx={{ fontWeight: "bold", mt: 1 }}>
+                {card.value}
+              </Typography>
+              <Typography variant="body2" sx={{ textTransform: "uppercase", fontWeight: "500" }}>
+                {card.label}
+              </Typography>
+            </Paper>
+          ))}
+        </Box>
+
+        <Typography variant="h6" sx={{ mb: 2 }}>Site Traffic Overview</Typography>
+        <Box sx={{ width: "100%", height: 450, backgroundColor: (theme) => theme.palette.background.paper, borderRadius: 2, p: 2 }}>
           <ResponsiveContainer>
             <LineChart data={trafficData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="colorVisits" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#8884d8" stopOpacity={0.8} />
-                  <stop offset="100%" stopColor="#8884d8" stopOpacity={0.2} />
-                </linearGradient>
-                <linearGradient id="colorFlashcards" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#82ca9d" stopOpacity={0.8} />
-                  <stop offset="100%" stopColor="#82ca9d" stopOpacity={0.2} />
-                </linearGradient>
-              </defs>
-
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
               <XAxis dataKey="date" tick={{ fontSize: 12 }} />
               <YAxis tick={{ fontSize: 12 }} />
               <Tooltip
-                contentStyle={{ backgroundColor: '#fff', border: '1px solid #ccc', borderRadius: '8px' }}
-                labelStyle={{ fontWeight: 'bold' }}
+                contentStyle={{
+                  backgroundColor: "#fff",
+                  border: "1px solid #ccc",
+                  borderRadius: "8px",
+                }}
+                labelStyle={{ fontWeight: "bold" }}
               />
               <Legend verticalAlign="top" height={36} />
-              <Line
-                type="monotone"
-                dataKey="visits"
-                stroke="#8884d8"
-                strokeWidth={2}
-                dot={{ r: 4, strokeWidth: 2, fill: '#fff', stroke: '#8884d8' }}
-                activeDot={{ r: 6 }}
-                name="Total Visits"
-              />
-              <Line
-                type="monotone"
-                dataKey="flashcardsStudied"
-                stroke="#82ca9d"
-                strokeWidth={2}
-                dot={{ r: 4, strokeWidth: 2, fill: '#fff', stroke: '#82ca9d' }}
-                activeDot={{ r: 6 }}
-                name="Flashcard learning"
-              />
+              <Line type="monotone" dataKey="visits" stroke="#8884d8" strokeWidth={2} name="Total Visits" />
+              <Line type="monotone" dataKey="flashcardsStudied" stroke="#82ca9d" strokeWidth={2} name="Flashcard learning" />
             </LineChart>
           </ResponsiveContainer>
-
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

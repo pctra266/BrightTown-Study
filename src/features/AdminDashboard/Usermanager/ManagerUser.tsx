@@ -5,9 +5,11 @@ import Alert from "../Alert";
 import { fetchUsersAndFlashcards, softDeleteUser } from "./userService";
 import type { User, FlashcardMap } from "./userService";
 import { useAuth } from "../../../contexts/AuthContext";
-import Pagination from "../Pagination"; 
+import Pagination from "../Pagination";
+import { useTheme } from "@mui/material/styles";
 
 export default function ManagerUser() {
+  const theme = useTheme();
   const [users, setUsers] = useState<User[]>([]);
   const [flashcards, setFlashcards] = useState<FlashcardMap>({});
   const [filterRole, setFilterRole] = useState<string>("all");
@@ -62,7 +64,7 @@ export default function ManagerUser() {
   };
 
   const filteredUsers = users
-    .filter((u) => u.status !== null) 
+    .filter((u) => u.status !== null)
     .filter((u) => {
       const matchRole = filterRole === "all" || u.role === filterRole;
       const matchStatus = filterStatus === "all" || String(u.status) === filterStatus;
@@ -76,7 +78,6 @@ export default function ManagerUser() {
       return matchRole && matchStatus && matchSearch;
     });
 
-
   const paginatedUsers = filteredUsers.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -89,7 +90,10 @@ export default function ManagerUser() {
   };
 
   return (
-    <div className="flex bg-gray-100 min-h-screen">
+    <div
+      className="flex min-h-screen"
+      style={{ backgroundColor: theme.palette.background.default, color: theme.palette.text.primary }}
+    >
       {alert && (
         <Alert
           type={alert.type as "success" | "info" | "warning"}
@@ -101,15 +105,26 @@ export default function ManagerUser() {
       <LeftMenu />
       <div className="ml-[240px] p-6 w-full">
         <div className="flex justify-between mb-4">
-          <h2 className="text-3xl font-bold text-purple-700">User List</h2>
+          <h2 style={{ color: theme.palette.primary.main }} className="text-3xl font-bold">
+            User List
+          </h2>
           <Link to="/admin/users/create">
-            <button className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
+            <button
+              style={{
+                backgroundColor: theme.palette.primary.main,
+                color: theme.palette.primary.contrastText,
+              }}
+              className="px-4 py-2 rounded hover:opacity-90"
+            >
               + Add User
             </button>
           </Link>
         </div>
 
-        <div className="bg-white p-4 rounded mb-6 shadow">
+        <div
+          className="p-4 rounded mb-6 shadow"
+          style={{ backgroundColor: theme.palette.background.paper }}
+        >
           <label className="mr-4 font-semibold">Role:</label>
           <select
             className="border px-2 py-1 rounded mr-6"
@@ -142,22 +157,30 @@ export default function ManagerUser() {
           />
         </div>
 
-        <table className="w-full bg-white rounded-lg overflow-hidden shadow">
-          <thead className="bg-purple-50 text-purple-800">
+        <table
+          className="w-full rounded-lg overflow-hidden shadow"
+          style={{ backgroundColor: theme.palette.background.paper }}
+        >
+          <thead style={{ backgroundColor: theme.palette.primary.light, color: theme.palette.primary.contrastText }}>
             <tr>
               <th className="px-4 py-2 text-left">ID</th>
               <th className="px-4 py-2 text-left">Username</th>
               <th className="px-4 py-2 text-left">Role</th>
               <th className="px-4 py-2 text-left">Status</th>
-              <th className="px-4 py-2 text-left">Actions</th>
-              <th className="px-4 py-2 text-center">Flashcards</th>
+              <th className="px-4 py-2 text-left" style={{width: '300px', paddingLeft:'70px'}}>Actions</th>
+              <th className="px-4 py-2 text-left">Flashcards</th>
             </tr>
           </thead>
           <tbody>
             {paginatedUsers.length > 0 ? (
               paginatedUsers.map((userItem) => (
                 <React.Fragment key={userItem.id}>
-                  <tr className="border-b hover:bg-gray-50">
+                  <tr
+                    className="border-b"
+                    style={{
+                      borderColor: theme.palette.divider,
+                    }}
+                  >
                     <td className="px-4 py-2">{userItem.id}</td>
                     <td className="px-4 py-2">{userItem.username}</td>
                     <td className="px-4 py-2">
@@ -165,35 +188,62 @@ export default function ManagerUser() {
                     </td>
                     <td className="px-4 py-2">
                       <span
-                        className={`px-2 py-1 rounded text-sm ${userItem.status ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-                          }`}
+                        className="px-2 py-1 rounded text-sm"
+                        style={{
+                          backgroundColor: userItem.status
+                            ? theme.palette.success.light
+                            : theme.palette.error.light,
+                          color: userItem.status
+                            ? theme.palette.success.contrastText
+                            : theme.palette.error.contrastText,
+                        }}
                       >
                         {userItem.status ? "Active" : "Inactive"}
                       </span>
                     </td>
                     <td className="px-4 py-2 space-x-2">
                       <Link to={`/admin/users/${userItem.id}`}>
-                        <button className="bg-cyan-600 hover:bg-cyan-700 text-white px-3 py-1 rounded text-sm">
+                        <button
+                          style={{
+                            backgroundColor: theme.palette.info.main,
+                            color: theme.palette.info.contrastText,
+                          }}
+                          className="px-3 py-1 rounded text-sm hover:opacity-90"
+                        >
                           View
                         </button>
                       </Link>
                       {canEditOrDelete(userItem) ? (
                         <>
                           <Link to={`/admin/users/${userItem.id}/edit`}>
-                            <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm">
+                            <button
+                              style={{
+                                backgroundColor: theme.palette.warning.main,
+                                color: theme.palette.warning.contrastText,
+                              }}
+                              className="px-3 py-1 rounded text-sm hover:opacity-90"
+                            >
                               Edit
                             </button>
                           </Link>
                           {user?.id === userItem.id && user?.role === "0" ? (
                             <button
-                              className="bg-gray-400 text-white px-3 py-1 rounded text-sm cursor-not-allowed"
+                              style={{
+                                backgroundColor: theme.palette.grey[400],
+                                color: theme.palette.text.primary,
+                              }}
+                              className="px-3 py-1 rounded text-sm cursor-not-allowed"
                               disabled
                             >
                               Delete
                             </button>
                           ) : (
                             <button
-                              className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm"
+                              style={{
+                                backgroundColor: theme.palette.error.main,
+                                color: theme.palette.error.contrastText,
+                              }}
+                              className="px-3 py-1 rounded text-sm hover:opacity-90"
                               onClick={() => setConfirmDeleteId(userItem.id)}
                             >
                               Delete
@@ -203,13 +253,21 @@ export default function ManagerUser() {
                       ) : (
                         <>
                           <button
-                            className="bg-gray-400 text-white px-3 py-1 rounded text-sm cursor-not-allowed"
+                            style={{
+                              backgroundColor: theme.palette.grey[400],
+                              color: theme.palette.text.primary,
+                            }}
+                            className="px-3 py-1 rounded text-sm cursor-not-allowed"
                             disabled
                           >
                             Edit
                           </button>
                           <button
-                            className="bg-gray-400 text-white px-3 py-1 rounded text-sm cursor-not-allowed"
+                            style={{
+                              backgroundColor: theme.palette.grey[400],
+                              color: theme.palette.text.primary,
+                            }}
+                            className="px-3 py-1 rounded text-sm cursor-not-allowed"
                             disabled
                           >
                             Delete
@@ -217,31 +275,38 @@ export default function ManagerUser() {
                         </>
                       )}
                     </td>
-                    <td className="px-4 py-2 text-center">
+                    <td className="px-4 py-2 text-left" style={{paddingLeft: '40px'}}>
                       <button
                         onClick={() => toggleExpand(userItem.id)}
-                        className="text-blue-600 hover:underline text-sm"
+                        style={{ color: theme.palette.info.main }}
+                        className="text-sm hover:underline"
                       >
                         {expanded.has(userItem.id) ? "Hide" : "Show"}
                       </button>
                     </td>
                   </tr>
                   {expanded.has(userItem.id) && (
-                    <tr className="bg-gray-50">
+                    <tr style={{ backgroundColor: theme.palette.action.hover }}>
                       <td colSpan={6} className="px-4 py-2">
                         {flashcards[userItem.id]?.length > 0 ? (
                           <div className="flex flex-wrap gap-2">
                             {flashcards[userItem.id].map((title, index) => (
                               <span
                                 key={index}
-                                className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm"
+                                className="px-3 py-1 rounded-full text-sm"
+                                style={{
+                                  backgroundColor: theme.palette.primary.light,
+                                  color: theme.palette.primary.contrastText,
+                                }}
                               >
                                 {title}
                               </span>
                             ))}
                           </div>
                         ) : (
-                          <p className="text-gray-500 text-sm">No flashcard sets</p>
+                          <p className="text-sm" style={{ color: theme.palette.text.secondary }}>
+                            No flashcard sets
+                          </p>
                         )}
                       </td>
                     </tr>
@@ -250,7 +315,11 @@ export default function ManagerUser() {
               ))
             ) : (
               <tr>
-                <td colSpan={6} className="text-center py-4 text-gray-500">
+                <td
+                  colSpan={6}
+                  className="text-center py-4"
+                  style={{ color: theme.palette.text.secondary }}
+                >
                   No users found.
                 </td>
               </tr>
@@ -258,7 +327,6 @@ export default function ManagerUser() {
           </tbody>
         </table>
 
-        {/* Pagination */}
         <Pagination
           currentPage={currentPage}
           totalItems={filteredUsers.length}
@@ -268,18 +336,31 @@ export default function ManagerUser() {
       </div>
 
       {confirmDeleteId && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/30">
-          <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm text-center">
-            <p className="text-lg font-semibold mb-4">Are you sure you want to delete this user?</p>
+        <div className="fixed inset-0 flex items-center justify-center z-50" style={{ backgroundColor: "rgba(0,0,0,0.3)" }}>
+          <div
+            className="p-6 rounded-lg shadow-md w-full max-w-sm text-center"
+            style={{ backgroundColor: theme.palette.background.paper, color: theme.palette.text.primary }}
+          >
+            <p className="text-lg font-semibold mb-4">
+              Are you sure you want to delete this user?
+            </p>
             <div className="flex justify-center gap-4">
               <button
-                className="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded"
+                style={{
+                  backgroundColor: theme.palette.grey[300],
+                  color: theme.palette.text.primary,
+                }}
+                className="px-4 py-2 rounded hover:opacity-90"
                 onClick={() => setConfirmDeleteId(null)}
               >
                 Cancel
               </button>
               <button
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+                style={{
+                  backgroundColor: theme.palette.error.main,
+                  color: theme.palette.error.contrastText,
+                }}
+                className="px-4 py-2 rounded hover:opacity-90"
                 onClick={async () => {
                   const id = confirmDeleteId;
                   setConfirmDeleteId(null);
