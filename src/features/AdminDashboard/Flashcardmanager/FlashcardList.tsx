@@ -5,6 +5,7 @@ import { getAllFlashcardSets, deleteFlashcardSet, updateFlashcardSetStatus } fro
 import { Link } from 'react-router-dom';
 import Pagination from '../Pagination';
 import { useTheme } from '@mui/material/styles';
+import { useAuth } from "../../../contexts/AuthContext";
 
 const FlashcardList = () => {
     const theme = useTheme();
@@ -17,6 +18,10 @@ const FlashcardList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
     const [expandedRow, setExpandedRow] = useState<string | null>(null);
+
+    const { user } = useAuth();
+    const userId = user?.id || "";
+    const userRoleId = user?.role || "";
 
     const toggleExpand = (id: string) => {
         setExpandedRow(expandedRow === id ? null : id);
@@ -238,18 +243,32 @@ const FlashcardList = () => {
                                                 <Link to={`/library/flashcard/edit/${set.id}`} state={{ from: "manageflashcard" }}>
                                                     <button
                                                         className="px-3 py-1 rounded-md shadow-sm"
-                                                        style={{ backgroundColor: theme.palette.warning.main, color: theme.palette.warning.contrastText }}
+                                                        style={{
+                                                            backgroundColor: theme.palette.warning.main,
+                                                            color: theme.palette.warning.contrastText,
+                                                            cursor: (set.userId === userId || userRoleId === '0') ? 'pointer' : 'not-allowed',
+                                                            opacity: (set.userId === userId || userRoleId === '0') ? 1 : 0.5,
+                                                        }}
+                                                        disabled={!(set.userId === userId || userRoleId === '0')}
                                                     >
                                                         Edit
                                                     </button>
                                                 </Link>
+
                                                 <button
                                                     onClick={() => handleDelete(set.id)}
                                                     className="px-3 py-1 rounded-md shadow-sm"
-                                                    style={{ backgroundColor: theme.palette.error.main, color: theme.palette.error.contrastText }}
+                                                    style={{
+                                                        backgroundColor: theme.palette.error.main,
+                                                        color: theme.palette.error.contrastText,
+                                                        cursor: (set.userId === userId || userRoleId === '0') ? 'pointer' : 'not-allowed',
+                                                        opacity: (set.userId === userId || userRoleId === '0') ? 1 : 0.5,
+                                                    }}
+                                                    disabled={!(set.userId === userId || userRoleId === '0')}
                                                 >
                                                     Delete
                                                 </button>
+
                                             </td>
                                         </tr>
                                     );

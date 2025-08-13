@@ -13,7 +13,7 @@ export const getFlashcardSetPublicById = async (flashcardSetId: string) => {
 
 export const getFlashcardSetById = async (flashcardSetId: string, userId: string, role: string): Promise<FlashcardSet> => {
   const response = await api.get<FlashcardSet>(`/flashcardSets/${flashcardSetId}`);
-  if (role !== '1' && response.data.userId !== userId) {
+  if (role !== '0' && response.data.userId !== userId) {
     throw new Error('Unauthorized access');
   }
   return response.data;
@@ -32,7 +32,7 @@ export const updateFlashcardSet = async (
   userId: string,
   role: string,
 ): Promise<FlashcardSet> => {
-  if (role !== '1') {
+  if (role !== '0') {
     const set = await getFlashcardSetById(flashcardSetId, userId, role);
     if (set.userId !== userId) {
       throw new Error('Unauthorized access');
@@ -44,7 +44,7 @@ export const updateFlashcardSet = async (
 };
 
 export const deleteFlashcardSet = async (flashcardSetId: string, userId: string, role: string): Promise<void> => {
-  if (role !== '1') {
+  if (role !== '0') {
     const set = await getFlashcardSetById(flashcardSetId, userId, role);
     if (set.userId !== userId) {
       throw new Error('Unauthorized access');

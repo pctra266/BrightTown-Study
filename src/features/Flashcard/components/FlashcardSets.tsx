@@ -23,7 +23,7 @@ const FlashcardSets: React.FC<FlashcardSetsProps> = ({
   const [sortBy, setSortBy] = useState<"name" | "description" >("name");
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const { user } = useAuth();
-    const userId = user?.id || "";
+  const userId = user?.id || "";
   const itemsPerPage = 6;
 
   const filteredSets = flashcardSets

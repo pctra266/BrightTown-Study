@@ -20,6 +20,7 @@ const FlashcardSet: React.FC<FlashcardSetProps> = ({
 
   const { user } = useAuth();
   const userId = user?.id || "";
+  const userRoleId = user?.role || "";
 
 
   const handleEdit = () => {
@@ -71,7 +72,7 @@ const FlashcardSet: React.FC<FlashcardSetProps> = ({
           </div>
 
           <div className="flex items-center gap-3 ml-6">
-            {isUserOwner() && (
+            {(isUserOwner() || userRoleId === '0')  && (
               <>
                 <button
                   onClick={handleEdit}
