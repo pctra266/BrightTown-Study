@@ -24,7 +24,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import api from "../../../api/api";
 import Toast, { type ToastData } from "../components/Toast";
 import { useAuth } from "../../../contexts/AuthContext";
-
+import { useTheme } from "@mui/material/styles";
 interface Chapter {
   name: string;
 }
@@ -78,7 +78,7 @@ const BookDetails = () => {
   const [editChapter, setEditChapter] = useState<string | null>(null);
   const synthRef = useRef<SpeechSynthesis | null>(null);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
-
+  const theme = useTheme();
   const normalizeBook = (data: any): Book => ({
     ...data,
     id: String(data.id),
@@ -174,8 +174,8 @@ const BookDetails = () => {
     try {
       const updatedChapters = editChapter
         ? (book.chapters || []).map((ch) =>
-            ch.name === editChapter ? { name: chapterName } : ch
-          )
+          ch.name === editChapter ? { name: chapterName } : ch
+        )
         : [...(book.chapters || []), { name: chapterName }];
 
       if (!editChapter && book.chapters?.some((ch) => ch.name === chapterName)) {
@@ -208,8 +208,8 @@ const BookDetails = () => {
       const newSelectedChapter = updatedChapters.some((ch) => ch.name === chapterName)
         ? chapterName
         : updatedChapters.length > 0
-        ? updatedChapters[0].name
-        : null;
+          ? updatedChapters[0].name
+          : null;
       setSelectedChapter(newSelectedChapter);
       setOpenDrawer(false);
       setChapterName("");
@@ -406,7 +406,7 @@ const BookDetails = () => {
   return (
     <ErrorBoundary>
       <Box
-        bgcolor="linear-gradient(135deg, #1976D2, #42A5F5)"
+        bgcolor={`linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`}
         minHeight="100vh"
         p={4}
         display="flex"
@@ -414,10 +414,10 @@ const BookDetails = () => {
       >
         <Box display="flex" alignItems="center" justifyContent="space-between" mb={4} sx={{ p: 2, borderRadius: "8px" }}>
           <Box display="flex" alignItems="center">
-            <IconButton onClick={() => navigate("/manage-book")} sx={{ color: "#1976D2", mr: 2 }}>
+            <IconButton onClick={() => navigate("/manage-book")} sx={{ color: theme.palette.primary.main, mr: 2 }}>
               <ArrowBackIcon />
             </IconButton>
-            <Typography variant="h3" color="#1976D2" fontWeight="bold">
+            <Typography variant="h3" color={theme.palette.primary.main} fontWeight="bold">
               {book.title}
             </Typography>
           </Box>
@@ -433,8 +433,8 @@ const BookDetails = () => {
               }}
               sx={{
                 fontWeight: "bold",
-                background: "linear-gradient(135deg, #1976D2, #42A5F5)",
-                "&:hover": { background: "linear-gradient(135deg, #1557a0, #42A5F5)" },
+                background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
+                "&:hover": { background: `linear-gradient(135deg, ${theme.palette.primary.dark}, ${theme.palette.primary.light})` },
               }}
             >
               Add Chapter
@@ -446,7 +446,7 @@ const BookDetails = () => {
           <Box
             sx={{
               width: "15%",
-              bgcolor: "#1976D2",
+              bgcolor: theme.palette.primary.main,
               borderRadius: "12px",
               mr: 2,
               overflowY: "auto",
@@ -477,20 +477,20 @@ const BookDetails = () => {
                     >
                       <ListItemText
                         primary={`Chapter ${index + 1}: ${chapter.name}`}
-                        primaryTypographyProps={{ fontSize: "0.9rem", color: "white" }}
+                        primaryTypographyProps={{ fontSize: "0.9rem", color: theme.palette.common.white }}
                         onClick={() => setSelectedChapter(chapter.name)}
                       />
                       {user && (user.id === book.userId || user.role === "1") && (
                         <>
                           <IconButton
                             onClick={() => handleEditChapter(chapter.name)}
-                            sx={{ color: "#fff", mr: 1 }}
+                            sx={{ color: theme.palette.common.white, mr: 1 }}
                           >
                             <EditIcon />
                           </IconButton>
                           <IconButton
                             onClick={() => handleDeleteChapter(chapter.name)}
-                            sx={{ color: "#d32f2f", mr: 1 }}
+                            sx={{ color: theme.palette.error.main, mr: 1 }}
                           >
                             <DeleteIcon />
                           </IconButton>
@@ -504,7 +504,7 @@ const BookDetails = () => {
                 ))
               ) : (
                 <ListItem>
-                  <ListItemText primary="No chapters available" sx={{ color: "white" }} />
+                  <ListItemText primary="No chapters available" sx={{ color: theme.palette.common.white }} />
                 </ListItem>
               )}
             </List>
@@ -513,7 +513,7 @@ const BookDetails = () => {
           <Box
             sx={{
               flex: 1,
-              bgcolor: "white",
+              bgcolor: theme.palette.background.paper,
               p: 2,
               borderRadius: "12px",
               overflowY: "auto",
@@ -542,7 +542,7 @@ const BookDetails = () => {
                     !book.chapters ||
                     book.chapters.findIndex((ch) => ch.name === selectedChapter) === 0
                   }
-                  sx={{ color: "#1976D2", mr: 2 }}
+                  sx={{ color: theme.palette.primary.main, mr: 2 }}
                 >
                   <ArrowUpwardIcon />
                 </IconButton>
@@ -552,15 +552,15 @@ const BookDetails = () => {
                     !selectedChapter ||
                     !book.chapters ||
                     book.chapters.findIndex((ch) => ch.name === selectedChapter) ===
-                      book.chapters.length - 1
+                    book.chapters.length - 1
                   }
-                  sx={{ color: "#1976D2", mr: 2 }}
+                  sx={{ color: theme.palette.primary.main, mr: 2 }}
                 >
                   <ArrowDownwardIcon />
                 </IconButton>
                 <IconButton
                   onClick={handleListen}
-                  sx={{ color: isPlaying ? "#d32f2f" : "#1976D2" }}
+                  sx={{ color: isPlaying ? theme.palette.error.main : theme.palette.primary.main }}
                 >
                   <VolumeUpIcon />
                 </IconButton>
@@ -573,7 +573,7 @@ const BookDetails = () => {
           <Box
             width={{ xs: "100vw", sm: 400 }}
             height="100vh"
-            bgcolor="#1976D2"
+            bgcolor={theme.palette.primary.main}
             p={4}
           >
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
@@ -581,7 +581,7 @@ const BookDetails = () => {
                 {editChapter ? "Edit Chapter" : "Add Chapter"}
               </Typography>
               <IconButton onClick={() => setOpenDrawer(false)}>
-                <CancelIcon sx={{ color: "white" }} />
+                <CancelIcon sx={{ color: theme.palette.common.white }} />
               </IconButton>
             </Box>
             <TextField
@@ -590,8 +590,8 @@ const BookDetails = () => {
               onChange={(e) => setChapterName(e.target.value)}
               fullWidth
               variant="standard"
-              InputProps={{ sx: { color: "white" } }}
-              InputLabelProps={{ sx: { color: "white" } }}
+              InputProps={{ sx: { color: theme.palette.common.white } }}
+              InputLabelProps={{ sx: { color: theme.palette.common.white } }}
               sx={{ mb: 3 }}
             />
             <TextField
@@ -602,8 +602,8 @@ const BookDetails = () => {
               variant="standard"
               multiline
               rows={10}
-              InputProps={{ sx: { color: "white" } }}
-              InputLabelProps={{ sx: { color: "white" } }}
+              InputProps={{ sx: { color: theme.palette.common.white } }}
+              InputLabelProps={{ sx: { color: theme.palette.common.white } }}
               sx={{ mb: 3 }}
             />
             <Button
@@ -612,8 +612,8 @@ const BookDetails = () => {
               fullWidth
               sx={{
                 fontWeight: "bold",
-                background: "linear-gradient(135deg, #1976D2, #42A5F5)",
-                "&:hover": { background: "linear-gradient(135deg, #1557a0, #42A5F5)" },
+                background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
+                "&:hover": { background: `linear-gradient(135deg, ${theme.palette.primary.dark}, ${theme.palette.primary.light})` },
               }}
               disabled={!chapterName.trim() || !chapterContent.trim()}
             >
@@ -625,6 +625,7 @@ const BookDetails = () => {
         <Toast data={toastConfig} action={{ onClose: handleToastClose }} />
       </Box>
     </ErrorBoundary>
+
   );
 };
 

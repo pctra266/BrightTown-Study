@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import ButtonToFlashcardSets from "./components/ButtonToFlashcardSets";
 import { useFlashcardSet } from "./hooks/useFlashcardSet";
 import { useAuth } from "../../contexts/AuthContext";
+import LoadingPage from "../../pages/LoadingPage";
 
 const FlashcardsPlay = () => {
   const { id = "" } = useParams();
@@ -14,7 +15,7 @@ const FlashcardsPlay = () => {
   const userId = user?.id || "";
   const userRoleId = user?.role || "";
 
-  const { flashcardSet } = useFlashcardSet(id, userId, userRoleId);
+  const { flashcardSet, loading, error } = useFlashcardSet(id, userId, userRoleId);
 
   const handleFlip = () => {
     setIsFlipped((prev) => !prev);
@@ -31,6 +32,7 @@ const FlashcardsPlay = () => {
       setCurrentIndex((prev) => prev + 1);
     }
   };
+  if(loading) return(<LoadingPage></LoadingPage>)
 
   if (!id) return <div>Invalid flashcard set ID.</div>;
 

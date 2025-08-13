@@ -60,9 +60,9 @@ const useNavbarStyles = (theme: any) =>
             brandColor: theme.palette.mode === "light" ? "inherit" : "#2196f3",
             tabStyles: {
                 "& .MuiTab-root": {
-                    color: `${theme.palette.mode === "light" ? "rgba(255, 255, 255, 0.7)" : "rgba(33, 150, 243, 0.7)"} `,
-                    fontWeight: 600,
-                    fontSize: "0.95rem",
+                    color: theme.palette.mode === "light" ? "#fff" : "#ccc",
+                    fontWeight: 700,
+                    fontSize: "1rem",
                     textTransform: "none",
                     minHeight: "48px",
                     borderRadius: "8px 8px 0 0",
@@ -70,26 +70,21 @@ const useNavbarStyles = (theme: any) =>
                     transition: "all 0.3s ease-in-out",
                     position: "relative",
                     "&.Mui-selected": {
-                        color: `${theme.palette.mode === "light" ? "#fff" : "#2196f3"} `,
+                        color: theme.palette.mode === "light" ? "#0074CC" : "#fff",
                         fontWeight: 800,
-                        backgroundColor: `${theme.palette.mode === "light" ? "rgba(255, 255, 255, 0.15)" : "rgba(33, 150, 243, 0.15)"}`,
+                        backgroundColor: theme.palette.mode === "light" ? "white" : "#0074CC",
                         boxShadow: `0 2px 8px ${theme.palette.mode === "light" ? "rgba(0, 0, 0, 0.2)" : "rgba(33, 150, 243, 0.3)"}`,
                         transform: "scale(1.05)",
                         textTransform: "capitalize",
                         transition: "all 0.3s ease-in-out",
-                    },
-                    "&:hover": {
-                        color: `${theme.palette.mode === "light" ? "#fff" : "#2196f3"} `,
-                        backgroundColor: `${theme.palette.mode === "light" ? "rgba(255, 255, 255, 0.08)" : "rgba(33, 150, 243, 0.08)"} `,
-                        transform: "scale(1.02)",
-                        fontWeight: 700,
                     }
+
                 },
                 "& .MuiTabs-indicator": {
-                    backgroundColor: `${theme.palette.mode === "light" ? "#fff" : "#2196f3"} `,
-                    height: "4px",
-                    borderRadius: "2px 2px 0 0",
-                    boxShadow: `0 -2px 4px ${theme.palette.mode === "light" ? "rgba(255, 255, 255, 0.3)" : "rgba(33, 150, 243, 0.4)"}`,
+                    backgroundColor: theme.palette.mode === "light" ? "white" : "#0074CC",
+                    borderRadius: "4px",
+                    height: "100%",
+                    zIndex: -1,
                 },
                 "& .MuiTabs-flexContainer": {
                     gap: "4px",
