@@ -1,27 +1,33 @@
-import type { UserProfileData, UserActivityData } from './types';
+import type { UserProfileData, UserActivityData } from "./types";
 
-const API_BASE = 'http://localhost:9000';
+const API_BASE = "http://localhost:9000";
 
-export const fetchUserProfile = async (userId: string): Promise<UserProfileData> => {
+export const fetchUserProfile = async (
+  userId: string
+): Promise<UserProfileData> => {
   try {
     // Fetch user data
     const userResponse = await fetch(`${API_BASE}/account`);
     const users = await userResponse.json();
     const user = users.find((u: any) => u.id === userId);
-    
+
     if (!user) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
 
     // Count user's flashcard sets
     const flashcardResponse = await fetch(`${API_BASE}/flashcardSets`);
     const flashcardSets = await flashcardResponse.json();
-    const userFlashcardSets = flashcardSets.filter((set: any) => set.userId === userId);
+    const userFlashcardSets = flashcardSets.filter(
+      (set: any) => set.userId === userId
+    );
 
     // Count user's discussions
     const discussionResponse = await fetch(`${API_BASE}/discussions`);
     const discussions = await discussionResponse.json();
-    const userDiscussions = discussions.filter((d: any) => d.authorId === userId);
+    const userDiscussions = discussions.filter(
+      (d: any) => d.authorId === userId
+    );
 
     // Count user's books
     const booksResponse = await fetch(`${API_BASE}/books`);
@@ -40,25 +46,27 @@ export const fetchUserProfile = async (userId: string): Promise<UserProfileData>
       avatar: user.avatar,
       email: user.email,
       socialLinks: user.socialLinks,
-      preferences: user.preferences,
       stats: user.stats,
       joinedDate: user.joinedDate,
     };
   } catch (error) {
-    console.error('Error fetching user profile:', error);
+    console.error("Error fetching user profile:", error);
     throw error;
   }
 };
 
-export const updateUserProfile = async (userId: string, profileData: Partial<UserProfileData>): Promise<UserProfileData> => {
+export const updateUserProfile = async (
+  userId: string,
+  profileData: Partial<UserProfileData>
+): Promise<UserProfileData> => {
   try {
     // First get the current user data
     const userResponse = await fetch(`${API_BASE}/account`);
     const users = await userResponse.json();
     const currentUser = users.find((u: any) => u.id === userId);
-    
+
     if (!currentUser) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
 
     // Merge the current user data with the new profile data
@@ -70,36 +78,42 @@ export const updateUserProfile = async (userId: string, profileData: Partial<Use
 
     // Update the user in the database
     const updateResponse = await fetch(`${API_BASE}/account/${userId}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(updatedUser),
     });
 
     if (!updateResponse.ok) {
-      throw new Error('Failed to update profile');
+      throw new Error("Failed to update profile");
     }
 
     // Return the updated profile
     return await fetchUserProfile(userId);
   } catch (error) {
-    console.error('Error updating user profile:', error);
+    console.error("Error updating user profile:", error);
     throw error;
   }
 };
 
-export const fetchUserActivity = async (userId: string): Promise<UserActivityData> => {
+export const fetchUserActivity = async (
+  userId: string
+): Promise<UserActivityData> => {
   try {
     // Fetch user's flashcard sets
     const flashcardResponse = await fetch(`${API_BASE}/flashcardSets`);
     const allFlashcardSets = await flashcardResponse.json();
-    const flashcardSets = allFlashcardSets.filter((set: any) => set.userId === userId);
+    const flashcardSets = allFlashcardSets.filter(
+      (set: any) => set.userId === userId
+    );
 
     // Fetch user's discussions
     const discussionResponse = await fetch(`${API_BASE}/discussions`);
     const allDiscussions = await discussionResponse.json();
-    const discussions = allDiscussions.filter((d: any) => d.authorId === userId);
+    const discussions = allDiscussions.filter(
+      (d: any) => d.authorId === userId
+    );
 
     // Fetch user's books
     const booksResponse = await fetch(`${API_BASE}/books`);
@@ -130,19 +144,19 @@ export const fetchUserActivity = async (userId: string): Promise<UserActivityDat
       })),
     };
   } catch (error) {
-    console.error('Error fetching user activity:', error);
+    console.error("Error fetching user activity:", error);
     throw error;
   }
 };
 
 export const getRoleDisplayName = (role: string): string => {
   switch (role) {
-    case '0':
-      return 'Super Admin';
-    case '1':
-      return 'Admin';
-    case '2':
-      return 'User';
+    case "0":
+      return "Super Admin";
+    case "1":
+      return "Admin";
+    case "2":
+      return "User";
     default:
       return role;
   }

@@ -7,8 +7,6 @@ import {
   TextField,
   Button,
   Grid,
-  Switch,
-  FormControlLabel,
   Divider,
   CircularProgress,
 } from '@mui/material';
@@ -35,8 +33,6 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
     linkedin: profile.socialLinks?.linkedin || '',
     github: profile.socialLinks?.github || '',
     twitter: profile.socialLinks?.twitter || '',
-    publicProfile: profile.preferences?.publicProfile ?? true,
-    notifications: profile.preferences?.notifications ?? true,
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -62,7 +58,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -75,11 +71,6 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
         linkedin: formData.linkedin,
         github: formData.github,
         twitter: formData.twitter,
-      },
-      preferences: {
-        ...profile.preferences,
-        publicProfile: formData.publicProfile,
-        notifications: formData.notifications,
       },
     };
 
@@ -137,7 +128,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
 
           {/* Contact Information */}
           <Grid container spacing={3} sx={{ mb: 3 }}>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
                 type="email"
@@ -159,7 +150,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
               Social Links
             </Typography>
             <Grid container spacing={2}>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
                   fullWidth
                   type="url"
@@ -172,7 +163,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                 />
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
                   fullWidth
                   type="url"
@@ -183,7 +174,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                 />
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
                   fullWidth
                   type="url"
@@ -194,7 +185,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                 />
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
                   fullWidth
                   type="url"
@@ -205,38 +196,6 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                 />
               </Grid>
             </Grid>
-          </Box>
-
-          <Divider sx={{ my: 3 }} />
-
-          {/* Preferences */}
-          <Box mb={4}>
-            <Typography variant="h5" component="h3" gutterBottom sx={{ mb: 2 }}>
-              Preferences
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={formData.publicProfile}
-                    onChange={(e) => handleInputChange('publicProfile', e.target.checked)}
-                    color="primary"
-                  />
-                }
-                label="Make my profile public"
-              />
-
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={formData.notifications}
-                    onChange={(e) => handleInputChange('notifications', e.target.checked)}
-                    color="primary"
-                  />
-                }
-                label="Enable email notifications"
-              />
-            </Box>
           </Box>
 
           {/* Save Button */}
