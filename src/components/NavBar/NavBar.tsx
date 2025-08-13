@@ -72,7 +72,6 @@ const useNavbarStyles = (theme: any) =>
                     "&.Mui-selected": {
                         color: theme.palette.mode === "light" ? "#0074CC" : "#fff",
                         fontWeight: 800,
-                        backgroundColor: `${theme.palette.mode === "light" ? "rgba(255, 255, 255, 0.15)" : "rgba(33, 150, 243, 0.15)"}`,
                         backgroundColor: theme.palette.mode === "light" ? "white" : "#0074CC",
                         boxShadow: `0 2px 8px ${theme.palette.mode === "light" ? "rgba(0, 0, 0, 0.2)" : "rgba(33, 150, 243, 0.3)"}`,
                         transform: "scale(1.05)",
