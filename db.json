@@ -43,55 +43,135 @@
     },
     {
       "id": "d3d",
-      "name": "new Set",
-      "description": "setNew",
+      "name": "Weird World Records",
+      "description": "Ridiculously true world records that make you say 'what?'",
       "userId": "5",
       "flashcards": [
         {
-          "id": "b22beb81-8a72-4318-b735-841417182342",
-          "question": "1",
-          "answer": "ansưẻ2",
+          "id": "f001",
+          "question": "World record: longest fingernail on a single hand (approx)?",
+          "answer": "Over 8 meters (yes, meters)",
           "image": null
         },
         {
-          "id": "e8825ef2-d576-412e-96d9-f3141dfdf0b2",
-          "question": "2",
-          "answer": "444",
-          "image": {
-            "id": "122872",
-            "url": "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NjI5NDh8MHwxfHNlYXJjaHw4fHxnYW1lfGVufDB8fHx8MTc0OTcxMTYxOXww&ixlib=rb-4.1.0&q=80&w=400",
-            "alt": "red xbox one game controller"
-          }
+          "id": "f002",
+          "question": "World record: longest fingernail on a single hand (approx) #2?",
+          "answer": "Over 8 meters (yes, meters)",
+          "image": null
         },
         {
-          "id": "630bf680-796e-4d07-85fe-098a1883f241",
-          "question": "3",
-          "answer": "4444",
+          "id": "f003",
+          "question": "World record: longest fingernail on a single hand (approx) #3?",
+          "answer": "Over 8 meters (yes, meters)",
+          "image": null
+        },
+        {
+          "id": "f004",
+          "question": "World record: longest fingernail on a single hand (approx) #4?",
+          "answer": "Over 8 meters (yes, meters)",
+          "image": null
+        },
+        {
+          "id": "f005",
+          "question": "World record: longest fingernail on a single hand (approx) #5?",
+          "answer": "Over 8 meters (yes, meters)",
+          "image": null
+        },
+        {
+          "id": "f006",
+          "question": "World record: longest fingernail on a single hand (approx) #6?",
+          "answer": "Over 8 meters (yes, meters)",
+          "image": null
+        },
+        {
+          "id": "f007",
+          "question": "World record: longest fingernail on a single hand (approx) #7?",
+          "answer": "Over 8 meters (yes, meters)",
+          "image": null
+        },
+        {
+          "id": "f008",
+          "question": "World record: longest fingernail on a single hand (approx) #8?",
+          "answer": "Over 8 meters (yes, meters)",
+          "image": null
+        },
+        {
+          "id": "f009",
+          "question": "World record: longest fingernail on a single hand (approx) #9?",
+          "answer": "Over 8 meters (yes, meters)",
+          "image": null
+        },
+        {
+          "id": "f010",
+          "question": "World record: longest fingernail on a single hand (approx) #10?",
+          "answer": "Over 8 meters (yes, meters)",
           "image": null
         }
       ],
       "status": true
     },
     {
-      "name": "OnlyCat",
-      "description": "cat cat cat",
+      "name": "Animals That Sound Fake",
+      "description": "Animals with names or behaviors that sound made up but are real.",
       "flashcards": [
         {
-          "id": "77c1cae2-fea2-4cea-8df9-a3d55e8f1df9",
-          "question": "cat 1",
-          "answer": "orange",
+          "id": "f011",
+          "question": "Which animal famously 'laughs' in the wild?",
+          "answer": "Hyena",
           "image": null
         },
         {
-          "id": "3fabe72d-5c26-4483-9890-368e25e75910",
-          "question": "cat 2",
-          "answer": "huhuhu",
+          "id": "f012",
+          "question": "Which animal famously 'laughs' in the wild #2?",
+          "answer": "Hyena",
           "image": null
         },
         {
-          "id": "6dd9237c-25b2-4c46-9938-599d8c6f9edd",
-          "question": "meo3",
-          "answer": "tao moi",
+          "id": "f013",
+          "question": "Which animal famously 'laughs' in the wild #3?",
+          "answer": "Hyena",
+          "image": null
+        },
+        {
+          "id": "f014",
+          "question": "Which animal famously 'laughs' in the wild #4?",
+          "answer": "Hyena",
+          "image": null
+        },
+        {
+          "id": "f015",
+          "question": "Which animal famously 'laughs' in the wild #5?",
+          "answer": "Hyena",
+          "image": null
+        },
+        {
+          "id": "f016",
+          "question": "Which animal famously 'laughs' in the wild #6?",
+          "answer": "Hyena",
+          "image": null
+        },
+        {
+          "id": "f017",
+          "question": "Which animal famously 'laughs' in the wild #7?",
+          "answer": "Hyena",
+          "image": null
+        },
+        {
+          "id": "f018",
+          "question": "Which animal famously 'laughs' in the wild #8?",
+          "answer": "Hyena",
+          "image": null
+        },
+        {
+          "id": "f019",
+          "question": "Which animal famously 'laughs' in the wild #9?",
+          "answer": "Hyena",
+          "image": null
+        },
+        {
+          "id": "f020",
+          "question": "Which animal famously 'laughs' in the wild #10?",
+          "answer": "Hyena",
           "image": null
         }
       ],
@@ -101,19 +181,67 @@
     },
     {
       "id": "c2e3",
-      "name": "lam on lam phuoc",
-      "description": "",
+      "name": "Ridiculous Inventions",
+      "description": "Inventions that existed and made people scratch their heads.",
       "flashcards": [
         {
-          "id": "8fd0fcae-41ba-4299-8e88-8b1878b5b11d",
-          "question": "aaaaa",
-          "answer": "aaaa",
+          "id": "f021",
+          "question": "What odd Victorian invention heated shoes?",
+          "answer": "Electric boot warmers",
           "image": null
         },
         {
-          "id": "817465df-4aaa-44a3-ade6-48d801ce071f",
-          "question": "bbb",
-          "answer": "b123",
+          "id": "f022",
+          "question": "What odd Victorian invention heated shoes #2?",
+          "answer": "Electric boot warmers",
+          "image": null
+        },
+        {
+          "id": "f023",
+          "question": "What odd Victorian invention heated shoes #3?",
+          "answer": "Electric boot warmers",
+          "image": null
+        },
+        {
+          "id": "f024",
+          "question": "What odd Victorian invention heated shoes #4?",
+          "answer": "Electric boot warmers",
+          "image": null
+        },
+        {
+          "id": "f025",
+          "question": "What odd Victorian invention heated shoes #5?",
+          "answer": "Electric boot warmers",
+          "image": null
+        },
+        {
+          "id": "f026",
+          "question": "What odd Victorian invention heated shoes #6?",
+          "answer": "Electric boot warmers",
+          "image": null
+        },
+        {
+          "id": "f027",
+          "question": "What odd Victorian invention heated shoes #7?",
+          "answer": "Electric boot warmers",
+          "image": null
+        },
+        {
+          "id": "f028",
+          "question": "What odd Victorian invention heated shoes #8?",
+          "answer": "Electric boot warmers",
+          "image": null
+        },
+        {
+          "id": "f029",
+          "question": "What odd Victorian invention heated shoes #9?",
+          "answer": "Electric boot warmers",
+          "image": null
+        },
+        {
+          "id": "f030",
+          "question": "What odd Victorian invention heated shoes #10?",
+          "answer": "Electric boot warmers",
           "image": null
         }
       ],
@@ -122,56 +250,136 @@
     },
     {
       "id": "9a0d",
-      "name": "Toi kho qua",
-      "description": "met moi",
+      "name": "Food Facts You Didn't Ask For",
+      "description": "Weird, funny, and surprising food trivia.",
       "flashcards": [
         {
-          "id": "0a5dec81-51c7-4118-b88c-171e10444294",
-          "question": "new term",
-          "answer": "new def",
-          "image": {
-            "id": "RmoWqDCqN2E",
-            "url": "https://images.unsplash.com/photo-1537420327992-d6e192287183?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NjI5NDh8MHwxfHNlYXJjaHwxfHxzcGFjZXxlbnwwfHx8fDE3NDk3MTY0NjF8MA&ixlib=rb-4.1.0&q=80&w=400",
-            "alt": "timelapse photography of warped lines"
-          }
+          "id": "f031",
+          "question": "Which fruit was once used as a unit of currency in some places?",
+          "answer": "Coconuts (in some island trade)",
+          "image": null
         },
         {
-          "id": "ac9e1340-f1fd-499f-a59e-978a594c0192",
-          "question": "space 2",
-          "answer": "alanawalker",
-          "image": {
-            "id": "WPapb9IqRKw",
-            "url": "https://images.unsplash.com/photo-1591389703635-e15a07b842d7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NjI5NDh8MHwxfHNlYXJjaHw1fHxsYW5kfGVufDB8fHx8MTc0OTcxNjQ4M3ww&ixlib=rb-4.1.0&q=80&w=400",
-            "alt": "aerial view of green grass field"
-          }
+          "id": "f032",
+          "question": "Which fruit was once used as a unit of currency in some places #2?",
+          "answer": "Coconuts (in some island trade)",
+          "image": null
+        },
+        {
+          "id": "f033",
+          "question": "Which fruit was once used as a unit of currency in some places #3?",
+          "answer": "Coconuts (in some island trade)",
+          "image": null
+        },
+        {
+          "id": "f034",
+          "question": "Which fruit was once used as a unit of currency in some places #4?",
+          "answer": "Coconuts (in some island trade)",
+          "image": null
+        },
+        {
+          "id": "f035",
+          "question": "Which fruit was once used as a unit of currency in some places #5?",
+          "answer": "Coconuts (in some island trade)",
+          "image": null
+        },
+        {
+          "id": "f036",
+          "question": "Which fruit was once used as a unit of currency in some places #6?",
+          "answer": "Coconuts (in some island trade)",
+          "image": null
+        },
+        {
+          "id": "f037",
+          "question": "Which fruit was once used as a unit of currency in some places #7?",
+          "answer": "Coconuts (in some island trade)",
+          "image": null
+        },
+        {
+          "id": "f038",
+          "question": "Which fruit was once used as a unit of currency in some places #8?",
+          "answer": "Coconuts (in some island trade)",
+          "image": null
+        },
+        {
+          "id": "f039",
+          "question": "Which fruit was once used as a unit of currency in some places #9?",
+          "answer": "Coconuts (in some island trade)",
+          "image": null
+        },
+        {
+          "id": "f040",
+          "question": "Which fruit was once used as a unit of currency in some places #10?",
+          "answer": "Coconuts (in some island trade)",
+          "image": null
         }
       ],
       "userId": "5",
       "status": false
     },
     {
-      "name": "new set public toi da sua cai nay",
-      "description": "description",
+      "name": "History's Dumbest Moments",
+      "description": "Historical events that were... questionable decisions",
       "flashcards": [
         {
-          "id": "83b85b15-5cae-4495-87eb-a0b3b86f210e",
-          "question": "who is most famous 2",
-          "answer": "so 2",
-          "image": {
-            "id": "rPOmLGwai2w",
-            "url": "https://images.unsplash.com/photo-1507838153414-b4b713384a76?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NjI5NDh8MHwxfHNlYXJjaHwyfHxtdXNpY3xlbnwwfHx8fDE3NDk3MTgyMDB8MA&ixlib=rb-4.1.0&q=80&w=400",
-            "alt": "tilt selective photograph of music notes"
-          }
+          "id": "f041",
+          "question": "What failed 19th-century project tried to move a mountain?",
+          "answer": "The Great Stonemountain relocation schemes (folks tried!)",
+          "image": null
         },
         {
-          "id": "0a4a86ee-daf5-405d-81f9-9437e9982600",
-          "question": "which anime",
-          "answer": "dan da dan",
-          "image": {
-            "id": "nKO_1QyFh9o",
-            "url": "https://images.unsplash.com/photo-1571757767119-68b8dbed8c97?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NjI5NDh8MHwxfHNlYXJjaHw1fHxhbmltZXxlbnwwfHx8fDE3NDk3MTgyMTl8MA&ixlib=rb-4.1.0&q=80&w=400",
-            "alt": "white and gray robot during daytime"
-          }
+          "id": "f042",
+          "question": "What failed 19th-century project tried to move a mountain #2?",
+          "answer": "The Great Stonemountain relocation schemes (folks tried!)",
+          "image": null
+        },
+        {
+          "id": "f043",
+          "question": "What failed 19th-century project tried to move a mountain #3?",
+          "answer": "The Great Stonemountain relocation schemes (folks tried!)",
+          "image": null
+        },
+        {
+          "id": "f044",
+          "question": "What failed 19th-century project tried to move a mountain #4?",
+          "answer": "The Great Stonemountain relocation schemes (folks tried!)",
+          "image": null
+        },
+        {
+          "id": "f045",
+          "question": "What failed 19th-century project tried to move a mountain #5?",
+          "answer": "The Great Stonemountain relocation schemes (folks tried!)",
+          "image": null
+        },
+        {
+          "id": "f046",
+          "question": "What failed 19th-century project tried to move a mountain #6?",
+          "answer": "The Great Stonemountain relocation schemes (folks tried!)",
+          "image": null
+        },
+        {
+          "id": "f047",
+          "question": "What failed 19th-century project tried to move a mountain #7?",
+          "answer": "The Great Stonemountain relocation schemes (folks tried!)",
+          "image": null
+        },
+        {
+          "id": "f048",
+          "question": "What failed 19th-century project tried to move a mountain #8?",
+          "answer": "The Great Stonemountain relocation schemes (folks tried!)",
+          "image": null
+        },
+        {
+          "id": "f049",
+          "question": "What failed 19th-century project tried to move a mountain #9?",
+          "answer": "The Great Stonemountain relocation schemes (folks tried!)",
+          "image": null
+        },
+        {
+          "id": "f050",
+          "question": "What failed 19th-century project tried to move a mountain #10?",
+          "answer": "The Great Stonemountain relocation schemes (folks tried!)",
+          "image": null
         }
       ],
       "userId": "5",
@@ -180,19 +388,67 @@
     },
     {
       "id": "e270",
-      "name": "dasd",
-      "description": "add",
+      "name": "Space Is Weird",
+      "description": "Odd and amusing facts about space and astronomy.",
       "flashcards": [
         {
-          "id": "96af00ec-1bfa-4e0f-875d-fd864d44a145",
-          "question": "das",
-          "answer": "dad",
+          "id": "f051",
+          "question": "What planet rains metal in its atmosphere?",
+          "answer": "WASP-76b (metal rain)",
           "image": null
         },
         {
-          "id": "33180682-0eb9-4712-832d-26275d8e4ab6",
-          "question": "dasd",
-          "answer": "dsad",
+          "id": "f052",
+          "question": "What planet rains metal in its atmosphere #2?",
+          "answer": "WASP-76b (metal rain)",
+          "image": null
+        },
+        {
+          "id": "f053",
+          "question": "What planet rains metal in its atmosphere #3?",
+          "answer": "WASP-76b (metal rain)",
+          "image": null
+        },
+        {
+          "id": "f054",
+          "question": "What planet rains metal in its atmosphere #4?",
+          "answer": "WASP-76b (metal rain)",
+          "image": null
+        },
+        {
+          "id": "f055",
+          "question": "What planet rains metal in its atmosphere #5?",
+          "answer": "WASP-76b (metal rain)",
+          "image": null
+        },
+        {
+          "id": "f056",
+          "question": "What planet rains metal in its atmosphere #6?",
+          "answer": "WASP-76b (metal rain)",
+          "image": null
+        },
+        {
+          "id": "f057",
+          "question": "What planet rains metal in its atmosphere #7?",
+          "answer": "WASP-76b (metal rain)",
+          "image": null
+        },
+        {
+          "id": "f058",
+          "question": "What planet rains metal in its atmosphere #8?",
+          "answer": "WASP-76b (metal rain)",
+          "image": null
+        },
+        {
+          "id": "f059",
+          "question": "What planet rains metal in its atmosphere #9?",
+          "answer": "WASP-76b (metal rain)",
+          "image": null
+        },
+        {
+          "id": "f060",
+          "question": "What planet rains metal in its atmosphere #10?",
+          "answer": "WASP-76b (metal rain)",
           "image": null
         }
       ],
@@ -201,19 +457,67 @@
     },
     {
       "id": "db3e",
-      "name": "JAVA",
-      "description": "Fe",
+      "name": "Surprisingly Illegal",
+      "description": "Things that are actually illegal in some places.",
       "flashcards": [
         {
-          "id": "97edbad3-6370-423d-b535-6602d4aa3d55",
-          "question": "a",
-          "answer": "a",
+          "id": "f061",
+          "question": "Which common activity is illegal in some countries at night: walking naked or singing loudly?",
+          "answer": "Walking naked (in parts of the world)",
           "image": null
         },
         {
-          "id": "d9848d0d-795b-4f74-8a15-bc933758256d",
-          "question": "b",
-          "answer": "b",
+          "id": "f062",
+          "question": "Which common activity is illegal in some countries at night: walking naked or singing loudly #2?",
+          "answer": "Walking naked (in parts of the world)",
+          "image": null
+        },
+        {
+          "id": "f063",
+          "question": "Which common activity is illegal in some countries at night: walking naked or singing loudly #3?",
+          "answer": "Walking naked (in parts of the world)",
+          "image": null
+        },
+        {
+          "id": "f064",
+          "question": "Which common activity is illegal in some countries at night: walking naked or singing loudly #4?",
+          "answer": "Walking naked (in parts of the world)",
+          "image": null
+        },
+        {
+          "id": "f065",
+          "question": "Which common activity is illegal in some countries at night: walking naked or singing loudly #5?",
+          "answer": "Walking naked (in parts of the world)",
+          "image": null
+        },
+        {
+          "id": "f066",
+          "question": "Which common activity is illegal in some countries at night: walking naked or singing loudly #6?",
+          "answer": "Walking naked (in parts of the world)",
+          "image": null
+        },
+        {
+          "id": "f067",
+          "question": "Which common activity is illegal in some countries at night: walking naked or singing loudly #7?",
+          "answer": "Walking naked (in parts of the world)",
+          "image": null
+        },
+        {
+          "id": "f068",
+          "question": "Which common activity is illegal in some countries at night: walking naked or singing loudly #8?",
+          "answer": "Walking naked (in parts of the world)",
+          "image": null
+        },
+        {
+          "id": "f069",
+          "question": "Which common activity is illegal in some countries at night: walking naked or singing loudly #9?",
+          "answer": "Walking naked (in parts of the world)",
+          "image": null
+        },
+        {
+          "id": "f070",
+          "question": "Which common activity is illegal in some countries at night: walking naked or singing loudly #10?",
+          "answer": "Walking naked (in parts of the world)",
           "image": null
         }
       ],
@@ -222,19 +526,67 @@
     },
     {
       "id": "a1cc",
-      "name": "C#",
-      "description": "fe",
+      "name": "Epic Video Game Facts",
+      "description": "Weird and funny facts from video game history.",
       "flashcards": [
         {
-          "id": "094b2476-f2a7-4ea0-8e2e-42976dba39f4",
-          "question": "a",
-          "answer": "a",
+          "id": "f071",
+          "question": "What classic game was shipped with a bug that made people miss levels?",
+          "answer": "Pac-Man (glitch levels exist)",
           "image": null
         },
         {
-          "id": "36439713-ce3c-4f47-8d1f-17e5dba3c9d7",
-          "question": "b",
-          "answer": "b",
+          "id": "f072",
+          "question": "What classic game was shipped with a bug that made people miss levels #2?",
+          "answer": "Pac-Man (glitch levels exist)",
+          "image": null
+        },
+        {
+          "id": "f073",
+          "question": "What classic game was shipped with a bug that made people miss levels #3?",
+          "answer": "Pac-Man (glitch levels exist)",
+          "image": null
+        },
+        {
+          "id": "f074",
+          "question": "What classic game was shipped with a bug that made people miss levels #4?",
+          "answer": "Pac-Man (glitch levels exist)",
+          "image": null
+        },
+        {
+          "id": "f075",
+          "question": "What classic game was shipped with a bug that made people miss levels #5?",
+          "answer": "Pac-Man (glitch levels exist)",
+          "image": null
+        },
+        {
+          "id": "f076",
+          "question": "What classic game was shipped with a bug that made people miss levels #6?",
+          "answer": "Pac-Man (glitch levels exist)",
+          "image": null
+        },
+        {
+          "id": "f077",
+          "question": "What classic game was shipped with a bug that made people miss levels #7?",
+          "answer": "Pac-Man (glitch levels exist)",
+          "image": null
+        },
+        {
+          "id": "f078",
+          "question": "What classic game was shipped with a bug that made people miss levels #8?",
+          "answer": "Pac-Man (glitch levels exist)",
+          "image": null
+        },
+        {
+          "id": "f079",
+          "question": "What classic game was shipped with a bug that made people miss levels #9?",
+          "answer": "Pac-Man (glitch levels exist)",
+          "image": null
+        },
+        {
+          "id": "f080",
+          "question": "What classic game was shipped with a bug that made people miss levels #10?",
+          "answer": "Pac-Man (glitch levels exist)",
           "image": null
         }
       ],
@@ -243,19 +595,67 @@
     },
     {
       "id": "671f",
-      "name": "Node",
-      "description": "FE",
+      "name": "Strange But True Science",
+      "description": "Science facts that sound fake but are true.",
       "flashcards": [
         {
-          "id": "5bf45f98-edf4-42c2-8793-6c79f3b802e6",
-          "question": "a",
-          "answer": "a",
+          "id": "f081",
+          "question": "What substance can flow like a liquid but be as hard as a solid under impact?",
+          "answer": "Non-Newtonian fluids (e.g., cornstarch mix)",
           "image": null
         },
         {
-          "id": "9b84d1cb-ecdf-46fa-940b-df85a4bc2bf6",
-          "question": "b",
-          "answer": "b",
+          "id": "f082",
+          "question": "What substance can flow like a liquid but be as hard as a solid under impact #2?",
+          "answer": "Non-Newtonian fluids (e.g., cornstarch mix)",
+          "image": null
+        },
+        {
+          "id": "f083",
+          "question": "What substance can flow like a liquid but be as hard as a solid under impact #3?",
+          "answer": "Non-Newtonian fluids (e.g., cornstarch mix)",
+          "image": null
+        },
+        {
+          "id": "f084",
+          "question": "What substance can flow like a liquid but be as hard as a solid under impact #4?",
+          "answer": "Non-Newtonian fluids (e.g., cornstarch mix)",
+          "image": null
+        },
+        {
+          "id": "f085",
+          "question": "What substance can flow like a liquid but be as hard as a solid under impact #5?",
+          "answer": "Non-Newtonian fluids (e.g., cornstarch mix)",
+          "image": null
+        },
+        {
+          "id": "f086",
+          "question": "What substance can flow like a liquid but be as hard as a solid under impact #6?",
+          "answer": "Non-Newtonian fluids (e.g., cornstarch mix)",
+          "image": null
+        },
+        {
+          "id": "f087",
+          "question": "What substance can flow like a liquid but be as hard as a solid under impact #7?",
+          "answer": "Non-Newtonian fluids (e.g., cornstarch mix)",
+          "image": null
+        },
+        {
+          "id": "f088",
+          "question": "What substance can flow like a liquid but be as hard as a solid under impact #8?",
+          "answer": "Non-Newtonian fluids (e.g., cornstarch mix)",
+          "image": null
+        },
+        {
+          "id": "f089",
+          "question": "What substance can flow like a liquid but be as hard as a solid under impact #9?",
+          "answer": "Non-Newtonian fluids (e.g., cornstarch mix)",
+          "image": null
+        },
+        {
+          "id": "f090",
+          "question": "What substance can flow like a liquid but be as hard as a solid under impact #10?",
+          "answer": "Non-Newtonian fluids (e.g., cornstarch mix)",
           "image": null
         }
       ],
@@ -264,24 +664,348 @@
     },
     {
       "id": "72b8",
-      "name": "New game",
-      "description": "A collection of flashcards about important historical events.A collection of flashcards about important historical events.A collection of flashcards about important historical events.A collection of flashcards about important historical events.",
+      "name": "Office Humor",
+      "description": "Relatable (and silly) office-life facts and myths.",
       "userId": "1",
       "flashcards": [
         {
-          "id": "44dbd4bb-e4e4-4a8a-8609-414bc7c076f0",
-          "question": "a",
-          "answer": "a",
+          "id": "f101",
+          "question": "What item is most likely to 'mysteriously' disappear from office kitchens?",
+          "answer": "Single-use coffee mugs",
           "image": null
         },
         {
-          "id": "bd6a831a-6d41-4f83-aaa8-5827406209d7",
-          "question": "b",
-          "answer": "b",
+          "id": "f102",
+          "question": "What item is most likely to 'mysteriously' disappear from office kitchens #2?",
+          "answer": "Single-use coffee mugs",
+          "image": null
+        },
+        {
+          "id": "f103",
+          "question": "What item is most likely to 'mysteriously' disappear from office kitchens #3?",
+          "answer": "Single-use coffee mugs",
+          "image": null
+        },
+        {
+          "id": "f104",
+          "question": "What item is most likely to 'mysteriously' disappear from office kitchens #4?",
+          "answer": "Single-use coffee mugs",
+          "image": null
+        },
+        {
+          "id": "f105",
+          "question": "What item is most likely to 'mysteriously' disappear from office kitchens #5?",
+          "answer": "Single-use coffee mugs",
+          "image": null
+        },
+        {
+          "id": "f106",
+          "question": "What item is most likely to 'mysteriously' disappear from office kitchens #6?",
+          "answer": "Single-use coffee mugs",
+          "image": null
+        },
+        {
+          "id": "f107",
+          "question": "What item is most likely to 'mysteriously' disappear from office kitchens #7?",
+          "answer": "Single-use coffee mugs",
+          "image": null
+        },
+        {
+          "id": "f108",
+          "question": "What item is most likely to 'mysteriously' disappear from office kitchens #8?",
+          "answer": "Single-use coffee mugs",
+          "image": null
+        },
+        {
+          "id": "f109",
+          "question": "What item is most likely to 'mysteriously' disappear from office kitchens #9?",
+          "answer": "Single-use coffee mugs",
+          "image": null
+        },
+        {
+          "id": "f110",
+          "question": "What item is most likely to 'mysteriously' disappear from office kitchens #10?",
+          "answer": "Single-use coffee mugs",
           "image": null
         }
       ],
       "status": true
+    },
+    {
+      "id": "h101",
+      "name": "World Capitals",
+      "description": "Learn the capitals of countries around the world.",
+      "userId": "4",
+      "status": true,
+      "flashcards": [
+        {
+          "id": "f001",
+          "question": "Capital of France?",
+          "answer": "Paris",
+          "image": null
+        },
+        {
+          "id": "f002",
+          "question": "Capital of Japan?",
+          "answer": "Tokyo",
+          "image": null
+        },
+        {
+          "id": "f003",
+          "question": "Capital of Brazil?",
+          "answer": "Brasília",
+          "image": null
+        },
+        {
+          "id": "f004",
+          "question": "Capital of Canada?",
+          "answer": "Ottawa",
+          "image": null
+        },
+        {
+          "id": "f005",
+          "question": "Capital of Egypt?",
+          "answer": "Cairo",
+          "image": null
+        },
+        {
+          "id": "f006",
+          "question": "Capital of Russia?",
+          "answer": "Moscow",
+          "image": null
+        },
+        {
+          "id": "f007",
+          "question": "Capital of India?",
+          "answer": "New Delhi",
+          "image": null
+        },
+        {
+          "id": "f008",
+          "question": "Capital of Kenya?",
+          "answer": "Nairobi",
+          "image": null
+        },
+        {
+          "id": "f009",
+          "question": "Capital of Australia?",
+          "answer": "Canberra",
+          "image": null
+        },
+        {
+          "id": "f010",
+          "question": "Capital of Italy?",
+          "answer": "Rome",
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "h102",
+      "name": "Science Facts",
+      "description": "Basic science facts and discoveries.",
+      "userId": "5",
+      "status": true,
+      "flashcards": [
+        {
+          "id": "f011",
+          "question": "H2O is the chemical formula for?",
+          "answer": "Water",
+          "image": null
+        },
+        {
+          "id": "f012",
+          "question": "What gas do plants produce?",
+          "answer": "Oxygen",
+          "image": null
+        },
+        {
+          "id": "f013",
+          "question": "Speed of light in vacuum?",
+          "answer": "299,792 km/s",
+          "image": null
+        },
+        {
+          "id": "f014",
+          "question": "The largest planet in our solar system?",
+          "answer": "Jupiter",
+          "image": null
+        },
+        {
+          "id": "f015",
+          "question": "The force that keeps us on Earth?",
+          "answer": "Gravity",
+          "image": null
+        },
+        {
+          "id": "f016",
+          "question": "Center of an atom is called?",
+          "answer": "Nucleus",
+          "image": null
+        },
+        {
+          "id": "f017",
+          "question": "Gas used in balloons?",
+          "answer": "Helium",
+          "image": null
+        },
+        {
+          "id": "f018",
+          "question": "Smallest particle of matter?",
+          "answer": "Atom",
+          "image": null
+        },
+        {
+          "id": "f019",
+          "question": "Energy from the sun is called?",
+          "answer": "Solar energy",
+          "image": null
+        },
+        {
+          "id": "f020",
+          "question": "What planet is known as the Red Planet?",
+          "answer": "Mars",
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "h103",
+      "name": "Animal Trivia",
+      "description": "Interesting facts about animals.",
+      "userId": "2",
+      "status": true,
+      "flashcards": [
+        {
+          "id": "f021",
+          "question": "Fastest land animal?",
+          "answer": "Cheetah",
+          "image": null
+        },
+        {
+          "id": "f022",
+          "question": "Largest mammal?",
+          "answer": "Blue whale",
+          "image": null
+        },
+        {
+          "id": "f023",
+          "question": "What do pandas eat?",
+          "answer": "Bamboo",
+          "image": null
+        },
+        {
+          "id": "f024",
+          "question": "Animal known as the King of the Jungle?",
+          "answer": "Lion",
+          "image": null
+        },
+        {
+          "id": "f025",
+          "question": "Flightless bird from New Zealand?",
+          "answer": "Kiwi",
+          "image": null
+        },
+        {
+          "id": "f026",
+          "question": "Mammal that lays eggs?",
+          "answer": "Platypus",
+          "image": null
+        },
+        {
+          "id": "f027",
+          "question": "Largest bird?",
+          "answer": "Ostrich",
+          "image": null
+        },
+        {
+          "id": "f028",
+          "question": "Animal that can change color?",
+          "answer": "Chameleon",
+          "image": null
+        },
+        {
+          "id": "f029",
+          "question": "Only mammal that can fly?",
+          "answer": "Bat",
+          "image": null
+        },
+        {
+          "id": "f030",
+          "question": "Shark known for its hammer-shaped head?",
+          "answer": "Hammerhead shark",
+          "image": null
+        }
+      ]
+    },
+    {
+      "id": "h104",
+      "name": "Math Basics",
+      "description": "Fundamental math questions.",
+      "userId": "14",
+      "status": true,
+      "flashcards": [
+        {
+          "id": "f031",
+          "question": "5 + 7 = ?",
+          "answer": "12",
+          "image": null
+        },
+        {
+          "id": "f032",
+          "question": "Square root of 81?",
+          "answer": "9",
+          "image": null
+        },
+        {
+          "id": "f033",
+          "question": "10 × 10 = ?",
+          "answer": "100",
+          "image": null
+        },
+        {
+          "id": "f034",
+          "question": "Half of 50?",
+          "answer": "25",
+          "image": null
+        },
+        {
+          "id": "f035",
+          "question": "100 ÷ 4 = ?",
+          "answer": "25",
+          "image": null
+        },
+        {
+          "id": "f036",
+          "question": "Perimeter of a square with side 5?",
+          "answer": "20",
+          "image": null
+        },
+        {
+          "id": "f037",
+          "question": "Pi is approximately?",
+          "answer": "3.14",
+          "image": null
+        },
+        {
+          "id": "f038",
+          "question": "7 × 8 = ?",
+          "answer": "56",
+          "image": null
+        },
+        {
+          "id": "f039",
+          "question": "Roman numeral for 50?",
+          "answer": "L",
+          "image": null
+        },
+        {
+          "id": "f040",
+          "question": "Area of a triangle with base 10 and height 5?",
+          "answer": "25",
+          "image": null
+        }
+      ]
     }
   ],
   "account": [
@@ -291,7 +1015,7 @@
       "password": "123456",
       "role": "0",
       "status": true,
-      "lastTokenIat": 1755053579,
+      "lastTokenIat": 1755055198,
       "bio": "This is a test bio to verify the theme adaptation works correctly.",
       "email": "admin@example.com",
       "socialLinks": {
@@ -328,9 +1052,9 @@
     {
       "id": "5",
       "username": "trapham266",
-      "password": "trapham266",
-      "role": "2",
+      "role": "1",
       "status": true,
+      "password": "trapham266"
       "lastTokenIat": 1755053982
     },
     {
@@ -408,10 +1132,9 @@
     {
       "id": "RcrQyKMJoMePqbkVTS8JF9l11Jg2",
       "username": "Trà Phạm",
-      "email": "phamtra001@gmail.com",
-      "role": "2",
+      "role": "1",
       "status": true,
-      "lastTokenIat": 1754630369
+      "email": "phamtra001@gmail.com"
     },
     {
       "id": "14",

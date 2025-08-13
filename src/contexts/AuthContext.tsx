@@ -166,7 +166,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         password: string,
         turnstileToken?: string
     ): Promise<{ success: boolean; error?: string }> => {
-        const result = await authService.login(username, password, turnstileToken);
+        const result = await authService.login(username, password);
 
         if (result.success && result.user) {
             const userData: User = {
