@@ -44,7 +44,7 @@ export default function UserEdit() {
 
       try {
         // Fetch roles
-        const rolesRes = await fetch("http://localhost:9000/role");
+        const rolesRes = await fetch("https://group-03-learning-social-media-json.vercel.app/role");
         const allRoles = await rolesRes.json();
         let filteredRoles = [];
         if (currentUser.role === "0") {

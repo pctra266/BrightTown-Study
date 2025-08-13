@@ -1,6 +1,6 @@
 import type { UserProfileData, UserActivityData } from "./types";
 
-const API_BASE = "http://localhost:9000";
+const API_BASE = "https://group-03-learning-social-media-json.vercel.app";
 
 export const fetchUserProfile = async (
   userId: string
