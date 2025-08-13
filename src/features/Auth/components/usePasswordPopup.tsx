@@ -1,6 +1,5 @@
 // usePasswordPopup.tsx
 import ReactDOM from "react-dom/client";
-import React from "react";
 import PasswordPopup from "./PasswordPopup";
 
 export function showPasswordPopup(photoURL: string): Promise<string | null> {

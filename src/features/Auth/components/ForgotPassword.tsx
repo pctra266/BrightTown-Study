@@ -7,120 +7,52 @@ import {
     Typography,
     Box,
     Link as MuiLink,
-    IconButton,
-    InputAdornment,
     Alert,
-    Stepper,
-    Step,
-    StepLabel,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { authService } from "../services/AuthService";
-import type React from "react";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "../services/firebase"; // your firebase config
 
 const ForgotPassword = () => {
-    const [step, setStep] = useState(0);
-    const [username, setUsername] = useState("");
-    const [formData, setFormData] = useState({
-        newPassword: "",
-        confirmPassword: "",
-    });
-    const [showNewPassword, setShowNewPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [email, setEmail] = useState("");
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const [loading, setLoading] = useState(false);
 
-    // const navigate = useNavigate();
-    // const location = useLocation();
+    const validateEmail = (value: string) => {
+        // Simple regex check
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    };
 
-    const handleUsernameSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setError("");
+        setSuccess("");
+
+        if (!validateEmail(email)) {
+            setError("Please enter a valid email address");
+            return;
+        }
+
         setLoading(true);
-
         try {
-            const result = await authService.checkUsernameExists(username);
-
-            if (result.exists) {
-                setStep(1);
+            await sendPasswordResetEmail(auth, email, {
+                url: "http://localhost:5173/reset",
+                handleCodeInApp: true, // IMPORTANT: lets your app handle the link
+              });
+              
+            setSuccess("Password reset email sent! Please check your inbox.");
+        } catch (err: any) {
+            console.error("Reset email error:", err);
+            if (err.code === "auth/user-not-found") {
+                setError("No account found with this email.");
             } else {
-                setError("Username does not exist");
+                setError("Failed to send reset email. Please try again.");
             }
-        } catch {
-            setError("An error occurred while checking username");
         } finally {
             setLoading(false);
         }
     };
-
-    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
-    };
-
-    const handlePasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setError("");
-        setLoading(true);
-
-        if (formData.newPassword !== formData.confirmPassword) {
-            setError("New password and confirm password do not match");
-            setLoading(false);
-            return;
-        }
-
-        if (formData.newPassword.length < 6) {
-            setError("Password must be at least 6 characters long");
-            setLoading(false);
-            return;
-        }
-
-        try {
-            // Check if new password is same as current password
-            const passwordCheck = await authService.checkCurrentPassword(
-                username,
-                formData.newPassword
-            );
-
-            if (passwordCheck.isSamePassword) {
-                setError("New password cannot be the same as current password");
-                setLoading(false);
-                return;
-            }
-
-            const result = await authService.resetPassword(
-                username,
-                formData.newPassword
-            );
-
-            if (result.success) {
-                setFormData({ newPassword: "", confirmPassword: "" });
-                setSuccess("Password changed successfully!");
-                window.location.replace("/login");
-            } else {
-                setError(result.message || "An error occurred while changing password");
-                setLoading(false);
-            }
-        } catch (error) {
-            console.error("Password reset error:", error);
-            setError("An error occurred while changing password");
-            setLoading(false);
-        }
-    };
-
-    const handleClickShowNewPassword = () => {
-        setShowNewPassword(!showNewPassword);
-    };
-
-    const handleClickShowConfirmPassword = () => {
-        setShowConfirmPassword(!showConfirmPassword);
-    };
-
-    const steps = ["Enter Username", "Reset Password"];
 
     return (
         <Container component="main" maxWidth="sm">
@@ -146,14 +78,6 @@ const ForgotPassword = () => {
                         Forgot Password
                     </Typography>
 
-                    <Stepper activeStep={step} sx={{ width: "100%", mb: 3 }}>
-                        {steps.map((label) => (
-                            <Step key={label}>
-                                <StepLabel>{label}</StepLabel>
-                            </Step>
-                        ))}
-                    </Stepper>
-
                     {error && (
                         <Alert severity="error" sx={{ width: "100%", mb: 2 }}>
                             {error}
@@ -166,119 +90,33 @@ const ForgotPassword = () => {
                         </Alert>
                     )}
 
-                    {step === 0 && (
-                        <Box
-                            component="form"
-                            onSubmit={handleUsernameSubmit}
-                            sx={{ mt: 1, width: "100%" }}
+                    <Box
+                        component="form"
+                        onSubmit={handleSubmit}
+                        sx={{ mt: 1, width: "100%" }}
+                    >
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="email"
+                            label="Email Address"
+                            name="email"
+                            autoComplete="email"
+                            autoFocus
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            disabled={loading}
+                            sx={{ mt: 3, mb: 2 }}
                         >
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="username"
-                                label="Username"
-                                name="username"
-                                autoComplete="username"
-                                autoFocus
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                            />
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                disabled={loading}
-                                sx={{ mt: 3, mb: 2 }}
-                            >
-                                {loading ? "Checking..." : "Continue"}
-                            </Button>
-                        </Box>
-                    )}
-
-                    {step === 1 && (
-                        <Box
-                            component="form"
-                            onSubmit={handlePasswordSubmit}
-                            sx={{ mt: 1, width: "100%" }}
-                        >
-                            <Typography variant="body1" sx={{ mb: 2 }}>
-                                Set new password for account: <strong>{username}</strong>
-                            </Typography>
-
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="newPassword"
-                                label="New Password"
-                                type={showNewPassword ? "text" : "password"}
-                                id="newPassword"
-                                autoComplete="new-password"
-                                autoFocus
-                                value={formData.newPassword}
-                                onChange={handlePasswordChange}
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                aria-label="toggle password visibility"
-                                                onClick={handleClickShowNewPassword}
-                                                edge="end"
-                                            >
-                                                {showNewPassword ? <VisibilityOff /> : <Visibility />}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="confirmPassword"
-                                label="Confirm Password"
-                                type={showConfirmPassword ? "text" : "password"}
-                                id="confirmPassword"
-                                value={formData.confirmPassword}
-                                onChange={handlePasswordChange}
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                aria-label="toggle confirm password visibility"
-                                                onClick={handleClickShowConfirmPassword}
-                                                edge="end"
-                                            >
-                                                {showConfirmPassword ? (
-                                                    <VisibilityOff />
-                                                ) : (
-                                                    <Visibility />
-                                                )}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                disabled={loading}
-                                sx={{ mt: 3, mb: 2 }}
-                            >
-                                {loading ? "Updating..." : "Reset Password"}
-                            </Button>
-                            <Button
-                                fullWidth
-                                variant="outlined"
-                                onClick={() => setStep(0)}
-                                sx={{ mb: 2 }}
-                            >
-                                Back
-                            </Button>
-                        </Box>
-                    )}
+                            {loading ? "Sending..." : "Send Reset Email"}
+                        </Button>
+                    </Box>
 
                     <Box sx={{ textAlign: "center", mt: 2 }}>
                         <Typography variant="body2">

@@ -26,6 +26,7 @@ import ProtectedRouteUser from "./ProtectedRouteUser";
 import RecycleBin from "../features/AdminDashboard/RecycleBin";
 import UserProfile from "../features/UserProfile/components/UserProfile";
 import PublicUserProfile from "../features/UserProfile/components/PublicUserProfile";
+import ResetPassword from "../features/Auth/components/ResetPassword";
 const routers = createBrowserRouter([
   {
     path: "/",
@@ -52,6 +53,7 @@ const routers = createBrowserRouter([
       { path: "forgot-password", element: <ForgotPassword /> },
       { path: "/talk", element: <DiscussionHub /> },
       { path: "/talk/:id", element: <DiscussionDetail /> },
+      { path: "/reset", element: <ResetPassword /> },
       {
         path: "/profile",
         element: (
