@@ -307,7 +307,7 @@
       "password": "123456",
       "role": "1",
       "status": true,
-      "lastTokenIat": 1755053784
+      "lastTokenIat": 1755071123
     },
     {
       "id": "4",
@@ -402,7 +402,8 @@
       "email": "tqtolympia@gmail.com",
       "role": "2",
       "status": true,
-      "lastTokenIat": 1754984951
+      "lastTokenIat": 1755056023,
+      "password": "123456"
     },
     {
       "id": "RcrQyKMJoMePqbkVTS8JF9l11Jg2",
@@ -480,89 +481,117 @@
   "discussions": [
     {
       "id": "1",
-      "title": "How to effectively use flashcards for studying anything else?",
-      "content": "I'm struggling with memorizing vocabulary using flashcards. What are some effective techniques you recommend yet?",
-      "authorId": "2",
-      "authorName": "truong",
-      "createdAt": "2024-01-15T10:30:00Z",
-      "updatedAt": "2025-06-10T06:49:16.533Z",
-      "isEdited": true,
-      "upvotes": 1,
+      "title": "How to integrate Material-UI with React TypeScript in Bright Town Study?",
+      "content": "I'm working on improving the UI components for our learning platform. Has anyone successfully implemented Material-UI with TypeScript? I'm particularly interested in how to properly type the theme and custom components like our NavBar.",
+      "authorId": "4",
+      "authorName": "pctra266",
+      "tags": [
+        "material-ui",
+        "typescript",
+        "react",
+        "ui-design",
+        "component-architecture"
+      ],
+      "createdAt": "2025-08-10T09:15:00Z",
+      "updatedAt": null,
+      "isEdited": false,
+      "upvotes": 8,
       "downvotes": 1,
-      "score": 0,
+      "score": 7,
       "userVotes": {
-        "3": "upvote",
-        "4": "downvote"
+        "1": "upvote",
+        "2": "upvote",
+        "5": "upvote",
+        "14": "downvote",
+        "XhMHLRSU9HVYU5wY4Sm5LrRYYj43": "upvote",
+        "RcrQyKMJoMePqbkVTS8JF9l11Jg2": "upvote"
       },
-      "views": 3,
+      "views": 15,
       "viewedBy": [
-        "4",
         "1",
-        "XhMHLRSU9HVYU5wY4Sm5LrRYYj43"
+        "2",
+        "5",
+        "XhMHLRSU9HVYU5wY4Sm5LrRYYj43",
+        "RcrQyKMJoMePqbkVTS8JF9l11Jg2",
+        "14",
+        "MA9zIKD7eDdVTJqGLIfN7PThajx1"
       ],
       "answers": [
         {
           "id": "1",
-          "content": "I recommend using spaced repetition. Review cards at increasing intervals - 1 day, 3 days, 1 week, etc.",
-          "authorId": "3",
-          "authorName": "tqt",
-          "createdAt": "2024-01-15T14:20:00Z",
-          "updatedAt": null,
-          "isEdited": false,
+          "content": "I've been working on this exact issue! For TypeScript integration with MUI, make sure to extend the Theme interface and create custom styled components. Here's what worked for me:\n\n```typescript\ndeclare module '@mui/material/styles' {\n  interface Theme {\n    customPalette: {\n      brightTown: string;\n    };\n  }\n}\n```\n\nAlso, the way you're handling the LinkTab component in NavBar.tsx looks solid!",
+          "authorId": "2",
+          "authorName": "truong",
+          "createdAt": "2025-08-10T14:30:00Z",
+          "updatedAt": "2025-08-11T08:45:00Z",
+          "isEdited": true,
           "isAccepted": true,
-          "upvotes": 2,
+          "upvotes": 12,
           "downvotes": 0,
-          "score": 2,
+          "score": 12,
           "userVotes": {
             "1": "upvote",
-            "2": "upvote"
+            "4": "upvote",
+            "5": "upvote",
+            "14": "upvote",
+            "RcrQyKMJoMePqbkVTS8JF9l11Jg2": "upvote",
+            "XhMHLRSU9HVYU5wY4Sm5LrRYYj43": "upvote"
           },
           "comments": [
             {
               "id": "c1",
-              "content": "Great suggestion! I've been using this method and it works wonders. Hooray",
-              "authorId": "2",
-              "authorName": "truong",
-              "createdAt": "2024-01-15T15:00:00Z",
-              "updatedAt": "2025-08-12T06:31:51.061Z",
-              "isEdited": true,
-              "upvotes": 1,
+              "content": "This is exactly what I needed! The theme extension approach is perfect for our custom branding.",
+              "authorId": "4",
+              "authorName": "pctra266",
+              "createdAt": "2025-08-10T15:00:00Z",
+              "updatedAt": null,
+              "isEdited": false,
+              "upvotes": 3,
               "downvotes": 0,
-              "score": 1,
+              "score": 3,
               "userVotes": {
-                "3": "upvote"
+                "1": "upvote",
+                "2": "upvote",
+                "5": "upvote"
               }
             },
             {
               "id": "c2",
-              "content": "What app do you recommend for spaced repetition?",
-              "authorId": "4",
-              "authorName": "pctra266",
-              "createdAt": "2024-01-15T15:30:00Z",
+              "content": "Should we also consider using emotion for styled components or stick with MUI's sx prop?",
+              "authorId": "RcrQyKMJoMePqbkVTS8JF9l11Jg2",
+              "authorName": "Trà Phạm",
+              "createdAt": "2025-08-10T16:20:00Z",
               "updatedAt": null,
               "isEdited": false,
-              "upvotes": 0,
+              "upvotes": 2,
               "downvotes": 0,
-              "score": 0,
-              "userVotes": {}
+              "score": 2,
+              "userVotes": {
+                "1": "upvote",
+                "2": "upvote"
+              }
             }
           ]
         },
         {
           "id": "2",
-          "content": "Try the Leitner system! Organize cards into different boxes based on how well you know them.\nGood luck",
-          "authorId": "4",
-          "authorName": "pctra266",
-          "createdAt": "2024-01-15T16:45:00Z",
-          "updatedAt": "2025-06-10T07:44:12.113Z",
-          "isEdited": true,
+          "content": "For the admin features, I recommend creating separate theme variants for different user roles. The current role-based navigation in NavBar is a good start, but we could enhance it with role-specific styling.",
+          "authorId": "1",
+          "authorName": "admin",
+          "createdAt": "2025-08-10T18:45:00Z",
+          "updatedAt": null,
+          "isEdited": false,
           "isAccepted": false,
-          "upvotes": 1,
-          "downvotes": 1,
-          "score": 0,
+          "upvotes": 6,
+          "downvotes": 0,
+          "score": 6,
           "userVotes": {
-            "2": "downvote",
-            "3": "upvote"
+            "2": "upvote",
+            "4": "upvote",
+            "5": "upvote",
+            "14": "upvote",
+            "XhMHLRSU9HVYU5wY4Sm5LrRYYj43": "upvote",
+            "RcrQyKMJoMePqbkVTS8JF9l11Jg2": "upvote"
           },
           "comments": []
         }
@@ -571,211 +600,10 @@
       "comments": [
         {
           "id": "1",
-          "content": "Alo!",
-          "authorId": "2",
-          "authorName": "truong",
-          "createdAt": "2025-08-12T09:07:21.375Z",
-          "updatedAt": null,
-          "isEdited": false,
-          "upvotes": 0,
-          "downvotes": 0,
-          "score": 0,
-          "userVotes": {}
-        }
-      ]
-    },
-    {
-      "id": "2",
-      "title": "Best time of day to study?",
-      "content": "When do you find yourself most productive when studying? Morning, afternoon, or evening?",
-      "authorId": "3",
-      "authorName": "tqt",
-      "createdAt": "2024-01-14T08:15:00Z",
-      "updatedAt": null,
-      "isEdited": false,
-      "upvotes": 0,
-      "downvotes": 0,
-      "score": 0,
-      "userVotes": {},
-      "views": 2,
-      "viewedBy": [
-        "1",
-        "2"
-      ],
-      "answers": [
-        {
-          "id": "3",
-          "content": "I'm definitely a morning person. My brain is freshest right after I wake up.",
-          "authorId": "2",
-          "authorName": "truong",
-          "createdAt": "2024-01-14T09:30:00Z",
-          "updatedAt": null,
-          "isEdited": false,
-          "isAccepted": false,
-          "upvotes": 0,
-          "downvotes": 0,
-          "score": 0,
-          "userVotes": {},
-          "comments": []
-        }
-      ]
-    },
-    {
-      "id": "3",
-      "title": "How to stay motivated while studying?",
-      "content": "I often lose motivation after a few weeks of studying. Any tips on maintaining long-term motivation?",
-      "authorId": "4",
-      "authorName": "pctra266",
-      "createdAt": "2024-01-13T19:22:00Z",
-      "updatedAt": null,
-      "isEdited": false,
-      "upvotes": 0,
-      "downvotes": 0,
-      "score": 0,
-      "userVotes": {},
-      "views": 2,
-      "viewedBy": [
-        "1",
-        "2"
-      ],
-      "answers": [
-        {
-          "id": "4",
-          "content": "Set small, achievable goals and celebrate when you reach them. Also, find a study buddy for accountability!",
-          "authorId": "2",
-          "authorName": "truong",
-          "createdAt": "2024-01-13T20:15:00Z",
-          "updatedAt": null,
-          "isEdited": false,
-          "isAccepted": false,
-          "upvotes": 0,
-          "downvotes": 0,
-          "score": 0,
-          "userVotes": {},
-          "comments": []
-        }
-      ]
-    },
-    {
-      "id": "4",
-      "title": "Effective note-taking strategies?",
-      "content": "What note-taking methods do you use? I'm looking for something more effective than just writing everything down.",
-      "authorId": "2",
-      "authorName": "truong",
-      "createdAt": "2024-01-12T13:45:00Z",
-      "updatedAt": null,
-      "isEdited": false,
-      "upvotes": 0,
-      "downvotes": 0,
-      "score": 0,
-      "userVotes": {},
-      "views": 1,
-      "viewedBy": [
-        "1"
-      ],
-      "answers": []
-    },
-    {
-      "id": "5",
-      "title": "How to prepare for exams efficiently?",
-      "content": "With limited time before exams, what's the most efficient way to review all the material?",
-      "authorId": "3",
-      "authorName": "tqt",
-      "createdAt": "2024-01-11T16:20:00Z",
-      "updatedAt": null,
-      "isEdited": false,
-      "upvotes": 0,
-      "downvotes": 0,
-      "score": 0,
-      "userVotes": {},
-      "views": 2,
-      "viewedBy": [
-        "1",
-        "2"
-      ],
-      "answers": [
-        {
-          "id": "6",
-          "content": "Focus on active recall rather than just re-reading. Test yourself frequently!",
-          "authorId": "4",
-          "authorName": "pctra266",
-          "createdAt": "2024-01-11T18:45:00Z",
-          "updatedAt": null,
-          "isEdited": false,
-          "upvotes": 0,
-          "downvotes": 0,
-          "score": 0,
-          "userVotes": {}
-        }
-      ]
-    },
-    {
-      "id": "6",
-      "title": "Lalala",
-      "content": "Lalala",
-      "authorId": "4",
-      "authorName": "pctra266",
-      "createdAt": "2025-06-10T07:41:52.222Z",
-      "updatedAt": null,
-      "isEdited": false,
-      "upvotes": 1,
-      "downvotes": 0,
-      "score": 1,
-      "userVotes": {
-        "2": "upvote"
-      },
-      "views": 2,
-      "viewedBy": [
-        "2",
-        "1"
-      ],
-      "answers": []
-    },
-    {
-      "id": "7",
-      "title": "Kakaka",
-      "content": "Kakaka",
-      "authorId": "2",
-      "authorName": "truong",
-      "createdAt": "2025-06-10T07:58:28.223Z",
-      "updatedAt": null,
-      "isEdited": false,
-      "upvotes": 1,
-      "downvotes": 3,
-      "score": -2,
-      "userVotes": {
-        "1": "downvote",
-        "4": "downvote",
-        "XhMHLRSU9HVYU5wY4Sm5LrRYYj43": "downvote",
-        "RcrQyKMJoMePqbkVTS8JF9l11Jg2": "upvote"
-      },
-      "views": 4,
-      "viewedBy": [
-        "4",
-        "XhMHLRSU9HVYU5wY4Sm5LrRYYj43",
-        "1",
-        "RcrQyKMJoMePqbkVTS8JF9l11Jg2"
-      ],
-      "answers": [
-        {
-          "id": "1",
-          "content": "rat ngu hahaah",
-          "authorId": "1",
-          "authorName": "admin",
-          "createdAt": "2025-08-08T05:15:29.573Z",
-          "updatedAt": null,
-          "isEdited": false,
-          "upvotes": 0,
-          "downvotes": 0,
-          "score": 0,
-          "userVotes": {}
-        },
-        {
-          "id": "2",
-          "content": "rat hay hahah",
-          "authorId": "RcrQyKMJoMePqbkVTS8JF9l11Jg2",
-          "authorName": "Trà Phạm",
-          "createdAt": "2025-08-08T05:16:13.527Z",
+          "content": "Great discussion! This will really help improve our platform's UI consistency.",
+          "authorId": "14",
+          "authorName": "hieu1234",
+          "createdAt": "2025-08-11T09:30:00Z",
           "updatedAt": null,
           "isEdited": false,
           "upvotes": 1,
@@ -788,25 +616,660 @@
       ]
     },
     {
-      "id": "8",
-      "title": "Fix title please!",
-      "content": "hay fix title cho toi",
-      "authorId": "RcrQyKMJoMePqbkVTS8JF9l11Jg2",
-      "authorName": "Trà Phạm",
-      "createdAt": "2025-08-08T05:18:50.475Z",
+      "id": "2",
+      "title": "Flashcard System Architecture - Best Practices for React State Management",
+      "content": "Our flashcard feature is growing complex with study sessions, progress tracking, and spaced repetition. What's the best way to manage state for flashcard sets and user progress? Should we use Context API, Redux, or Zustand?",
+      "authorId": "2",
+      "authorName": "truong",
+      "tags": [
+        "flashcards",
+        "state-management",
+        "react",
+        "context-api",
+        "performance-optimization"
+      ],
+      "createdAt": "2025-08-09T11:20:00Z",
       "updatedAt": null,
       "isEdited": false,
-      "upvotes": 0,
+      "upvotes": 15,
+      "downvotes": 2,
+      "score": 13,
+      "userVotes": {
+        "1": "upvote",
+        "4": "upvote",
+        "5": "upvote",
+        "14": "upvote",
+        "XhMHLRSU9HVYU5wY4Sm5LrRYYj43": "upvote",
+        "RcrQyKMJoMePqbkVTS8JF9l11Jg2": "upvote",
+        "MA9zIKD7eDdVTJqGLIfN7PThajx1": "downvote"
+      },
+      "views": 23,
+      "viewedBy": [
+        "1",
+        "4",
+        "5",
+        "XhMHLRSU9HVYU5wY4Sm5LrRYYj43",
+        "RcrQyKMJoMePqbkVTS8JF9l11Jg2",
+        "14",
+        "MA9zIKD7eDdVTJqGLIfN7PThajx1"
+      ],
+      "answers": [
+        {
+          "id": "3",
+          "content": "For our use case, I'd recommend Zustand. It's lightweight and perfect for managing flashcard state. Here's a simple store structure:\n\n```typescript\ninterface FlashcardStore {\n  currentSet: FlashcardSet | null;\n  studyProgress: StudyProgress;\n  setCurrentSet: (set: FlashcardSet) => void;\n  updateProgress: (cardId: string, correct: boolean) => void;\n}\n```\n\nContext API might cause unnecessary re-renders with our complex flashcard data.",
+          "authorId": "4",
+          "authorName": "pctra266",
+          "createdAt": "2025-08-09T13:45:00Z",
+          "updatedAt": null,
+          "isEdited": false,
+          "isAccepted": false,
+          "upvotes": 9,
+          "downvotes": 1,
+          "score": 8,
+          "userVotes": {
+            "1": "upvote",
+            "2": "upvote",
+            "5": "upvote",
+            "14": "downvote",
+            "XhMHLRSU9HVYU5wY4Sm5LrRYYj43": "upvote",
+            "RcrQyKMJoMePqbkVTS8JF9l11Jg2": "upvote"
+          },
+          "comments": [
+            {
+              "id": "c3",
+              "content": "Zustand is definitely more performant for our flashcard operations. Plus it's easier to debug than Context API.",
+              "authorId": "1",
+              "authorName": "admin",
+              "createdAt": "2025-08-09T14:15:00Z",
+              "updatedAt": null,
+              "isEdited": false,
+              "upvotes": 4,
+              "downvotes": 0,
+              "score": 4,
+              "userVotes": {
+                "2": "upvote",
+                "4": "upvote",
+                "5": "upvote",
+                "RcrQyKMJoMePqbkVTS8JF9l11Jg2": "upvote"
+              }
+            }
+          ]
+        },
+        {
+          "id": "4",
+          "content": "I've been using the current Context API approach and it works well for now. But as we add more features like collaborative study sessions and real-time progress sharing, we might need something more robust. Maybe we could start with optimizing our current AuthContext first?",
+          "authorId": "RcrQyKMJoMePqbkVTS8JF9l11Jg2",
+          "authorName": "Trà Phạm",
+          "createdAt": "2025-08-09T16:30:00Z",
+          "updatedAt": null,
+          "isEdited": false,
+          "isAccepted": true,
+          "upvotes": 7,
+          "downvotes": 0,
+          "score": 7,
+          "userVotes": {
+            "1": "upvote",
+            "2": "upvote",
+            "4": "upvote",
+            "5": "upvote",
+            "14": "upvote",
+            "XhMHLRSU9HVYU5wY4Sm5LrRYYj43": "upvote"
+          },
+          "comments": []
+        }
+      ],
+      "hasAcceptedAnswer": true
+    },
+    {
+      "id": "3",
+      "title": "Discussion Hub Real-time Features Implementation",
+      "content": "I'm working on implementing real-time voting and comments for our Discussion Hub. Should we use Socket.io, Server-Sent Events, or WebSockets? The current voting system works well but lacks real-time updates.",
+      "authorId": "XhMHLRSU9HVYU5wY4Sm5LrRYYj43",
+      "authorName": "Trương Quốc Trường",
+      "tags": [
+        "real-time-features",
+        "discussion-forum",
+        "voting-system",
+        "api-integration",
+        "frontend"
+      ],
+      "createdAt": "2025-08-08T14:20:00Z",
+      "updatedAt": null,
+      "isEdited": false,
+      "upvotes": 11,
       "downvotes": 0,
-      "score": 0,
-      "userVotes": {},
-      "views": 3,
+      "score": 11,
+      "userVotes": {
+        "1": "upvote",
+        "2": "upvote",
+        "4": "upvote",
+        "5": "upvote",
+        "14": "upvote",
+        "RcrQyKMJoMePqbkVTS8JF9l11Jg2": "upvote",
+        "MA9zIKD7eDdVTJqGLIfN7PThajx1": "upvote"
+      },
+      "views": 18,
       "viewedBy": [
         "1",
         "2",
-        "4"
+        "4",
+        "5",
+        "RcrQyKMJoMePqbkVTS8JF9l11Jg2",
+        "14",
+        "MA9zIKD7eDdVTJqGLIfN7PThajx1"
       ],
-      "answers": [],
+      "answers": [
+        {
+          "id": "5",
+          "content": "For real-time discussions, Socket.io would be perfect! It handles connection management, reconnection, and fallbacks automatically. We can create rooms for each discussion thread and emit events for votes, comments, and new answers.\n\nThe current DiscussionRealTime.tsx component is a good starting point - we just need to integrate the socket events.",
+          "authorId": "MA9zIKD7eDdVTJqGLIfN7PThajx1",
+          "authorName": "Phong Nguyễn",
+          "createdAt": "2025-08-08T16:45:00Z",
+          "updatedAt": null,
+          "isEdited": false,
+          "isAccepted": true,
+          "upvotes": 8,
+          "downvotes": 0,
+          "score": 8,
+          "userVotes": {
+            "1": "upvote",
+            "2": "upvote",
+            "4": "upvote",
+            "14": "upvote",
+            "XhMHLRSU9HVYU5wY4Sm5LrRYYj43": "upvote",
+            "RcrQyKMJoMePqbkVTS8JF9l11Jg2": "upvote"
+          },
+          "comments": [
+            {
+              "id": "c4",
+              "content": "Socket.io is definitely the way to go. We should also consider implementing presence indicators to show who's currently viewing a discussion.",
+              "authorId": "4",
+              "authorName": "pctra266",
+              "createdAt": "2025-08-08T17:15:00Z",
+              "updatedAt": null,
+              "isEdited": false,
+              "upvotes": 3,
+              "downvotes": 0,
+              "score": 3,
+              "userVotes": {
+                "1": "upvote",
+                "2": "upvote",
+                "XhMHLRSU9HVYU5wY4Sm5LrRYYj43": "upvote"
+              }
+            }
+          ]
+        }
+      ],
+      "hasAcceptedAnswer": true,
+      "comments": []
+    },
+    {
+      "id": "4",
+      "title": "Book Library Management - File Storage and Content Delivery",
+      "content": "Our library feature needs better file management for book chapters and content. Currently using JSON for content storage, but should we move to a proper file storage solution like AWS S3 or local file system?",
+      "authorId": "14",
+      "authorName": "hieu1234",
+      "tags": [
+        "library-management",
+        "book-content",
+        "database-design",
+        "api-integration",
+        "feature-request"
+      ],
+      "createdAt": "2025-08-07T10:30:00Z",
+      "updatedAt": null,
+      "isEdited": false,
+      "upvotes": 6,
+      "downvotes": 1,
+      "score": 5,
+      "userVotes": {
+        "1": "upvote",
+        "2": "upvote",
+        "4": "upvote",
+        "XhMHLRSU9HVYU5wY4Sm5LrRYYj43": "upvote",
+        "RcrQyKMJoMePqbkVTS8JF9l11Jg2": "upvote",
+        "MA9zIKD7eDdVTJqGLIfN7PThajx1": "downvote"
+      },
+      "views": 12,
+      "viewedBy": [
+        "1",
+        "2",
+        "4",
+        "XhMHLRSU9HVYU5wY4Sm5LrRYYj43",
+        "RcrQyKMJoMePqbkVTS8JF9l11Jg2",
+        "MA9zIKD7eDdVTJqGLIfN7PThajx1"
+      ],
+      "answers": [
+        {
+          "id": "6",
+          "content": "For development and testing, the current JSON approach in db.json works fine. But for production, we should definitely consider a hybrid approach:\n\n1. Metadata in database (title, author, chapters list)\n2. Content files stored separately (markdown/HTML files)\n3. Images and assets in CDN\n\nThis way we can support rich text, better search, and efficient loading.",
+          "authorId": "1",
+          "authorName": "admin",
+          "createdAt": "2025-08-07T13:20:00Z",
+          "updatedAt": null,
+          "isEdited": false,
+          "isAccepted": false,
+          "upvotes": 4,
+          "downvotes": 0,
+          "score": 4,
+          "userVotes": {
+            "2": "upvote",
+            "4": "upvote",
+            "14": "upvote",
+            "XhMHLRSU9HVYU5wY4Sm5LrRYYj43": "upvote"
+          },
+          "comments": []
+        }
+      ],
+      "hasAcceptedAnswer": false
+    },
+    {
+      "id": "5",
+      "title": "JWT Session Management and Security Best Practices",
+      "content": "Looking at our JWTSessionManager.ts, are we handling token refresh and security properly? Should we implement refresh tokens or is the current lastTokenIat approach sufficient for our learning platform?",
+      "authorId": "5",
+      "authorName": "trapham266",
+      "tags": [
+        "jwt-security",
+        "authentication",
+        "session-management",
+        "best-practices",
+        "security"
+      ],
+      "createdAt": "2025-08-06T09:15:00Z",
+      "updatedAt": "2025-08-06T15:30:00Z",
+      "isEdited": true,
+      "upvotes": 9,
+      "downvotes": 0,
+      "score": 9,
+      "userVotes": {
+        "1": "upvote",
+        "2": "upvote",
+        "4": "upvote",
+        "14": "upvote",
+        "XhMHLRSU9HVYU5wY4Sm5LrRYYj43": "upvote",
+        "RcrQyKMJoMePqbkVTS8JF9l11Jg2": "upvote",
+        "MA9zIKD7eDdVTJqGLIfN7PThajx1": "upvote"
+      },
+      "views": 16,
+      "viewedBy": [
+        "1",
+        "2",
+        "4",
+        "XhMHLRSU9HVYU5wY4Sm5LrRYYj43",
+        "RcrQyKMJoMePqbkVTS8JF9l11Jg2",
+        "14",
+        "MA9zIKD7eDdVTJqGLIfN7PThajx1"
+      ],
+      "answers": [
+        {
+          "id": "7",
+          "content": "For a learning platform, security is crucial especially with user progress data. I'd recommend implementing proper refresh tokens. The current lastTokenIat is a good start but we should add:\n\n1. Refresh token rotation\n2. Secure httpOnly cookies for sensitive tokens\n3. Rate limiting for auth endpoints\n4. Session cleanup for inactive users\n\nOur AuthContext.tsx already handles most auth state well.",
+          "authorId": "1",
+          "authorName": "admin",
+          "createdAt": "2025-08-06T11:45:00Z",
+          "updatedAt": null,
+          "isEdited": false,
+          "isAccepted": true,
+          "upvotes": 7,
+          "downvotes": 0,
+          "score": 7,
+          "userVotes": {
+            "2": "upvote",
+            "4": "upvote",
+            "5": "upvote",
+            "14": "upvote",
+            "XhMHLRSU9HVYU5wY4Sm5LrRYYj43": "upvote",
+            "RcrQyKMJoMePqbkVTS8JF9l11Jg2": "upvote",
+            "MA9zIKD7eDdVTJqGLIfN7PThajx1": "upvote"
+          },
+          "comments": [
+            {
+              "id": "c5",
+              "content": "Should we also consider implementing 2FA for admin accounts since we have role-based access?",
+              "authorId": "4",
+              "authorName": "pctra266",
+              "createdAt": "2025-08-06T12:30:00Z",
+              "updatedAt": null,
+              "isEdited": false,
+              "upvotes": 2,
+              "downvotes": 0,
+              "score": 2,
+              "userVotes": {
+                "1": "upvote",
+                "5": "upvote"
+              }
+            }
+          ]
+        }
+      ],
+      "hasAcceptedAnswer": true
+    },
+    {
+      "id": "6",
+      "title": "Theme Toggle Implementation - Dark/Light Mode Best Practices",
+      "content": "Our ThemeToggle component works great, but I'm wondering about persisting theme preference and system theme detection. Should we store the preference in localStorage or user profile?",
+      "authorId": "RcrQyKMJoMePqbkVTS8JF9l11Jg2",
+      "authorName": "Trà Phạm",
+      "tags": [
+        "theme",
+        "ui-design",
+        "frontend",
+        "best-practices",
+        "user-experience"
+      ],
+      "createdAt": "2025-08-05T16:40:00Z",
+      "updatedAt": null,
+      "isEdited": false,
+      "upvotes": 5,
+      "downvotes": 0,
+      "score": 5,
+      "userVotes": {
+        "1": "upvote",
+        "2": "upvote",
+        "4": "upvote",
+        "5": "upvote",
+        "14": "upvote"
+      },
+      "views": 8,
+      "viewedBy": [
+        "1",
+        "2",
+        "4",
+        "5",
+        "14"
+      ],
+      "answers": [
+        {
+          "id": "8",
+          "content": "I'd suggest a hybrid approach:\n\n1. Use localStorage for quick access and offline persistence\n2. Sync with user profile for cross-device consistency\n3. Detect system preference on first visit\n4. The current ThemeContext.tsx structure supports this well\n\nWe could add a `prefers-color-scheme` media query listener to our theme context.",
+          "authorId": "2",
+          "authorName": "truong",
+          "createdAt": "2025-08-05T18:15:00Z",
+          "updatedAt": null,
+          "isEdited": false,
+          "isAccepted": false,
+          "upvotes": 3,
+          "downvotes": 0,
+          "score": 3,
+          "userVotes": {
+            "1": "upvote",
+            "4": "upvote",
+            "RcrQyKMJoMePqbkVTS8JF9l11Jg2": "upvote"
+          },
+          "comments": []
+        }
+      ],
+      "hasAcceptedAnswer": false,
+      "comments": [
+        {
+          "id": "2",
+          "content": "Great question! Theme persistence is important for user experience.",
+          "authorId": "14",
+          "authorName": "hieu1234",
+          "createdAt": "2025-08-05T19:00:00Z",
+          "updatedAt": null,
+          "isEdited": false,
+          "upvotes": 1,
+          "downvotes": 0,
+          "score": 1,
+          "userVotes": {
+            "1": "upvote"
+          }
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "title": "Admin Dashboard Performance Optimization",
+      "content": "The admin dashboard with user management and flashcard management is getting slower with more data. Any suggestions for optimizing the ManagerUser.tsx and FlashcardList.tsx components? Should we implement virtualization or pagination?",
+      "authorId": "MA9zIKD7eDdVTJqGLIfN7PThajx1",
+      "authorName": "Phong Nguyễn",
+      "tags": [
+        "admin-dashboard",
+        "performance-optimization",
+        "pagination",
+        "user-management",
+        "react"
+      ],
+      "createdAt": "2025-08-04T12:30:00Z",
+      "updatedAt": null,
+      "isEdited": false,
+      "upvotes": 7,
+      "downvotes": 0,
+      "score": 7,
+      "userVotes": {
+        "1": "upvote",
+        "2": "upvote",
+        "4": "upvote",
+        "5": "upvote",
+        "14": "upvote",
+        "XhMHLRSU9HVYU5wY4Sm5LrRYYj43": "upvote",
+        "RcrQyKMJoMePqbkVTS8JF9l11Jg2": "upvote"
+      },
+      "views": 11,
+      "viewedBy": [
+        "1",
+        "2",
+        "4",
+        "5",
+        "XhMHLRSU9HVYU5wY4Sm5LrRYYj43",
+        "RcrQyKMJoMePqbkVTS8JF9l11Jg2",
+        "14"
+      ],
+      "answers": [
+        {
+          "id": "9",
+          "content": "I notice you already have Pagination.tsx component! That's a great start. For the admin dashboard, I'd recommend:\n\n1. Implementing pagination for both user and flashcard lists\n2. Adding search/filter functionality to reduce data load\n3. Using React.memo for list items to prevent unnecessary re-renders\n4. Consider react-window for very large lists\n\nThe current Pagination component should handle most use cases.",
+          "authorId": "4",
+          "authorName": "pctra266",
+          "createdAt": "2025-08-04T14:20:00Z",
+          "updatedAt": null,
+          "isEdited": false,
+          "isAccepted": true,
+          "upvotes": 6,
+          "downvotes": 0,
+          "score": 6,
+          "userVotes": {
+            "1": "upvote",
+            "2": "upvote",
+            "5": "upvote",
+            "XhMHLRSU9HVYU5wY4Sm5LrRYYj43": "upvote",
+            "RcrQyKMJoMePqbkVTS8JF9l11Jg2": "upvote",
+            "MA9zIKD7eDdVTJqGLIfN7PThajx1": "upvote"
+          },
+          "comments": []
+        }
+      ],
+      "hasAcceptedAnswer": true
+    },
+    {
+      "id": "8",
+      "title": "Vite Configuration and Build Optimization for Production",
+      "content": "Our vite.config.ts seems basic. Should we add more optimization for production builds? Things like bundle splitting, compression, and asset optimization for our educational platform?",
+      "authorId": "1",
+      "authorName": "admin",
+      "tags": [
+        "vite",
+        "build-optimization",
+        "typescript",
+        "performance-optimization",
+        "deployment"
+      ],
+      "createdAt": "2025-08-03T11:45:00Z",
+      "updatedAt": null,
+      "isEdited": false,
+      "upvotes": 4,
+      "downvotes": 0,
+      "score": 4,
+      "userVotes": {
+        "2": "upvote",
+        "4": "upvote",
+        "5": "upvote",
+        "14": "upvote"
+      },
+      "views": 7,
+      "viewedBy": [
+        "2",
+        "4",
+        "5",
+        "14"
+      ],
+      "answers": [
+        {
+          "id": "10",
+          "content": "For a React TypeScript app like ours, I'd suggest these Vite optimizations:\n\n```typescript\nexport default defineConfig({\n  build: {\n    rollupOptions: {\n      output: {\n        manualChunks: {\n          vendor: ['react', 'react-dom'],\n          ui: ['@mui/material', '@mui/icons-material']\n        }\n      }\n    },\n    chunkSizeWarningLimit: 1000\n  },\n  plugins: [react(), ...(process.env.NODE_ENV === 'production' ? [compression()] : [])]\n})\n```\n\nThis will help with loading performance for our users studying flashcards.",
+          "authorId": "2",
+          "authorName": "truong",
+          "createdAt": "2025-08-03T15:30:00Z",
+          "updatedAt": null,
+          "isEdited": false,
+          "isAccepted": false,
+          "upvotes": 3,
+          "downvotes": 0,
+          "score": 3,
+          "userVotes": {
+            "1": "upvote",
+            "4": "upvote",
+            "5": "upvote"
+          },
+          "comments": []
+        }
+      ],
+      "hasAcceptedAnswer": false,
+      "comments": []
+    },
+    {
+      "id": "9",
+      "title": "How to implement Socket.io for real-time notifications?",
+      "content": "I want to add real-time notifications to our Bright Town Study platform. Users should be notified when someone votes on their discussions, replies to their comments, or when new flashcard sets are shared. What's the best approach using Socket.io with our React TypeScript setup?",
+      "authorId": "5",
+      "authorName": "trapham266",
+      "tags": [
+        "real-time-features",
+        "api-integration",
+        "typescript",
+        "frontend",
+        "notifications"
+      ],
+      "createdAt": "2025-08-02T14:45:00Z",
+      "updatedAt": null,
+      "isEdited": false,
+      "upvotes": 6,
+      "downvotes": 0,
+      "score": 6,
+      "userVotes": {
+        "1": "upvote",
+        "2": "upvote",
+        "4": "upvote",
+        "14": "upvote",
+        "XhMHLRSU9HVYU5wY4Sm5LrRYYj43": "upvote",
+        "RcrQyKMJoMePqbkVTS8JF9l11Jg2": "upvote"
+      },
+      "views": 9,
+      "viewedBy": [
+        "1",
+        "2",
+        "4",
+        "14",
+        "XhMHLRSU9HVYU5wY4Sm5LrRYYj43",
+        "RcrQyKMJoMePqbkVTS8JF9l11Jg2"
+      ],
+      "answers": [
+        {
+          "id": "11",
+          "content": "For real-time notifications, I'd suggest this architecture:\n\n1. Socket.io rooms for each user\n2. Emit events from server when data changes\n3. React context to manage notification state\n4. Material-UI Snackbar for displaying notifications\n\nYou'll need to integrate it with your existing AuthContext to join the right rooms when users log in.",
+          "authorId": "XhMHLRSU9HVYU5wY4Sm5LrRYYj43",
+          "authorName": "Trương Quốc Trường",
+          "createdAt": "2025-08-02T16:20:00Z",
+          "updatedAt": null,
+          "isEdited": false,
+          "isAccepted": true,
+          "upvotes": 5,
+          "downvotes": 0,
+          "score": 5,
+          "userVotes": {
+            "1": "upvote",
+            "2": "upvote",
+            "4": "upvote",
+            "5": "upvote",
+            "14": "upvote"
+          },
+          "comments": []
+        }
+      ],
+      "hasAcceptedAnswer": true
+    },
+    {
+      "id": "10",
+      "title": "Responsive Design Issues with Material-UI Components",
+      "content": "Some of our Material-UI components don't look great on mobile devices, especially the flashcard study interface and discussion threads. The NavBar works well but other components need improvement. Any suggestions for responsive design patterns with MUI?",
+      "authorId": "14",
+      "authorName": "hieu1234",
+      "tags": [
+        "responsive-design",
+        "material-ui",
+        "ui-design",
+        "mobile",
+        "css"
+      ],
+      "createdAt": "2025-08-01T11:30:00Z",
+      "updatedAt": null,
+      "isEdited": false,
+      "upvotes": 4,
+      "downvotes": 0,
+      "score": 4,
+      "userVotes": {
+        "1": "upvote",
+        "2": "upvote",
+        "4": "upvote",
+        "5": "upvote"
+      },
+      "views": 6,
+      "viewedBy": [
+        "1",
+        "2",
+        "4",
+        "5",
+        "RcrQyKMJoMePqbkVTS8JF9l11Jg2"
+      ],
+      "answers": [
+        {
+          "id": "12",
+          "content": "For responsive MUI components, make sure to use:\n\n- Breakpoint utilities in sx props\n- Grid system with proper spacing\n- Typography variants that scale\n- useMediaQuery hook for conditional rendering\n\nThe theme breakpoints in our current setup should handle most cases, but you might need custom breakpoints for the flashcard interface.",
+          "authorId": "4",
+          "authorName": "pctra266",
+          "createdAt": "2025-08-01T15:15:00Z",
+          "updatedAt": null,
+          "isEdited": false,
+          "isAccepted": false,
+          "upvotes": 3,
+          "downvotes": 0,
+          "score": 3,
+          "userVotes": {
+            "1": "upvote",
+            "2": "upvote",
+            "14": "upvote"
+          },
+          "comments": [
+            {
+              "id": "c6",
+              "content": "Should we also consider implementing a mobile-first approach for new components?",
+              "authorId": "RcrQyKMJoMePqbkVTS8JF9l11Jg2",
+              "authorName": "Trà Phạm",
+              "createdAt": "2025-08-01T16:00:00Z",
+              "updatedAt": null,
+              "isEdited": false,
+              "upvotes": 1,
+              "downvotes": 0,
+              "score": 1,
+              "userVotes": {
+                "4": "upvote"
+              }
+            }
+          ]
+        }
+      ],
       "hasAcceptedAnswer": false
     }
   ],
@@ -856,7 +1319,7 @@
     {
       "id": "e270",
       "date": "2025-08-13",
-      "visits": 2,
+      "visits": 7,
       "flashcardsStudied": 4
     }
   ]
