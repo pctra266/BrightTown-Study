@@ -1023,10 +1023,6 @@
         "linkedin": "",
         "github": "",
         "twitter": ""
-      },
-      "preferences": {
-        "publicProfile": false,
-        "notifications": true
       }
     },
     {
@@ -1035,7 +1031,7 @@
       "password": "123456",
       "role": "1",
       "status": true,
-      "lastTokenIat": 1754991173
+      "lastTokenIat": 1755053784
     },
     {
       "id": "4",
@@ -1043,7 +1039,7 @@
       "password": "pctra266",
       "role": "2",
       "status": true,
-      "lastTokenIat": 1754986429,
+      "lastTokenIat": 1755053609,
       "bio": "I'm a passionate learner who loves technology, programming, and sharing knowledge with others. Always excited to explore new ideas and connect with fellow learners!",
       "email": "pctra266@example.com",
       "socialLinks": {
@@ -1051,10 +1047,6 @@
         "linkedin": "",
         "github": "https://github.com/pctra266",
         "twitter": ""
-      },
-      "preferences": {
-        "publicProfile": true,
-        "notifications": true
       }
     },
     {
@@ -1063,6 +1055,7 @@
       "role": "1",
       "status": true,
       "password": "trapham266"
+      "lastTokenIat": 1755053982
     },
     {
       "id": "6",
@@ -1256,12 +1249,11 @@
               "createdAt": "2024-01-15T15:00:00Z",
               "updatedAt": "2025-08-12T06:31:51.061Z",
               "isEdited": true,
-              "upvotes": 2,
+              "upvotes": 1,
               "downvotes": 0,
-              "score": 2,
+              "score": 1,
               "userVotes": {
-                "3": "upvote",
-                "4": "upvote"
+                "3": "upvote"
               }
             },
             {
