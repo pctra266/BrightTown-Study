@@ -291,7 +291,7 @@
       "password": "123456",
       "role": "0",
       "status": true,
-      "lastTokenIat": 1755018825,
+      "lastTokenIat": 1755051469,
       "bio": "This is a test bio to verify the theme adaptation works correctly.",
       "email": "admin@example.com",
       "socialLinks": {
@@ -483,6 +483,16 @@
         "rr": "rgrg"
       },
       "userId": "14"
+    },
+    {
+      "id": "f2a1",
+      "isbn": "978-3-16-148410-1",
+      "title": "Java",
+      "author": "Oracle",
+      "copies": 1,
+      "chapters": [],
+      "content": {},
+      "userId": "1"
     }
   ],
   "discussions": [
@@ -861,6 +871,12 @@
       "date": "2025-08-12",
       "visits": 8,
       "flashcardsStudied": 1
+    },
+    {
+      "id": "c15a",
+      "date": "2025-08-13",
+      "visits": 2,
+      "flashcardsStudied": 0
     }
   ]
 }
