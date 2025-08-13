@@ -187,7 +187,7 @@ const TagSelector: React.FC<TagSelectorProps> = ({
                     Popular tags:
                 </Typography>
                 <Stack direction="row" spacing={1} flexWrap="wrap">
-                    {['general', 'study', 'flashcards', 'learning', 'tips'].map((tag) => {
+                    {['react', 'typescript', 'material-ui', 'flashcards', 'authentication'].map((tag) => {
                         const isSelected = selectedTags.includes(tag);
                         const isDisabled = isSelected; // Disable if tag is already selected
 
