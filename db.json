@@ -1019,7 +1019,7 @@
       "password": "123456",
       "role": "0",
       "status": true,
-      "lastTokenIat": 1755075208,
+      "lastTokenIat": 1755075668,
       "bio": "This is a test bio to verify the theme adaptation works correctly.",
       "email": "admin@example.com",
       "socialLinks": {
@@ -1593,8 +1593,8 @@
     {
       "id": "32d3",
       "date": "2025-08-13",
-      "visits": 17,
-      "flashcardsStudied": 13
+      "visits": 52,
+      "flashcardsStudied": 15
     }
   ]
 }
