@@ -140,7 +140,7 @@ const ManageBooks = () => {
               <VisibilityIcon />
             </IconButton>
           </Tooltip>
-          {user && (user.id === params.row.userId || user.role === "1") && (
+          {user && (user.id === params.row.userId || user.role === "1" || user.role === "0") && (
             <>
               <Tooltip title="Edit book">
                 <IconButton
@@ -269,7 +269,7 @@ const ManageBooks = () => {
       if (!user) {
         throw new Error("You must be logged in to edit a book");
       }
-      if (user.id !== book.userId && user.role !== "1") {
+      if (user.id !== book.userId && user.role !== "1" && user.role !== "0") {
         throw new Error("You do not have permission to edit this book");
       }
       await api.put(`/books/${String(book.id)}`, book);
@@ -307,7 +307,7 @@ const ManageBooks = () => {
       if (!user) {
         throw new Error("You must be logged in to delete a book");
       }
-      if (user.id !== book.userId && user.role !== "1") {
+      if (user.id !== book.userId && user.role !== "1" && user.role !== "0") {
         throw new Error("You do not have permission to delete this book");
       }
       await api.delete(`/books/${idString}`);
@@ -519,7 +519,7 @@ const ManageBooks = () => {
         <Box
           width={{ xs: "100vw", sm: 400 }}
           height="100vh"
-       >
+        >
           <CreateEditViewBook
             book={selectedBook}
             mode={BookMode.EDIT}

@@ -25,6 +25,7 @@ import api from "../../../api/api";
 import Toast, { type ToastData } from "../components/Toast";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useTheme } from "@mui/material/styles";
+
 interface Chapter {
   name: string;
 }
@@ -79,6 +80,7 @@ const BookDetails = () => {
   const synthRef = useRef<SpeechSynthesis | null>(null);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const theme = useTheme();
+
   const normalizeBook = (data: any): Book => ({
     ...data,
     id: String(data.id),
@@ -162,7 +164,7 @@ const BookDetails = () => {
       });
       return;
     }
-    if (user?.id !== book.userId && user?.role !== "1") {
+    if (user?.id !== book.userId && user?.role !== "1" && user?.role !== "0") {
       setToastConfig({
         open: true,
         message: "You do not have permission to modify this book",
@@ -174,8 +176,8 @@ const BookDetails = () => {
     try {
       const updatedChapters = editChapter
         ? (book.chapters || []).map((ch) =>
-          ch.name === editChapter ? { name: chapterName } : ch
-        )
+            ch.name === editChapter ? { name: chapterName } : ch
+          )
         : [...(book.chapters || []), { name: chapterName }];
 
       if (!editChapter && book.chapters?.some((ch) => ch.name === chapterName)) {
@@ -240,7 +242,7 @@ const BookDetails = () => {
       });
       return;
     }
-    if (user?.id !== book.userId && user?.role !== "1") {
+    if (user?.id !== book.userId && user?.role !== "1" && user?.role !== "0") {
       setToastConfig({
         open: true,
         message: "You do not have permission to delete this chapter",
@@ -421,7 +423,7 @@ const BookDetails = () => {
               {book.title}
             </Typography>
           </Box>
-          {user && (user.id === book.userId || user.role === "1") && (
+          {user && (user.id === book.userId || user.role === "1" || user.role === "0") && (
             <Button
               variant="contained"
               startIcon={<AddIcon />}
@@ -480,7 +482,7 @@ const BookDetails = () => {
                         primaryTypographyProps={{ fontSize: "0.9rem", color: theme.palette.common.white }}
                         onClick={() => setSelectedChapter(chapter.name)}
                       />
-                      {user && (user.id === book.userId || user.role === "1") && (
+                      {user && (user.id === book.userId || user.role === "1" || user.role === "0") && (
                         <>
                           <IconButton
                             onClick={() => handleEditChapter(chapter.name)}
@@ -625,7 +627,6 @@ const BookDetails = () => {
         <Toast data={toastConfig} action={{ onClose: handleToastClose }} />
       </Box>
     </ErrorBoundary>
-
   );
 };
 
