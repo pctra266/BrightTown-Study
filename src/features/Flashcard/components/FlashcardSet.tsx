@@ -38,6 +38,10 @@ const FlashcardSet: React.FC<FlashcardSetProps> = ({
 
     return FlashcardSet.userId == userId;
   };
+  const getTruncatedDescription = (desc?: string) => {
+    if (!desc) return "No description provided";
+    return desc.length > 60 ? desc.slice(0, 60) + "..." : desc;
+  };
 
   return (
     <div className="flex items-center justify-between  backdrop-blur-sm rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 h-20">
@@ -59,8 +63,8 @@ const FlashcardSet: React.FC<FlashcardSetProps> = ({
                 <h3 className="text-lg font-semibold  mb-1 truncate hover:text-[#1976D2] transition-colors duration-200">
                   {FlashcardSet.name}
                 </h3>
-                <p className=" text-sm line-clamp-2 leading-relaxed flex-1 overflow-hidden">
-                  {FlashcardSet.description || "No description provided"}
+                <p className="text-sm leading-relaxed flex-1 overflow-hidden">
+                  {getTruncatedDescription(FlashcardSet.description)}
                 </p>
               </div>
             </div>

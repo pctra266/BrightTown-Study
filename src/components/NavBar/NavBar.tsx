@@ -17,12 +17,15 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import CastForEducationIcon from "@mui/icons-material/CastForEducation";
 import { useTheme } from "@mui/material/styles";
+import type { Theme } from "@mui/material/styles";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
 import { useAuth } from "../../contexts/AuthContext";
 
 interface LinkTabProps {
     label: string;
     to: string;
+    isSelected?: boolean;
+    theme: Theme;
 }
 
 interface NavPage {
@@ -30,9 +33,30 @@ interface NavPage {
     path: string;
 }
 
-const LinkTab = React.memo(({ label, to }: LinkTabProps) => (
-    <Tab component={Link} label={label} to={to} />
-));
+const LinkTab = React.memo(({ label, to, isSelected, theme }: LinkTabProps) => {
+    const selectedStyle = isSelected ? {
+        backgroundColor: theme.palette.mode === "light" ? "#ffffff" : "#0074CC",
+        color: theme.palette.mode === "light" ? "#0074CC" : "#ffffff",
+        fontWeight: 700,
+        transform: "translateY(-2px)",
+        boxShadow: theme.palette.mode === "light"
+            ? "0 4px 12px rgba(0, 116, 204, 0.4), 0 2px 6px rgba(0, 0, 0, 0.15)"
+            : "0 4px 12px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(255, 255, 255, 0.2)",
+        borderRadius: "8px",
+        margin: "0 4px",
+        padding: "8px 20px",
+        minHeight: "48px"
+    } : {};
+
+    return (
+        <Tab
+            component={Link}
+            label={label}
+            to={to}
+            style={selectedStyle}
+        />
+    );
+});
 
 LinkTab.displayName = "LinkTab";
 
@@ -54,42 +78,62 @@ const COMMON_TYPOGRAPHY_STYLES = {
     textDecoration: "none",
 } as const;
 
-const useNavbarStyles = (theme: any) =>
+const useNavbarStyles = (theme: Theme) =>
     React.useMemo(
         () => ({
             brandColor: theme.palette.mode === "light" ? "inherit" : "#2196f3",
             tabStyles: {
                 "& .MuiTab-root": {
-                    color: `${theme.palette.mode === "light" ? "rgba(255, 255, 255, 0.7)" : "rgba(33, 150, 243, 0.7)"} `,
+                    color: theme.palette.mode === "light" ? "#ffffff" : "#ffffff",
                     fontWeight: 600,
-                    fontSize: "0.95rem",
+                    fontSize: "1rem",
                     textTransform: "none",
                     minHeight: "48px",
-                    borderRadius: "8px 8px 0 0",
+                    borderRadius: "8px",
                     margin: "0 4px",
-                    transition: "all 0.3s ease-in-out",
-                    position: "relative",
-                    "&.Mui-selected": {
-                        color: `${theme.palette.mode === "light" ? "#fff" : "#2196f3"} `,
-                        fontWeight: 800,
-                        backgroundColor: `${theme.palette.mode === "light" ? "rgba(255, 255, 255, 0.15)" : "rgba(33, 150, 243, 0.15)"}`,
-                        boxShadow: `0 2px 8px ${theme.palette.mode === "light" ? "rgba(0, 0, 0, 0.2)" : "rgba(33, 150, 243, 0.3)"}`,
-                        transform: "scale(1.05)",
-                        textTransform: "capitalize",
-                        transition: "all 0.3s ease-in-out",
-                    },
+                    padding: "8px 20px",
+                    transition: "all 0.2s ease-in-out",
                     "&:hover": {
-                        color: `${theme.palette.mode === "light" ? "#fff" : "#2196f3"} `,
-                        backgroundColor: `${theme.palette.mode === "light" ? "rgba(255, 255, 255, 0.08)" : "rgba(33, 150, 243, 0.08)"} `,
-                        transform: "scale(1.02)",
+                        backgroundColor: theme.palette.mode === "light"
+                            ? "rgba(255, 255, 255, 0.15)"
+                            : "rgba(255, 255, 255, 0.1)",
+                        transform: "translateY(-1px)",
+                        color: "#ffffff",
+                    },
+                    "&.Mui-selected": {
+                        color: theme.palette.mode === "light" ? "#0074CC" : "#ffffff",
                         fontWeight: 700,
+                        backgroundColor: theme.palette.mode === "light"
+                            ? "#ffffff"
+                            : "#0074CC",
+                        transform: "translateY(-2px)",
+                        boxShadow: theme.palette.mode === "light"
+                            ? "0 4px 12px rgba(0, 116, 204, 0.3), 0 2px 6px rgba(0, 0, 0, 0.1)"
+                            : "0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(255, 255, 255, 0.1)",
+                        "&::after": {
+                            content: '""',
+                            position: "absolute",
+                            bottom: "-2px",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            width: "80%",
+                            height: "3px",
+                            backgroundColor: theme.palette.mode === "light" ? "#0074CC" : "#ffffff",
+                            borderRadius: "2px",
+                        },
+                        "&:hover": {
+                            transform: "translateY(-2px)",
+                            backgroundColor: theme.palette.mode === "light"
+                                ? "#ffffff"
+                                : "#1976d2",
+                            boxShadow: theme.palette.mode === "light"
+                                ? "0 6px 16px rgba(0, 116, 204, 0.4), 0 3px 8px rgba(0, 0, 0, 0.15)"
+                                : "0 6px 16px rgba(0, 0, 0, 0.5), 0 3px 8px rgba(255, 255, 255, 0.15)",
+                        }
                     }
                 },
                 "& .MuiTabs-indicator": {
-                    backgroundColor: `${theme.palette.mode === "light" ? "#fff" : "#2196f3"} `,
-                    height: "4px",
-                    borderRadius: "2px 2px 0 0",
-                    boxShadow: `0 -2px 4px ${theme.palette.mode === "light" ? "rgba(255, 255, 255, 0.3)" : "rgba(33, 150, 243, 0.4)"}`,
+                    display: "none",
                 },
                 "& .MuiTabs-flexContainer": {
                     gap: "4px",
@@ -200,10 +244,19 @@ const Navbar = React.memo(() => {
 
     const navigationTabs = React.useMemo(
         () =>
-            filteredNavigationTabs.map(({ name, path }) => (
-                <LinkTab key={path} label={name} to={path} />
-            )),
-        [filteredNavigationTabs]
+            filteredNavigationTabs.map(({ name, path }, index) => {
+                const isSelected = tabValue === index;
+                return (
+                    <LinkTab
+                        key={path}
+                        label={name}
+                        to={path}
+                        isSelected={isSelected}
+                        theme={theme}
+                    />
+                );
+            }),
+        [filteredNavigationTabs, tabValue, theme]
     );
 
     return (

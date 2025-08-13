@@ -11,6 +11,7 @@ import {
     Select,
     MenuItem,
     FormControl,
+    Autocomplete,
 } from "@mui/material";
 import {
     CheckCircle,
@@ -54,6 +55,7 @@ const DiscussionHub = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [sortBy, setSortBy] = useState("newest");
     const [selectedTagFilter, setSelectedTagFilter] = useState<string[]>([]);
+    const [tagInputValue, setTagInputValue] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const discussionsPerPage = 5;
 
@@ -148,16 +150,6 @@ const DiscussionHub = () => {
         navigate("/talk/new");
     };
 
-    const handleTagFilter = (tag: string) => {
-        if (selectedTagFilter.includes(tag)) {
-            // Remove tag from filter
-            setSelectedTagFilter(selectedTagFilter.filter(t => t !== tag));
-        } else {
-            // Add tag to filter
-            setSelectedTagFilter([...selectedTagFilter, tag]);
-        }
-    };
-
 
     const totalPages = Math.ceil(filteredDiscussions.length / discussionsPerPage);
     const startIndex = (currentPage - 1) * discussionsPerPage;
@@ -235,6 +227,43 @@ const DiscussionHub = () => {
                     )}
                 </Stack>
 
+                {/* Search Bar - Moved to between header and filters */}
+                <Box sx={{ mb: 2 }}>
+                    <TextField
+                        fullWidth
+                        placeholder="Search questions..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        size="small"
+                        sx={{
+                            maxWidth: "500px",
+                            "& .MuiOutlinedInput-root": {
+                                backgroundColor: actualTheme === 'dark' ? '#2d3139' : '#ffffff',
+                                color: actualTheme === 'dark' ? '#f8f9fa' : '#232629',
+                                fontSize: "0.875rem",
+                                borderRadius: "3px",
+                                "& fieldset": {
+                                    borderColor: actualTheme === 'dark' ? '#3c4043' : '#babfc4',
+                                },
+                                "&:hover fieldset": {
+                                    borderColor: actualTheme === 'dark' ? '#525860' : '#0074cc',
+                                },
+                                "&.Mui-focused fieldset": {
+                                    borderColor: actualTheme === 'dark' ? '#0a95ff' : '#0074cc',
+                                    borderWidth: "1px"
+                                }
+                            },
+                            "& .MuiInputBase-input": {
+                                color: actualTheme === 'dark' ? '#f8f9fa' : '#232629',
+                                "&::placeholder": {
+                                    color: actualTheme === 'dark' ? '#9199a1' : '#6a737c',
+                                    opacity: 1
+                                }
+                            }
+                        }}
+                    />
+                </Box>
+
                 {!isAuthenticated && (
                     <Box sx={{
                         p: 3,
@@ -257,7 +286,7 @@ const DiscussionHub = () => {
                     </Box>
                 )}
 
-                {/* Filter and Sort Section - Stack Overflow Style */}
+                {/* Filter and Sort Section - Same Row Layout Updated */}
                 <Box sx={{
                     mb: 2,
                     borderBottom: `1px solid ${actualTheme === 'dark' ? '#3c4043' : '#e3e6e8'}`,
@@ -266,43 +295,150 @@ const DiscussionHub = () => {
                     <Stack
                         direction={{ xs: "column", md: "row" }}
                         spacing={2}
-                        alignItems={{ md: "center" }}
+                        alignItems={{ xs: "stretch", md: "center" }}
                         justifyContent="space-between"
                     >
-                        <Box sx={{ flex: 1, maxWidth: { xs: "100%", md: "400px" } }}>
-                            <TextField
-                                fullWidth
-                                placeholder="Search questions..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                size="small"
-                                sx={{
-                                    "& .MuiOutlinedInput-root": {
-                                        backgroundColor: actualTheme === 'dark' ? '#2d3139' : '#ffffff',
+                        {/* Filter by tags Section */}
+                        <Box sx={{ flex: 1, maxWidth: { xs: "100%", md: "500px" } }}>
+                            <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        fontWeight: 600,
                                         color: actualTheme === 'dark' ? '#f8f9fa' : '#232629',
                                         fontSize: "0.875rem",
-                                        borderRadius: "3px",
-                                        "& fieldset": {
-                                            borderColor: actualTheme === 'dark' ? '#3c4043' : '#babfc4',
-                                        },
-                                        "&:hover fieldset": {
-                                            borderColor: actualTheme === 'dark' ? '#525860' : '#0074cc',
-                                        },
-                                        "&.Mui-focused fieldset": {
-                                            borderColor: actualTheme === 'dark' ? '#0a95ff' : '#0074cc',
-                                            borderWidth: "1px"
-                                        }
-                                    },
-                                    "& .MuiInputBase-input": {
-                                        color: actualTheme === 'dark' ? '#f8f9fa' : '#232629',
-                                        "&::placeholder": {
-                                            color: actualTheme === 'dark' ? '#9199a1' : '#6a737c',
-                                            opacity: 1
-                                        }
+                                        whiteSpace: "nowrap"
+                                    }}
+                                >
+                                    Filter by tags:
+                                </Typography>
+                                {selectedTagFilter.length > 0 && (
+                                    <Button
+                                        size="small"
+                                        onClick={() => setSelectedTagFilter([])}
+                                        sx={{
+                                            fontSize: "0.75rem",
+                                            color: actualTheme === 'dark' ? '#0a95ff' : '#0074cc',
+                                            textTransform: "none",
+                                            fontWeight: 500,
+                                            minWidth: "auto",
+                                            px: 1,
+                                            "&:hover": {
+                                                backgroundColor: actualTheme === 'dark' ? '#3c4043' : '#f1f2f3'
+                                            }
+                                        }}
+                                    >
+                                        Clear all
+                                    </Button>
+                                )}
+                            </Stack>
+
+                            {/* Autocomplete Tag Input */}
+                            <Autocomplete
+                                multiple
+                                id="tags-autocomplete"
+                                options={PREDEFINED_TAGS}
+                                value={selectedTagFilter}
+                                onChange={(_, newValue) => {
+                                    setSelectedTagFilter(newValue);
+                                }}
+                                inputValue={tagInputValue}
+                                onInputChange={(_, newInputValue) => {
+                                    setTagInputValue(newInputValue);
+                                }}
+                                filterSelectedOptions
+                                renderTags={(tagValue, getTagProps) =>
+                                    tagValue.map((option, index) => {
+                                        const { key, ...tagProps } = getTagProps({ index });
+                                        return (
+                                            <Chip
+                                                key={key}
+                                                variant="filled"
+                                                label={option}
+                                                size="small"
+                                                sx={{
+                                                    backgroundColor: actualTheme === 'dark' ? '#0a95ff' : '#0074cc',
+                                                    color: '#ffffff',
+                                                    fontSize: "0.75rem",
+                                                    height: "28px",
+                                                    borderRadius: "14px",
+                                                    fontWeight: 600,
+                                                    "& .MuiChip-deleteIcon": {
+                                                        color: '#ffffff',
+                                                        "&:hover": {
+                                                            color: '#e0e0e0'
+                                                        }
+                                                    }
+                                                }}
+                                                {...tagProps}
+                                            />
+                                        );
+                                    })
+                                }
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        placeholder={selectedTagFilter.length === 0 ? "Type to search tags..." : "Add more tags..."}
+                                        size="small"
+                                        sx={{
+                                            "& .MuiOutlinedInput-root": {
+                                                backgroundColor: actualTheme === 'dark' ? '#2d3139' : '#ffffff',
+                                                color: actualTheme === 'dark' ? '#f8f9fa' : '#232629',
+                                                fontSize: "0.875rem",
+                                                borderRadius: "3px",
+                                                "& fieldset": {
+                                                    borderColor: actualTheme === 'dark' ? '#3c4043' : '#babfc4',
+                                                },
+                                                "&:hover fieldset": {
+                                                    borderColor: actualTheme === 'dark' ? '#525860' : '#0074cc',
+                                                },
+                                                "&.Mui-focused fieldset": {
+                                                    borderColor: actualTheme === 'dark' ? '#0a95ff' : '#0074cc',
+                                                    borderWidth: "1px"
+                                                }
+                                            },
+                                            "& .MuiInputBase-input": {
+                                                color: actualTheme === 'dark' ? '#f8f9fa' : '#232629',
+                                                "&::placeholder": {
+                                                    color: actualTheme === 'dark' ? '#9199a1' : '#6a737c',
+                                                    opacity: 1
+                                                }
+                                            }
+                                        }}
+                                    />
+                                )}
+                                renderOption={(props, option) => {
+                                    const { key, ...optionProps } = props;
+                                    return (
+                                        <Box
+                                            key={key}
+                                            component="li"
+                                            sx={{
+                                                color: actualTheme === 'dark' ? '#f8f9fa' : '#232629',
+                                                backgroundColor: actualTheme === 'dark' ? '#2d3139' : '#ffffff',
+                                                fontSize: "0.875rem",
+                                                "&:hover": {
+                                                    backgroundColor: actualTheme === 'dark' ? '#3c4043' : '#f1f2f3'
+                                                }
+                                            }}
+                                            {...optionProps}
+                                        >
+                                            {option}
+                                        </Box>
+                                    );
+                                }}
+                                ListboxProps={{
+                                    sx: {
+                                        backgroundColor: actualTheme === 'dark' ? '#2d3139' : '#ffffff',
+                                        border: `1px solid ${actualTheme === 'dark' ? '#3c4043' : '#babfc4'}`,
+                                        boxShadow: `0 8px 16px ${actualTheme === 'dark' ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.1)'}`,
+                                        maxHeight: '200px'
                                     }
                                 }}
                             />
                         </Box>
+
+                        {/* Sort Dropdown */}
                         <Box sx={{ minWidth: { xs: "100%", md: "180px" } }}>
                             <FormControl fullWidth size="small">
                                 <Select
@@ -360,93 +496,6 @@ const DiscussionHub = () => {
                                 </Select>
                             </FormControl>
                         </Box>
-                    </Stack>
-                </Box>
-
-                {/* Tag Filter Section - Stack Overflow Style */}
-                <Box sx={{ mb: 3 }}>
-                    <Stack direction="row" spacing={1} flexWrap="wrap" alignItems="center" sx={{ mb: 2 }}>
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                mr: 1,
-                                lineHeight: 2.5,
-                                color: actualTheme === 'dark' ? '#9199a1' : '#6a737c',
-                                fontSize: "0.875rem"
-                            }}
-                        >
-                            Tagged with:
-                        </Typography>
-                        <Chip
-                            label="All"
-                            size="small"
-                            variant={selectedTagFilter.length === 0 ? "filled" : "outlined"}
-                            clickable
-                            onClick={() => setSelectedTagFilter([])}
-                            sx={{
-                                backgroundColor: selectedTagFilter.length === 0
-                                    ? (actualTheme === 'dark' ? '#0a95ff' : '#0074cc')
-                                    : 'transparent',
-                                borderColor: actualTheme === 'dark' ? '#3c4043' : '#babfc4',
-                                color: selectedTagFilter.length === 0
-                                    ? '#ffffff'
-                                    : (actualTheme === 'dark' ? '#9199a1' : '#6a737c'),
-                                fontSize: "0.75rem",
-                                height: "24px",
-                                borderRadius: "3px",
-                                "&:hover": {
-                                    backgroundColor: selectedTagFilter.length === 0
-                                        ? (actualTheme === 'dark' ? '#0074cc' : '#005ba3')
-                                        : (actualTheme === 'dark' ? '#3c4043' : '#f1f2f3'),
-                                    borderColor: actualTheme === 'dark' ? '#0a95ff' : '#0074cc'
-                                }
-                            }}
-                        />
-                        {PREDEFINED_TAGS.slice(0, 8).map((tag) => (
-                            <Chip
-                                key={tag}
-                                label={tag}
-                                size="small"
-                                variant={selectedTagFilter.includes(tag) ? "filled" : "outlined"}
-                                clickable
-                                onClick={() => handleTagFilter(tag)}
-                                sx={{
-                                    backgroundColor: selectedTagFilter.includes(tag)
-                                        ? (actualTheme === 'dark' ? '#0a95ff' : '#0074cc')
-                                        : 'transparent',
-                                    borderColor: actualTheme === 'dark' ? '#3c4043' : '#babfc4',
-                                    color: selectedTagFilter.includes(tag)
-                                        ? '#ffffff'
-                                        : (actualTheme === 'dark' ? '#9199a1' : '#6a737c'),
-                                    fontSize: "0.75rem",
-                                    height: "24px",
-                                    borderRadius: "3px",
-                                    "&:hover": {
-                                        backgroundColor: selectedTagFilter.includes(tag)
-                                            ? (actualTheme === 'dark' ? '#0074cc' : '#005ba3')
-                                            : (actualTheme === 'dark' ? '#3c4043' : '#f1f2f3'),
-                                        borderColor: actualTheme === 'dark' ? '#0a95ff' : '#0074cc'
-                                    }
-                                }}
-                            />
-                        ))}
-                        {selectedTagFilter.length > 0 && (
-                            <Button
-                                size="small"
-                                onClick={() => setSelectedTagFilter([])}
-                                sx={{
-                                    ml: 1,
-                                    fontSize: "0.75rem",
-                                    color: actualTheme === 'dark' ? '#0a95ff' : '#0074cc',
-                                    textTransform: "none",
-                                    "&:hover": {
-                                        backgroundColor: actualTheme === 'dark' ? '#3c4043' : '#f1f2f3'
-                                    }
-                                }}
-                            >
-                                clear all
-                            </Button>
-                        )}
                     </Stack>
                 </Box>
             </Box>

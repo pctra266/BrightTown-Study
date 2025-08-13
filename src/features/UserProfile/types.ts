@@ -16,11 +16,6 @@ export interface UserProfileData {
     github?: string;
     twitter?: string;
   };
-  preferences?: {
-    theme?: string;
-    notifications?: boolean;
-    publicProfile?: boolean;
-  };
   stats?: {
     totalStudyTime?: number;
     streak?: number;

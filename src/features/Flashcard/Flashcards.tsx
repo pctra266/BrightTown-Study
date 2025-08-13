@@ -5,6 +5,7 @@ import { deleteFlashcardSet } from "./services/flashcardService";
 import { useNavigate } from "react-router-dom";
 import { useFlashcardSets } from "./hooks/useFlashcardSets";
 import { useAuth } from "../../contexts/AuthContext";
+import LoadingPage from "../../pages/LoadingPage";
 
 const Flashcards = () => {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ const Flashcards = () => {
   const userId = user?.id || "";
   const userRoleId = user?.role || "";
 
-  const { flashcardSets, fetchData: fetchFlashcardSetData } = useFlashcardSets();
+  const { flashcardSets, fetchData: fetchFlashcardSetData, loading, error } = useFlashcardSets();
 
   const handleCreate = () => { navigate(`/library/flashcard/new`); };
   const handleDelete = async (id: string) => { await deleteFlashcardSet(id, userId, userRoleId); fetchFlashcardSetData(); };
@@ -52,6 +53,7 @@ const Flashcards = () => {
     }
     navigate(`/library/flashcard/${id}/play`);
   };
+  if(loading) return(<LoadingPage></LoadingPage>)
   return (
     <FlashcardSets
       flashcardSets={flashcardSets}

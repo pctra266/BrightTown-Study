@@ -1,5 +1,5 @@
 // src/components/ImageSelector.tsx
-import { useState } from 'react';
+import { useState,type ChangeEvent  } from 'react';
 
 type Image = {
   id: string;
@@ -15,7 +15,6 @@ export default function ImageSelector({ onSelect }: Props) {
   const [images, setImages] = useState<Image[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("")
-
   const fetchImages = async () => {
     setLoading(true);
     try {
@@ -35,9 +34,28 @@ export default function ImageSelector({ onSelect }: Props) {
       setLoading(false);
     }
   };
+  
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64 = reader.result as string;
+      const uploadedImage: Image = {
+        id: `local-${Date.now()}`, // unique id
+        url: base64,
+        alt: file.name,
+      };
+      onSelect(uploadedImage); // trigger onSelect immediately
+    };
+    reader.readAsDataURL(file);
+  };
 
   return (
     <div className="space-y-2">
+        
+
       <div className="flex items-center gap-3 mb-3">
         <input
           type="text"
@@ -53,6 +71,36 @@ export default function ImageSelector({ onSelect }: Props) {
         >
           {loading ? 'Loading...' : `Find images`}
         </button>
+         {/* Custom upload button */}
+  <div className="flex flex-col">
+    <label
+      htmlFor="file-upload"
+      className="cursor-pointer bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 flex items-center justify-center"
+    >
+      <svg
+  xmlns="http://www.w3.org/2000/svg"
+  className="h-5 w-5"
+  fill="none"
+  viewBox="0 0 24 24"
+  stroke="currentColor"
+>
+  <path
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={2}
+    d="M12 19V5m0 0l-6 6m6-6l6 6"
+  />
+</svg>
+
+    </label>
+    <input
+      id="file-upload"
+      type="file"
+      accept="image/*"
+      onChange={handleFileChange}
+      className="hidden"
+    />
+  </div>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
