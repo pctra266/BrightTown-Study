@@ -65,22 +65,36 @@ const Login = () => {
     }, []);
 
     // Validation functions
-    const validateUsername = (username: string): string => {
-        if (!username.trim()) {
-            return "Username is required";
+    const validateIdentifier = (identifier: string): string => {
+        if (!identifier.trim()) {
+            return "Username or email is required";
         }
-        if (username.length < 3) {
-            return "Username must be at least 3 characters long";
+
+        const isEmail = identifier.includes("@");
+
+        if (isEmail) {
+            // Basic email format validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(identifier)) {
+                return "Please enter a valid email address";
+            }
+        } else {
+            // Username rules
+            if (identifier.length < 3) {
+                return "Username must be at least 3 characters long";
+            }
+            if (identifier.length > 30) {
+                return "Username must be less than 30 characters";
+            }
+            const usernameRegex = /^[a-zA-Z0-9]+$/;
+            if (!usernameRegex.test(identifier)) {
+                return "Username can only contain letters and numbers";
+            }
         }
-        if (username.length > 30) {
-            return "Username must be less than 30 characters";
-        }
-        const usernameRegex = /^[a-zA-Z0-9]+$/;
-        if (!usernameRegex.test(username)) {
-            return "Username can only contain letters and numbers";
-        }
+
         return "";
     };
+
 
     const validatePassword = (password: string): string => {
         if (!password) {
@@ -94,8 +108,8 @@ const Login = () => {
 
     const validateField = (fieldName: string, value: string): string => {
         switch (fieldName) {
-            case "username":
-                return validateUsername(value);
+            case "username": // now actually username/email field
+                return validateIdentifier(value);
             case "password":
                 return validatePassword(value);
             default:
@@ -166,7 +180,7 @@ const Login = () => {
         setError("");
 
         // Validate all fields
-        const usernameError = validateUsername(formData.username);
+        const usernameError = validateIdentifier(formData.username);
         const passwordError = validatePassword(formData.password);
 
         const newFieldErrors = {
@@ -196,7 +210,7 @@ const Login = () => {
         try {
             // Pass the turnstile token to the login function
             const result = await login(
-                formData.username,
+                formData.username, // can be username OR email
                 formData.password,
                 turnstileToken || undefined
             );
@@ -273,7 +287,7 @@ const Login = () => {
                             required
                             fullWidth
                             id="username"
-                            label="Username"
+                            label="Username or Email"
                             name="username"
                             autoComplete="username"
                             autoFocus
