@@ -10,10 +10,16 @@ import {
     InputAdornment,
     IconButton,
 } from "@mui/material";
-import { CleaningServices, Visibility, VisibilityOff } from "@mui/icons-material";
+import { AlternateEmail, Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { auth } from "../services/firebase"; // your Firebase config
-import { confirmPasswordReset, verifyPasswordResetCode } from "firebase/auth";
+import { verifyPasswordResetCode } from "../services/firebase"
+import api from "../../../api/api"
+interface UpdatePasswordResponse {
+    success: boolean;
+    message?: string;
+    // add other fields returned by your API
+}
 
 const ResetPassword = () => {
     const [searchParams] = useSearchParams();
@@ -38,21 +44,28 @@ const ResetPassword = () => {
             return;
         }
         setOobCode(code);
-
-        // Optional: verify code and get email
-        verifyPasswordResetCode(auth, oobCode)
+        const verify = searchParams.get("verify");
+        if (!verify) {
+            setError("In valid");
+            return;
+        }
+        verifyPasswordResetCode(auth, code, verify)
             .then((userEmail) => setEmail(userEmail))
             .catch((err: any) => {
                 setError("The reset link is invalid or has expired.")
-
                 console.error("Reset password error:", err); // Full object
                 console.log("Error code:", err.code);        // Firebase-specific code
                 console.log("Error message:", err.message);  // Human-readable text
 
-                // For debugging you can set exact message:
                 setError(`Error: ${err.code} - ${err.message}`);
             });
     }, [searchParams]);
+    useEffect(() => {
+        if (success) {
+          const timer = setTimeout(() => navigate("/login"), 2000);
+          return () => clearTimeout(timer);
+        }
+      }, [success, navigate]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -76,9 +89,9 @@ const ResetPassword = () => {
 
         setLoading(true);
         try {
-            await confirmPasswordReset(auth, oobCode, newPassword);
+            await updatePassword(newPassword);
             setSuccess("Password has been reset successfully!");
-            setTimeout(() => navigate("/login"), 2000);
+            navigate("/login");
         } catch (err: any) {
             console.error("Reset password error:", err);
             setError("Failed to reset password. Please try again.");
@@ -86,6 +99,37 @@ const ResetPassword = () => {
             setLoading(false);
         }
     };
+    async function updatePassword(newPassword: string) {
+        const email = searchParams.get("verify");
+        if (!email) {
+          console.error("No email provided in query params");
+          return;
+        }
+        try {
+          const res = await fetch("http://localhost:9000/account");
+          if (!res.ok) throw new Error("Failed to fetch accounts");
+          const accounts = await res.json();
+      
+          const account = accounts.find((acc: any) => acc.email === email);
+          if (!account) {
+            setError("Account not found for email");
+            return;
+          }
+          const patchRes = await fetch(`http://localhost:9000/account/${account.id}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ password: newPassword }),
+          });
+      
+          if (!patchRes.ok) throw new Error("Failed to update password");
+      
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      
 
     return (
         <Container component="main" maxWidth="sm">
@@ -146,7 +190,7 @@ const ResetPassword = () => {
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="end">
-                                        <IconButton
+                                           <IconButton
                                             onClick={() => setShowPassword(!showPassword)}
                                         >
                                             {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -168,7 +212,7 @@ const ResetPassword = () => {
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="end">
-                                        <IconButton
+                                         <IconButton
                                             onClick={() =>
                                                 setShowConfirmPassword(!showConfirmPassword)
                                             }
