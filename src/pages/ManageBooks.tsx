@@ -134,7 +134,7 @@ const ManageBooks = () => {
                 setOpenViewBook(true);
               }}
               sx={{
-                color: "#1976D2"  
+                color: "#1976D2"
               }}
             >
               <VisibilityIcon />
@@ -356,7 +356,7 @@ const ManageBooks = () => {
         <Grid container justifyContent="center" alignItems="center">
           <Grid item display="flex" alignItems="center">
             <AutoStoriesOutlinedIcon
-              sx={{fontSize: "3rem", mr: 2 }}
+              sx={{ fontSize: "3rem", mr: 2 }}
             />
           </Grid>
         </Grid>
@@ -506,7 +506,7 @@ const ManageBooks = () => {
           <CreateEditViewBook
             book={selectedBook}
             mode={BookMode.VIEW}
-            action={{ setIsDrawerOpen: setOpenViewBook, onConfirm: () => {} }}
+            action={{ setIsDrawerOpen: setOpenViewBook, onConfirm: () => { } }}
           />
         </Box>
       </Drawer>
@@ -519,7 +519,7 @@ const ManageBooks = () => {
         <Box
           width={{ xs: "100vw", sm: 400 }}
           height="100vh"
-       >
+        >
           <CreateEditViewBook
             book={selectedBook}
             mode={BookMode.EDIT}

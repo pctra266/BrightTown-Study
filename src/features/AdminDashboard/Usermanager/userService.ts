@@ -49,7 +49,9 @@ export const fetchUsersAndFlashcards = async (): Promise<{
   return { users, flashcards };
 };
 
-export const fetchUserWithFlashcardSets = async (id: string): Promise<{
+export const fetchUserWithFlashcardSets = async (
+  id: string
+): Promise<{
   user: User | null;
   flashcardSets: FlashcardSet[];
 }> => {
@@ -81,22 +83,30 @@ export const addUser = async (
   try {
     const users = await getAllUsers();
     const isUsernameTaken = users.some(
-      user => user.username.toLowerCase() === newUser.username.toLowerCase()
+      (user) => user.username.toLowerCase() === newUser.username.toLowerCase()
     );
     if (isUsernameTaken) {
       return { success: false, message: "Username đã tồn tại!" };
     }
-    let lastId = 0;
-    if (users.length > 0) {
-      const idList = users.map(user => parseInt(user.id));
-      lastId = Math.max(...idList);
-    }
+    const flashRes = await fetch("http://localhost:9000/flashcardSets");
+    const flashcardSets: FlashcardSet[] = await flashRes.json();
+    const numericIds: number[] = [];
+    users.forEach((user) => {
+      const idNum = parseInt(user.id, 10);
+      if (!isNaN(idNum)) numericIds.push(idNum);
+    });
+    flashcardSets.forEach((set) => {
+      const idNum = parseInt(set.userId, 10);
+      if (!isNaN(idNum)) numericIds.push(idNum);
+    });
+    const lastId = numericIds.length > 0 ? Math.max(...numericIds) : 0;
     const newId = (lastId + 1).toString();
     const response = await fetch("http://localhost:9000/account", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: newId, ...newUser }),
     });
+
     if (response.ok) {
       return { success: true };
     } else {
@@ -132,7 +142,6 @@ export const softDeleteUser = async (id: string) => {
   }
 };
 
-
 export const deleteUser = async (id: string) => {
   try {
     const response = await fetch(`http://localhost:9000/account/${id}`, {
@@ -160,7 +169,7 @@ export const restoreUser = async (id: string) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ status: true }), 
+      body: JSON.stringify({ status: true }),
     });
 
     if (!response.ok) {
@@ -178,35 +187,34 @@ export const restoreUser = async (id: string) => {
   }
 };
 
-
 export const updateUser = async (
   updatedUser: User
 ): Promise<{ success: boolean; message?: string }> => {
   try {
     const users = await getAllUsers();
     const isUsernameTaken = users.some(
-      user => user.username.toLowerCase() === updatedUser.username.toLowerCase() && user.id !== updatedUser.id
+      (user) =>
+        user.username.toLowerCase() === updatedUser.username.toLowerCase() &&
+        user.id !== updatedUser.id
     );
     if (isUsernameTaken) {
       return { success: false, message: "Username đã tồn tại!" };
     }
 
-    const response = await fetch(`http://localhost:9000/account/${updatedUser.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedUser),
-    });
+    const response = await fetch(
+      `http://localhost:9000/account/${updatedUser.id}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedUser),
+      }
+    );
 
     return response.ok
       ? { success: true }
       : { success: false, message: "Lỗi server khi cập nhật user." };
-
   } catch (error) {
     console.error("Error updating user:", error);
     return { success: false, message: "Lỗi kết nối hoặc server." };
   }
 };
-
-
-
-
