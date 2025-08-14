@@ -1,7 +1,7 @@
 
 import axios from "axios";
 
-const API_URL = "http://localhost:9000";
+const API_URL = "https://group-03-learning-social-media-json.vercel.app";
 
 export const getFlashcardSets = () => axios.get(`${API_URL}/flashcardSets`);
 export const getAccounts = () => axios.get(`${API_URL}/account`);

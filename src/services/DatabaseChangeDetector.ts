@@ -15,7 +15,7 @@ class DatabaseChangeDetector {
 
     this.isChecking = true;
     try {
-      const response = await fetch("http://localhost:9000/account");
+      const response = await fetch("https://group-03-learning-social-media-json.vercel.app/account");
       const accounts: AccountSummary[] = await response.json();
 
       const currentHash = JSON.stringify(

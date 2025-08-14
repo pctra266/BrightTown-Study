@@ -193,7 +193,7 @@ const ManageBooks = () => {
       setRows([]);
       setToastConfig({
         open: true,
-        message: "Failed to load books. Please check json-server at http://localhost:9000.",
+        message: "Failed to load books. Please check the API server.",
         type: "error",
       });
     }

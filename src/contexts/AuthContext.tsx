@@ -131,7 +131,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 const userExists = await authService.validateUserExists(currentUser.id);
                 if (!userExists) {
                     try {
-                        const accountResponse = await fetch('http://localhost:9000/account');
+                        const accountResponse = await fetch('https://group-03-learning-social-media-json.vercel.app/account');
                         const accounts = await accountResponse.json();
                         const account = accounts.find((acc: { id: string; status: boolean }) => acc.id === currentUser.id);
 

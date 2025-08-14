@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:9000";
+const API_URL = "https://group-03-learning-social-media-json.vercel.app";
 
 export type Flashcard = {
     id: string;

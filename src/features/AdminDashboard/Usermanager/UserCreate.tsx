@@ -20,7 +20,7 @@ const UserCreate = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const response = await fetch("http://localhost:9000/role");
+        const response = await fetch("https://group-03-learning-social-media-json.vercel.app/role");
         const data = await response.json();
         let filteredRoles = [];
         if (user?.role === "0") {
