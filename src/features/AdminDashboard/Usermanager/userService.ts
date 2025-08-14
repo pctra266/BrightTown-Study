@@ -29,10 +29,10 @@ export const fetchUsersAndFlashcards = async (): Promise<{
   users: User[];
   flashcards: FlashcardMap;
 }> => {
-  const userRes = await fetch("https://group-03-learning-social-media-json.vercel.app/account");
+  const userRes = await fetch("http://localhost:9000/account");
   const users: User[] = await userRes.json();
 
-  const flashRes = await fetch("https://group-03-learning-social-media-json.vercel.app/flashcardSets");
+  const flashRes = await fetch("http://localhost:9000/flashcardSets");
   const flashcardSets = await flashRes.json();
 
   const flashcards: FlashcardMap = {};
@@ -53,11 +53,11 @@ export const fetchUserWithFlashcardSets = async (id: string): Promise<{
   user: User | null;
   flashcardSets: FlashcardSet[];
 }> => {
-  const userRes = await fetch("https://group-03-learning-social-media-json.vercel.app/account");
+  const userRes = await fetch("http://localhost:9000/account");
   const allUsers: User[] = await userRes.json();
   const user = allUsers.find((u) => u.id === id) || null;
 
-  const flashRes = await fetch("https://group-03-learning-social-media-json.vercel.app/flashcardSets");
+  const flashRes = await fetch("http://localhost:9000/flashcardSets");
   const allSets: FlashcardSet[] = await flashRes.json();
   const flashcardSets = allSets.filter((s) => s.userId === id);
 
@@ -66,7 +66,7 @@ export const fetchUserWithFlashcardSets = async (id: string): Promise<{
 
 export const getAllUsers = async (): Promise<User[]> => {
   try {
-    const response = await fetch("https://group-03-learning-social-media-json.vercel.app/account");
+    const response = await fetch("http://localhost:9000/account");
     const data = await response.json();
     return data;
   } catch (error) {
@@ -92,7 +92,7 @@ export const addUser = async (
       lastId = Math.max(...idList);
     }
     const newId = (lastId + 1).toString();
-    const response = await fetch("https://group-03-learning-social-media-json.vercel.app/account", {
+    const response = await fetch("http://localhost:9000/account", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: newId, ...newUser }),
@@ -110,7 +110,7 @@ export const addUser = async (
 
 export const softDeleteUser = async (id: string) => {
   try {
-    const response = await fetch(`https://group-03-learning-social-media-json.vercel.app/account/${id}`, {
+    const response = await fetch(`http://localhost:9000/account/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -135,7 +135,7 @@ export const softDeleteUser = async (id: string) => {
 
 export const deleteUser = async (id: string) => {
   try {
-    const response = await fetch(`https://group-03-learning-social-media-json.vercel.app/account/${id}`, {
+    const response = await fetch(`http://localhost:9000/account/${id}`, {
       method: "DELETE",
     });
 
@@ -155,7 +155,7 @@ export const deleteUser = async (id: string) => {
 
 export const restoreUser = async (id: string) => {
   try {
-    const response = await fetch(`https://group-03-learning-social-media-json.vercel.app/account/${id}`, {
+    const response = await fetch(`http://localhost:9000/account/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -191,7 +191,7 @@ export const updateUser = async (
       return { success: false, message: "Username đã tồn tại!" };
     }
 
-    const response = await fetch(`https://group-03-learning-social-media-json.vercel.app/account/${updatedUser.id}`, {
+    const response = await fetch(`http://localhost:9000/account/${updatedUser.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedUser),

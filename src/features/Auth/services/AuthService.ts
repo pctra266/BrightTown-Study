@@ -163,7 +163,7 @@ export const authService = {
         status: true,
       };
 
-      const res = await fetch("https://group-03-learning-social-media-json.vercel.app/account", {
+      const res = await fetch("http://localhost:9000/account", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newAccount),

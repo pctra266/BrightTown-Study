@@ -24,12 +24,12 @@ const Flashcards = () => {
     if (!sessionStorage.getItem(key)) {
       sessionStorage.setItem(key, "true");
       try {
-        const res = await fetch("https://group-03-learning-social-media-json.vercel.app/siteStats");
+        const res = await fetch("http://localhost:9000/siteStats");
         const stats = await res.json();
         const todayStat = stats.find((s: any) => s.date === today);
 
         if (todayStat) {
-          await fetch(`https://group-03-learning-social-media-json.vercel.app/siteStats/${todayStat.id}`, {
+          await fetch(`http://localhost:9000/siteStats/${todayStat.id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -37,7 +37,7 @@ const Flashcards = () => {
             })
           });
         } else {
-          await fetch("https://group-03-learning-social-media-json.vercel.app/siteStats", {
+          await fetch("http://localhost:9000/siteStats", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
