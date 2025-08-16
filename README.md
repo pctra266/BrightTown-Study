@@ -18,7 +18,7 @@ educational experiences through interactive features like flashcards, discussion
 and collaborative learning tools. Built with React and TypeScript, the platform 
 provides a secure and engaging environment for students and educators.
 
-**Live Demo:** [https://group-03-learning-social-media.vercel.app/](https://group-03-learning-social-media.vercel.app/)
+**Live Demo:** [Learning Social Media](https://learningsocialmedia.vercel.app)
 
 ![Bright Town Study Platform](https://github.com/user-attachments/assets/dd5ac52c-12a0-4620-9238-e2c4220826a9)
 
